@@ -27,17 +27,49 @@ import com.solweaver.xuggler.utils.XugglerMediaUtils;
 @Controller
 public class VideoController {
 
-	public static final String UPLOAD_OUTPUT_FOLDER = "c:/karthik/junk/grite/";
+	public static final String EVENTS_FOLDER = "c:/karthik/junk/grite/";
 	@RequestMapping(value="/hello")
 	public @ResponseBody String hello(){
 		return "Hello world";
 	}
 	
-	@RequestMapping(value="/makeGreeting", method=RequestMethod.POST)
+	@RequestMapping(value="/makeGreetingWithFiles", method=RequestMethod.POST)
 	public @ResponseBody String makeGreeting(@RequestBody MakeVideoRequest makeVideoRequest) throws IOException{
 		
 		XugglerMediaUtils.mergeVideos(makeVideoRequest);
 		return makeVideoRequest.getOutputFileName();
+	}
+	
+	@RequestMapping(value="/makeGreeting", method=RequestMethod.POST)
+	public @ResponseBody String makeGreetingWithEvent(@RequestBody MakeVideoRequest makeVideoRequest,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws IOException{
+		
+		String eventIdStr = makeVideoRequest.getEventId();
+		Long eventId = Long.valueOf(eventIdStr);
+		
+		String eventUploadFolderName = EVENTS_FOLDER+eventId+"/upload/";
+		File eventOutputFolder = new File(eventUploadFolderName);
+		
+		if(eventOutputFolder.isDirectory()){
+			String[] eventFiles = eventOutputFolder.list();
+			VideoDTO[] videoDTOList = makeVideoRequest.getVideoDTOList();
+			if(videoDTOList == null){
+				videoDTOList = new VideoDTO[eventFiles.length];
+			}
+			for(int i=0;i<eventFiles.length;i++){
+				VideoDTO videoDTO = new VideoDTO();
+				videoDTO.setFileName(eventUploadFolderName+eventFiles[i]);
+				videoDTOList[i] = videoDTO;
+			}
+			makeVideoRequest.setVideoDTOList(videoDTOList);
+		}
+		
+		XugglerMediaUtils.mergeVideos(makeVideoRequest);
+		
+		String requestUrl = request.getScheme()+"://"+request.getServerName()+request.getContextPath()+"/download?eventId="+makeVideoRequest.getEventId();
+		
+		return requestUrl;
 	}
 	
 	@RequestMapping(value="/makeGreeting1", method=RequestMethod.POST)
@@ -74,7 +106,7 @@ public class VideoController {
 		InputStream inputStream = file.getInputStream();
 		String fileName = file.getOriginalFilename();
 		System.out.println("File name is "+fileName);
-		String outputFolderName = UPLOAD_OUTPUT_FOLDER+eventId+"/upload/";
+		String outputFolderName = EVENTS_FOLDER+eventId+"/upload/";
 		File outputFolder = new File(outputFolderName);
 		
 		if(!outputFolder.isDirectory()){
@@ -95,10 +127,9 @@ public class VideoController {
 			HttpServletRequest request, 
 			HttpServletResponse response) throws IOException{
 		
-		String filePath = null;
 		String fileName = null;
 		
-		String outputFolderName = UPLOAD_OUTPUT_FOLDER+eventId+"/upload/";
+		String outputFolderName = EVENTS_FOLDER+eventId+"/output/";
 		File outputFolder = new File(outputFolderName);
 		if(outputFolder.isDirectory()){
 			String[] fileList = outputFolder.list();
