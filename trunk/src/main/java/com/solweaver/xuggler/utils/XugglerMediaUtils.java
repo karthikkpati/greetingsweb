@@ -87,7 +87,15 @@ public class XugglerMediaUtils {
 		mediaReader.setBufferedImageTypeToGenerate(BufferedImage.TYPE_3BYTE_BGR);
 
 		String outputFileName = makeVideoRequest.getOutputFileName();
-		outputFileName = eventFolder + "\\" + outputFileName;
+		String outputFolderName = eventFolder + "/output/" ; 
+		
+		File outputFolder = new File(outputFolderName);
+		if(!outputFolder.isDirectory()){
+			outputFolder.mkdirs();
+		}
+		
+		outputFileName = outputFolderName + outputFileName;
+		
 		IMediaWriter mediaWriter =	ToolFactory.makeWriter(outputFileName, mediaReader);
 
 		IMediaTool imageMediaTool = new StaticImageMediaTool(makeVideoRequest.getOverlayImage(), makeVideoRequest.getEmbeddedImageMinWidth(), makeVideoRequest.getEmbeddedImageMaxWidth(),
