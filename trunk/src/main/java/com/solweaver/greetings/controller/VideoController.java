@@ -85,4 +85,38 @@ public class VideoController {
 		fos.close();
 		return outputFileName;
 	}
+
+	@RequestMapping(value="/download", method=RequestMethod.GET)
+	public void downloadVideo(
+			Model model,
+			@RequestParam("eventId") String eventId,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws IOException{
+		
+		String filePath = null;
+		String fileName = null;
+		
+		String outputFolderName = UPLOAD_OUTPUT_FOLDER+eventId+"/upload/";
+		File outputFolder = new File(outputFolderName);
+		if(outputFolder.isDirectory()){
+			String[] fileList = outputFolder.list();
+			response.setContentType("application/octet-stream");
+			fileName = fileList[0];
+			response.setHeader("Content-Disposition","attachment;filename="+fileName);
+
+			File file = new File(outputFolderName+fileName);
+			FileInputStream fileIn = new FileInputStream(file);
+			ServletOutputStream out = response.getOutputStream();
+			byte[] outputByte = new byte[4096];
+			while(fileIn.read(outputByte, 0, 4096) != -1) {
+				out.write(outputByte, 0, 4096);
+			}
+			fileIn.close();
+			out.flush();
+			out.close();
+			
+		}
+
+	}
+
 }
