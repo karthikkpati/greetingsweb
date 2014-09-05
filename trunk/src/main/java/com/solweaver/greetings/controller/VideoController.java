@@ -1,10 +1,12 @@
 package com.solweaver.greetings.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -85,7 +87,7 @@ public class VideoController {
 		fos.close();
 		return outputFileName;
 	}
-
+	
 	@RequestMapping(value="/download", method=RequestMethod.GET)
 	public void downloadVideo(
 			Model model,
@@ -118,5 +120,4 @@ public class VideoController {
 		}
 
 	}
-
 }
