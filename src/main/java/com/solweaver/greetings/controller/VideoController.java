@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.solweaver.greetings.model.MakeVideoRequest;
-import com.solweaver.greetings.model.VideoDTO;
+import com.solweaver.greetings.dto.MakeVideoRequest;
+import com.solweaver.greetings.dto.VideoDTO;
 import com.solweaver.xuggler.utils.XugglerMediaUtils;
 
 @Controller
