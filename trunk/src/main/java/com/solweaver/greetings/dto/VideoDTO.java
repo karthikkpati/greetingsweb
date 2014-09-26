@@ -1,4 +1,4 @@
-package com.solweaver.greetings.model;
+package com.solweaver.greetings.dto;
 
 public class VideoDTO {
 

@@ -51,12 +51,12 @@
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 
-	<!-- <beans:bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource"
+	<beans:bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource"
 		destroy-method="close">
 		 <beans:property name="driverClass" value="com.mysql.jdbc.Driver" />
       <beans:property name="jdbcUrl" value="jdbc:mysql://localhost:3306/greetings" />
       <beans:property name="username" value="root" />
-      <beans:property name="password" value="root" />  
+      <beans:property name="password" value="password" />  
 		<beans:property name="idleConnectionTestPeriodInMinutes" value="1" />
 		<beans:property name="idleMaxAgeInMinutes" value="4" />
 		<beans:property name="maxConnectionsPerPartition" value="2" />
@@ -80,7 +80,7 @@
 		<beans:property name="sessionFactory" ref="sessionFactory" />
 	</beans:bean>
 	
-	<tx:annotation-driven/> -->
+	<tx:annotation-driven/>
 
 	<beans:bean id="multipartResolver"
     class="org.springframework.web.multipart.commons.CommonsMultipartResolver">

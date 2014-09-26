@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+ 		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property> 
+		<property name="hibernate.hbm2ddl.auto">update</property>
+		<property name="show_sql">false</property>
+		<property name="hibernate.cache.use_second_level_cache">false</property>
+		<property name="hibernate.cache.use_query_cache">false</property>
+	<!-- 	<property name="org.hibernate.envers.audit_table_prefix">AUDIT_</property>
+		<property name="org.hibernate.envers.audit_table_suffix"></property>
+	 -->	
+		<!--<property name="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory</property> -->
+		
+		<mapping class="com.solweaver.greetings.model.User"/>
+		<mapping class="com.solweaver.greetings.model.Event"/>
+		<mapping class="com.solweaver.greetings.model.UserEvent"/>
+		<!-- <mapping class="com.solweaver.greetings.entity.Event"/>
+		<mapping class="com.solweaver.greetings.entity.Country"/>
+		<mapping class="com.solweaver.greetings.entity.User"/>
+		<mapping class="com.solweaver.greetings.entity.UserMetaData"/>
+		<mapping class="com.solweaver.greetings.entity.UserEvent"/> -->
+	</session-factory>
+</hibernate-configuration>
+
