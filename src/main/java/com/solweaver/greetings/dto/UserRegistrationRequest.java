@@ -19,6 +19,8 @@ public class UserRegistrationRequest extends BaseRequest{
 	private String firstName;
 	
 	private String lastName;
+	
+	private String registeredChannelId;
 
 	public String getEmail() {
 		return email;
@@ -83,5 +85,13 @@ public class UserRegistrationRequest extends BaseRequest{
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-	
+
+	public String getRegisteredChannelId() {
+		return registeredChannelId;
+	}
+
+	public void setRegisteredChannelId(String registeredChannelId) {
+		this.registeredChannelId = registeredChannelId;
+	}
+
 }

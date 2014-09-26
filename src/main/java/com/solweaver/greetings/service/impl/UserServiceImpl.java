@@ -8,6 +8,7 @@ import com.solweaver.greetings.dao.UserDAO;
 import com.solweaver.greetings.dto.GenericEnum;
 import com.solweaver.greetings.dto.UserRegistrationRequest;
 import com.solweaver.greetings.dto.UserRegistrationResponse;
+import com.solweaver.greetings.model.Channel;
 import com.solweaver.greetings.model.Gender;
 import com.solweaver.greetings.model.User;
 import com.solweaver.greetings.model.UserStatus;
@@ -43,9 +44,12 @@ public class UserServiceImpl implements IUserService{
 		user.setGender(Gender.valueOf(userRegistrationRequest.getGender()));
 		user.setRegisteredDeviceId(userRegistrationRequest.getDeviceId());
 		user.setUserStatus(UserStatus.Active);
+		user.setRegisteredChannelId(Channel.valueOf(userRegistrationRequest.getChannel()));
 		userDAO.makePersistent(user);
 		
 		userRegistrationResponse.setUserDTO(EntityDtoUtils.getUserDTO(user));
+		
+		GenericUtils.buildErrorDetail(userRegistrationResponse, GenericEnum.Success);
 		return userRegistrationResponse;
 	}
 	

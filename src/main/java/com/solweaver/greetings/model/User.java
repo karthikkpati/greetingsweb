@@ -45,6 +45,8 @@ public class User extends BaseEntity{
 
 	private String password;
 	
+	private Channel registeredChannelId;
+	
 	public Long getId() {
 		return id;
 	}
@@ -139,6 +141,14 @@ public class User extends BaseEntity{
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public Channel getRegisteredChannelId() {
+		return registeredChannelId;
+	}
+
+	public void setRegisteredChannelId(Channel registeredChannelId) {
+		this.registeredChannelId = registeredChannelId;
 	}
 
 }
