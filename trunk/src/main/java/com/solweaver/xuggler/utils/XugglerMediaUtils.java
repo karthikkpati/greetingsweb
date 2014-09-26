@@ -8,8 +8,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.solweaver.greetings.model.MakeVideoRequest;
-import com.solweaver.greetings.model.VideoDTO;
+import com.solweaver.greetings.dto.MakeVideoRequest;
+import com.solweaver.greetings.dto.VideoDTO;
 import com.xuggle.mediatool.IMediaReader;
 import com.xuggle.mediatool.IMediaTool;
 import com.xuggle.mediatool.IMediaWriter;
