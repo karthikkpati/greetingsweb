@@ -3,6 +3,8 @@ package com.solweaver.greetings.controller;
 import java.io.IOException;
 import java.util.Date;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +23,7 @@ public class UserController {
 	private IUserService userService;
 	
 	@RequestMapping(value="/register", method=RequestMethod.POST)
-	public @ResponseBody UserRegistrationResponse registerUser(@RequestBody UserRegistrationRequest userRegistrationRequest) throws IOException{
+	public @ResponseBody UserRegistrationResponse registerUser(@Valid @RequestBody UserRegistrationRequest userRegistrationRequest) throws IOException{
 		return userService.createUserIfNotExists(userRegistrationRequest);
 	}
 	
