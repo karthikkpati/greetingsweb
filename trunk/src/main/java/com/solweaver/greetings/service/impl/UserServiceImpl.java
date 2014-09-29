@@ -28,6 +28,18 @@ public class UserServiceImpl implements IUserService{
 			UserRegistrationRequest userRegistrationRequest) {
 		UserRegistrationResponse userRegistrationResponse = new UserRegistrationResponse();
 		User user = null;
+		if(!userRegistrationRequest.getPassword().equals(userRegistrationRequest.getConfirmPassword())){
+			GenericUtils.buildErrorDetail(userRegistrationResponse, GenericEnum.CONFIRM_PASSWORD);
+			return userRegistrationResponse;
+		}
+		Gender gender = null;
+		try{
+			gender = Gender.valueOf(userRegistrationRequest.getGender());
+		}catch(Exception exception){
+			GenericUtils.buildErrorDetail(userRegistrationResponse, GenericEnum.INVALID_GENDER);
+			return userRegistrationResponse;
+		}
+		
 		user = userDAO.findExistingUserByEmail(userRegistrationRequest.getEmail());
 		if(user != null){
 			if(user.getUserStatus().equals(UserStatus.Active)){
@@ -41,7 +53,7 @@ public class UserServiceImpl implements IUserService{
 		user.setEmail(userRegistrationRequest.getEmail());
 		user.setFirstName(userRegistrationRequest.getFirstName());
 		user.setLastName(userRegistrationRequest.getLastName());
-		user.setGender(Gender.valueOf(userRegistrationRequest.getGender()));
+		user.setGender(gender);
 		user.setRegisteredDeviceId(userRegistrationRequest.getDeviceId());
 		user.setUserStatus(UserStatus.Active);
 		user.setRegisteredChannelId(Channel.valueOf(userRegistrationRequest.getChannel()));

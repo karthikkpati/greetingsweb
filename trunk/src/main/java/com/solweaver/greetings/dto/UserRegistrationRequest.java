@@ -2,12 +2,22 @@ package com.solweaver.greetings.dto;
 
 import java.util.Date;
 
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.Any;
+import org.hibernate.validator.constraints.Email;
+
+
 public class UserRegistrationRequest extends BaseRequest{
 
+	@NotNull(message="EMail cannot be null")
+	@Email(message="Invalid Email Format")
 	private String email;
 	
+	@NotNull(message="Password cannot be null")
 	private String password;
 	
+	@NotNull(message="Confirm password cannot be null")
 	private String confirmPassword;
 	
 	private Date dateOfBirth;
