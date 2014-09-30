@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Event extends BaseEntity{
@@ -36,7 +37,7 @@ public class Event extends BaseEntity{
 	/**
 	 * Date by which invitees should submit their video
 	 */
-	private Date eventLockDate;
+	private Date videoSubmissionDate;
 	
 	/**
 	 * user who created this event
@@ -57,8 +58,8 @@ public class Event extends BaseEntity{
 	/**
 	 * User for which the event is created
 	 */
-	/*@OneToOne
-	private User recipientUser;*/
+	@OneToOne
+	private User recipientUser;
 	
 	private String createdByRecordedLink;
 	
@@ -97,12 +98,12 @@ public class Event extends BaseEntity{
 		this.eventDate = eventDate;
 	}
 
-	public Date getEventLockDate() {
-		return eventLockDate;
+	public Date getVideoSubmissionDate() {
+		return videoSubmissionDate;
 	}
 
-	public void setEventLockDate(Date eventLockDate) {
-		this.eventLockDate = eventLockDate;
+	public void setVideoSubmissionDate(Date videoSubmissionDate) {
+		this.videoSubmissionDate = videoSubmissionDate;
 	}
 
 	public String getDescription() {
@@ -167,6 +168,14 @@ public class Event extends BaseEntity{
 
 	public void setFromMessage(String fromMessage) {
 		this.fromMessage = fromMessage;
+	}
+
+	public User getRecipientUser() {
+		return recipientUser;
+	}
+
+	public void setRecipientUser(User recipientUser) {
+		this.recipientUser = recipientUser;
 	}
 
 /*	public List<Invitee> getInviteeList() {

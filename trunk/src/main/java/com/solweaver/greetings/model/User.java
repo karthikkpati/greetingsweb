@@ -45,7 +45,11 @@ public class User extends BaseEntity{
 
 	private String password;
 	
-	private Channel registeredChannelId;
+	private Channel registeredChannel;
+
+	private Channel lastLoggedInChannel;
+
+	private boolean emailVerified;
 	
 	public Long getId() {
 		return id;
@@ -143,12 +147,28 @@ public class User extends BaseEntity{
 		this.password = password;
 	}
 
-	public Channel getRegisteredChannelId() {
-		return registeredChannelId;
+	public Channel getLastLoggedInChannel() {
+		return lastLoggedInChannel;
 	}
 
-	public void setRegisteredChannelId(Channel registeredChannelId) {
-		this.registeredChannelId = registeredChannelId;
+	public void setLastLoggedInChannel(Channel lastLoggedInChannel) {
+		this.lastLoggedInChannel = lastLoggedInChannel;
+	}
+
+	public Channel getRegisteredChannel() {
+		return registeredChannel;
+	}
+
+	public void setRegisteredChannel(Channel registeredChannel) {
+		this.registeredChannel = registeredChannel;
+	}
+
+	public boolean isEmailVerified() {
+		return emailVerified;
+	}
+
+	public void setEmailVerified(boolean emailVerified) {
+		this.emailVerified = emailVerified;
 	}
 
 }
