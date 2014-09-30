@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.solweaver.greetings.dto.LoginRequest;
+import com.solweaver.greetings.dto.LoginResponse;
 import com.solweaver.greetings.dto.UserRegistrationRequest;
 import com.solweaver.greetings.dto.UserRegistrationResponse;
 import com.solweaver.greetings.service.IUserService;
@@ -27,6 +29,11 @@ public class UserController {
 		return userService.createUserIfNotExists(userRegistrationRequest);
 	}
 	
+	@RequestMapping(value="/login", method=RequestMethod.POST)
+	public @ResponseBody LoginResponse login(@Valid @RequestBody LoginRequest loginRequest) throws IOException{
+		return userService.login(loginRequest);
+	}
+
 	@RequestMapping(value="/register1", method=RequestMethod.GET)
 	public @ResponseBody UserRegistrationRequest registerUser1() throws IOException{
 		UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();

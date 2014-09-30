@@ -68,4 +68,14 @@ public class UserDAO extends BaseDAO<User, Long > {
 		return user;
 	}
 
+	public User findActiveUserByEmail(String emailId){
+		User user = null;
+		List<UserStatus> userStatusList = new ArrayList<UserStatus>();
+		userStatusList.add(UserStatus.Active);
+		List<User> userList = findByEmail(emailId, userStatusList);
+		if(userList != null && !userList.isEmpty()){
+			user = userList.get(0);
+		}
+		return user;
+	}
 }

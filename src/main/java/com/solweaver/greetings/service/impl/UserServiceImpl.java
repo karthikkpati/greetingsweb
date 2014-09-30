@@ -1,11 +1,18 @@
 package com.solweaver.greetings.service.impl;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.solweaver.greetings.dao.UserDAO;
+import com.solweaver.greetings.dto.EventCreationRequest;
+import com.solweaver.greetings.dto.EventCreationResponse;
 import com.solweaver.greetings.dto.GenericEnum;
+import com.solweaver.greetings.dto.LoginRequest;
+import com.solweaver.greetings.dto.LoginResponse;
+import com.solweaver.greetings.dto.UserDTO;
 import com.solweaver.greetings.dto.UserRegistrationRequest;
 import com.solweaver.greetings.dto.UserRegistrationResponse;
 import com.solweaver.greetings.model.Channel;
@@ -56,7 +63,8 @@ public class UserServiceImpl implements IUserService{
 		user.setGender(gender);
 		user.setRegisteredDeviceId(userRegistrationRequest.getDeviceId());
 		user.setUserStatus(UserStatus.Active);
-		user.setRegisteredChannelId(Channel.valueOf(userRegistrationRequest.getChannel()));
+		user.setRegisteredChannel(Channel.valueOf(userRegistrationRequest.getChannel()));
+		user.setPassword(userRegistrationRequest.getPassword());
 		userDAO.makePersistent(user);
 		
 		userRegistrationResponse.setUserDTO(EntityDtoUtils.getUserDTO(user));
@@ -65,65 +73,31 @@ public class UserServiceImpl implements IUserService{
 		return userRegistrationResponse;
 	}
 	
-	/*@Override
+	@Override
 	@Transactional
-	public UserRe createUserIfNotExists(UserDTO userDTO, UserMetaDataDTO userMetaDataDTO) {
-		UserResponse userResponse = new UserResponse();
-		User user = null;
-		if(userDTO != null){
-			if(userDTO.getUserId() != null){
-				user = userDAO.findById(userDTO.getUserId(), false);
-				if(user == null){
-					GenericUtils.buildErrorDetail(userResponse, GenericEnum.INVALID_USER);
-					return userResponse;
-				}
-			}else if(userDTO.getEmailId() != null){
-				List<UserStatus> userStatusList = new ArrayList<UserStatus>();
-				userStatusList.add(UserStatus.Active);
-				userStatusList.add(UserStatus.InActive);
-				List<User> userList = userDAO.findByEmail(userDTO.getEmailId(), userStatusList);
-				if(userList != null && userList.size() > 0){
-					if(userList.size() == 1){
-						user = (User) userList.get(0);
-						userDTO.setUserId(user.getId());
-						if(user.getUserStatus().equals(UserStatus.InActive)){
-							user.setUserStatus(UserStatus.Active);
-							userDAO.merge(user);
-							UserMetaData userMetaData = GenericUtils.convertToUserMetaDataEntity(userMetaDataDTO);
-							userMetaData.setUser(user);
-							userMetaDataDAO.makePersistent(userMetaData);
-							user.setUserMetaData(userMetaData);
-						}
-					}else{
-						GenericUtils.buildErrorDetail(userResponse, GenericEnum.DUPLICATE_USER);
-						return userResponse;
-					}
-				}
-			}
-			if(user == null){
-				try{
-					user = GenericUtils.convertToUserEntity(userDTO);
-					user.setUserStatus(UserStatus.Active);
-					userDAO.makePersistent(user);
-					userDTO.setUserId(user.getId());
-					UserMetaData userMetaData = GenericUtils.convertToUserMetaDataEntity(userMetaDataDTO);
-					userMetaData.setUser(user);
-					userMetaDataDAO.makePersistent(userMetaData);
-				}catch(Exception exception){
-					exception.printStackTrace();
-					GenericUtils.buildErrorDetail(userResponse, GenericEnum.DB_EXCEPTION);
-					return userResponse;
-				}
-			}else{
-				UserMetaData userMetaData = user.getUserMetaData();
-				userMetaData.setLastLoggedInDeviceId(userMetaDataDTO.getLastLoggedInDeviceId());
-				userMetaData.setLastLoggedInTime(userMetaData.getLastLoggedInTime());
-				userMetaDataDAO.merge(userMetaData);
-			}
-			GenericUtils.buildErrorDetail(userResponse, GenericEnum.Success);
+	public LoginResponse login(LoginRequest loginRequest){
+		LoginResponse loginResponse = new LoginResponse();
+		User user = userDAO.findActiveUserByEmail(loginRequest.getEmail());
+		if(user == null){
+			GenericUtils.buildErrorDetail(loginResponse, GenericEnum.USER_DOESNT_EXIST);
+			return loginResponse;
 		}
-		return userResponse;
-	}*/
-	
-	
+		
+		if(!user.getPassword().equals(loginRequest.getPassword())){
+			GenericUtils.buildErrorDetail(loginResponse, GenericEnum.INVALID_USERNAME_PASSWORD);
+			return loginResponse;
+		}
+		UserDTO userDTO = EntityDtoUtils.getUserDTO(user);
+		loginResponse.setUserDTO(userDTO);
+
+		user.setLastLoggedInChannel(Channel.valueOf(loginRequest.getChannel()));
+		user.setLastLoggedInDeviceId(loginRequest.getDeviceId());
+		user.setLastLoggedInTime(new Date());
+		
+		userDAO.merge(user);
+		
+		GenericUtils.buildErrorDetail(loginResponse, GenericEnum.Success);
+		return loginResponse;
+	}
+
 }
