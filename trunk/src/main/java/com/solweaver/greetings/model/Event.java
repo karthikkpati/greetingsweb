@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -42,7 +43,7 @@ public class Event extends BaseEntity{
 	/**
 	 * user who created this event
 	 */
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	private User createdBy;
 	
 	/**
@@ -58,7 +59,7 @@ public class Event extends BaseEntity{
 	/**
 	 * User for which the event is created
 	 */
-	@OneToOne
+	@OneToOne(fetch=FetchType.EAGER)
 	private User recipientUser;
 	
 	private String createdByRecordedLink;

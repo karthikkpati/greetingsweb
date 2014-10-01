@@ -1,9 +1,13 @@
 package com.solweaver.greetings.utils;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.solweaver.greetings.dto.EventCreationRequest;
+import com.solweaver.greetings.dto.EventDTO;
 import com.solweaver.greetings.dto.UserDTO;
+import com.solweaver.greetings.dto.UserEventDTO;
 import com.solweaver.greetings.model.Event;
 import com.solweaver.greetings.model.InviteStatus;
 import com.solweaver.greetings.model.User;
@@ -22,7 +26,9 @@ public class EntityDtoUtils {
 			userDTO.setEmailId(user.getEmail());
 			userDTO.setFirstName(user.getFirstName());
 			userDTO.setLastName(user.getLastName());
-			userDTO.setGender(user.getGender().name());
+			if(user.getGender() != null){
+				userDTO.setGender(user.getGender().name());
+			}
 			userDTO.setUserId(user.getId());
 			userDTO.setUserStatus(user.getUserStatus().name());
 		}
@@ -54,5 +60,61 @@ public class EntityDtoUtils {
 		userEvent.setCreationTime(date);
 		userEvent.setModifiedTime(date);
 		return userEvent;
+	}
+
+	public static List<EventDTO> getEventDTOList(List<Event> eventList, boolean isUserEvent) {
+		List<EventDTO> eventDTOList = null;
+		if(eventList != null && eventList.size() > 0){
+			eventDTOList = new ArrayList<EventDTO>();
+			for(Event event:eventList){
+				eventDTOList.add(getEventDTO(event, isUserEvent));
+			}
+		}
+		return eventDTOList;
+	}
+	
+	public static EventDTO getEventDTO(Event event, boolean isUserEvent){
+		EventDTO eventDTO = new EventDTO();
+		eventDTO.setCreatedByRecordedLink(event.getCreatedByRecordedLink());
+		eventDTO.setDescription(event.getDescription());
+		eventDTO.setEnableReminder(event.isEnableReminder());
+		eventDTO.setEventDate(event.getEventDate());
+		eventDTO.setEventName(event.getEventName());
+		if(event.getEventStatus() != null){
+			eventDTO.setEventStatus(event.getEventStatus().name());
+		}
+		
+		if(isUserEvent){
+			List<UserEvent> userEventList = event.getUserEventList();
+			List<UserEventDTO> userEventDTOList = null;
+			if(userEventList != null && userEventList.size() > 0){
+				userEventDTOList = new ArrayList<UserEventDTO>();
+				for(UserEvent userEvent : userEventList){
+					userEventDTOList.add(getUserEventDTO(userEvent));
+				}
+			}
+			eventDTO.setUserEventDTOList(userEventDTOList);
+		}
+		eventDTO.setFromMessage(event.getFromMessage());
+		eventDTO.setVideoSubmissionDate(event.getVideoSubmissionDate());
+		
+		UserDTO createdByUser = getUserDTO(event.getCreatedBy());
+		eventDTO.setCreatedBy(createdByUser);
+		
+		UserDTO recipientUser = getUserDTO(event.getRecipientUser());
+		eventDTO.setRecipientUser(recipientUser);
+		
+		return eventDTO;
+	}
+	
+	public static UserEventDTO getUserEventDTO(UserEvent userEvent){
+		UserEventDTO userEventDTO = new UserEventDTO();
+		userEventDTO.setUserDTO(getUserDTO(userEvent.getUser()));
+		/*userEventDTO.setInviteeLink(userEvent.getInviteeLink());*/
+		userEventDTO.setInviteStatus(userEvent.getInviteStatus().name());
+		userEventDTO.setRecordedLink(userEvent.getRecordedLink());
+		userEventDTO.setUserEventID(userEvent.getId());
+		userEventDTO.setUserEventType(userEvent.getUserEventType().name());
+		return userEventDTO;
 	}
 }

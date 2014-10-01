@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.solweaver.greetings.dto.EventCreationRequest;
 import com.solweaver.greetings.dto.EventCreationResponse;
+import com.solweaver.greetings.dto.GetEventRequest;
+import com.solweaver.greetings.dto.GetEventResponse;
 import com.solweaver.greetings.model.Channel;
 import com.solweaver.greetings.service.IEventService;
 
@@ -26,8 +28,21 @@ public class EventController {
 	private IEventService eventService;
 	
 	@RequestMapping(value="/event/create", method=RequestMethod.POST)
-	public @ResponseBody EventCreationResponse registerUser(@Valid @RequestBody EventCreationRequest eventCreationRequest) throws IOException{
+	public @ResponseBody EventCreationResponse createEvent(@Valid @RequestBody EventCreationRequest eventCreationRequest) throws IOException{
 		return eventService.createEvent(eventCreationRequest);
+	}
+	
+	@RequestMapping(value="/event/viewAll", method=RequestMethod.POST)
+	public @ResponseBody GetEventResponse getEvents(@Valid @RequestBody GetEventRequest getEventRequest) throws IOException{
+		return eventService.getEvents(getEventRequest);
+	}
+	
+	@RequestMapping(value="/event/viewAll1", method=RequestMethod.GET)
+	public @ResponseBody GetEventRequest getEvents() throws IOException{
+		GetEventRequest getEventRequest = new GetEventRequest();
+		getEventRequest.setChannel(Channel.Ios.name());
+		getEventRequest.setUserId(1L);
+		return getEventRequest;
 	}
 	
 	@RequestMapping(value="/event/create1", method=RequestMethod.GET)
