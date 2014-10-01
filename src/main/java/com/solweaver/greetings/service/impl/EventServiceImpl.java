@@ -11,8 +11,12 @@ import com.solweaver.greetings.dao.EventDAO;
 import com.solweaver.greetings.dao.UserDAO;
 import com.solweaver.greetings.dto.EventCreationRequest;
 import com.solweaver.greetings.dto.EventCreationResponse;
+import com.solweaver.greetings.dto.EventDTO;
 import com.solweaver.greetings.dto.GenericEnum;
+import com.solweaver.greetings.dto.GetEventRequest;
+import com.solweaver.greetings.dto.GetEventResponse;
 import com.solweaver.greetings.model.Event;
+import com.solweaver.greetings.model.EventStatus;
 import com.solweaver.greetings.model.InviteStatus;
 import com.solweaver.greetings.model.User;
 import com.solweaver.greetings.model.UserEvent;
@@ -63,6 +67,7 @@ public class EventServiceImpl implements IEventService{
 		}
 		
 		event.setCreatedBy(user);
+		event.setEventStatus(EventStatus.Active);
 		
 		UserEvent userEvent = EntityDtoUtils.getUserEvent(user, event, InviteStatus.Pending, UserEventType.Invitee);
 		emailInviteeUserEventList.add(userEvent);
@@ -90,5 +95,33 @@ public class EventServiceImpl implements IEventService{
 		return eventCreationResponse;
 	}
 
+	@Override
+	@Transactional
+	public GetEventResponse getEvents(GetEventRequest getEventRequest) {
+		GetEventResponse getEventResponse = new GetEventResponse();
+		User user = userDAO.findById(getEventRequest.getUserId(), false);
+		if(user == null || !user.getUserStatus().equals(UserStatus.Active)){
+			GenericUtils.buildErrorDetail(getEventResponse, GenericEnum.INVALID_USER);
+			return getEventResponse;
+		}
 
+		EventStatus eventStatus = null;
+
+		if(getEventRequest.getEventStatus() != null){
+			try{
+				eventStatus = EventStatus.valueOf(getEventRequest.getEventStatus());
+			}catch(Exception exception){
+				GenericUtils.buildErrorDetail(getEventResponse, GenericEnum.INVALID_EVENT_STATUS);
+				return getEventResponse;
+			}
+		}
+		
+		List<Event> eventList = eventDAO.findEventsByUserId(user.getId(), getEventRequest.getEventId(), getEventRequest.isGetUserDetails(), eventStatus);
+		
+		List<EventDTO> eventDTOList = EntityDtoUtils.getEventDTOList(eventList, getEventRequest.isGetUserDetails());
+		
+		getEventResponse.setEventDTOList(eventDTOList);
+		GenericUtils.buildErrorDetail(getEventResponse, GenericEnum.Success);
+		return getEventResponse;
+	}
 }
