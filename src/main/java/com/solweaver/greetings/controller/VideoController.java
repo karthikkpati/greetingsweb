@@ -2,7 +2,6 @@ package com.solweaver.greetings.controller;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -10,7 +9,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,11 +21,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.solweaver.greetings.dto.MakeVideoRequest;
 import com.solweaver.greetings.dto.VideoDTO;
+import com.solweaver.greetings.dto.VideoUploadRequest;
+import com.solweaver.greetings.dto.VideoUploadResponse;
+import com.solweaver.greetings.service.IVideoService;
 import com.solweaver.xuggler.utils.XugglerMediaUtils;
 
 @Controller
 public class VideoController {
 
+	@Autowired
+	private IVideoService videoService;
+	
 	public static final String EVENTS_FOLDER = "c:/karthik/junk/grite/";
 	@RequestMapping(value="/hello")
 	public @ResponseBody String hello(){
@@ -95,29 +100,30 @@ public class VideoController {
 		return makeVideoRequest;
 	}
 	
-	@RequestMapping(value="/upload", method=RequestMethod.POST)
-	public @ResponseBody String uploadVideo(@RequestParam("file") MultipartFile file,
+	@RequestMapping(value="/upload1", method=RequestMethod.POST)
+	public @ResponseBody VideoUploadResponse uploadVideo(@RequestBody VideoUploadRequest videoUploadRequest, @RequestParam(value="file", required=false) MultipartFile file,
 			Model model,
-			@RequestParam("eventId") String eventId,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws IOException{
+		InputStream inputStream = file.getInputStream();
+		String fileName = file.getOriginalFilename();
+		return videoService.uploadVideo(videoUploadRequest, inputStream, fileName);
+	}
+	
+	@RequestMapping(value="/upload", method=RequestMethod.POST)
+	public @ResponseBody VideoUploadResponse uploadVideo(@RequestParam("file") MultipartFile file,
+			Model model,
+			@RequestParam("eventId") Long eventId,
+			@RequestParam("userId") Long userId,
 			HttpServletRequest request, 
 			HttpServletResponse response) throws IOException{
 		
-		
+		VideoUploadRequest videoUploadRequest = new VideoUploadRequest();
+		videoUploadRequest.setEventId(eventId);
+		videoUploadRequest.setUserId(userId);
 		InputStream inputStream = file.getInputStream();
 		String fileName = file.getOriginalFilename();
-		System.out.println("File name is "+fileName);
-		String outputFolderName = EVENTS_FOLDER+eventId+"/upload/";
-		File outputFolder = new File(outputFolderName);
-		
-		if(!outputFolder.isDirectory()){
-			outputFolder.mkdirs();
-		}
-		String outputFileName = outputFolderName+fileName;
-		
-		FileOutputStream fos = new FileOutputStream(outputFileName);
-		IOUtils.copy(inputStream, fos);
-		fos.close();
-		return outputFileName;
+		return videoService.uploadVideo(videoUploadRequest, inputStream, fileName);
 	}
 	
 	@RequestMapping(value="/download", method=RequestMethod.GET)
