@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.solweaver.greetings.model.Event;
 import com.solweaver.greetings.model.EventStatus;
+import com.solweaver.greetings.model.UserEvent;
 
 @Repository
 public class EventDAO extends BaseDAO<Event, Long > {
@@ -37,6 +38,28 @@ public class EventDAO extends BaseDAO<Event, Long > {
 		eventList = eventCriteria.list();
 		
 		return eventList;
+	}
+
+	public Event findByEventAndUserId(Long eventId, Long userId) {
+		Event event = null;
+
+		List<UserEvent> userEventList = null;
+		Criteria eventCriteria = getSession().createCriteria(UserEvent.class);
+
+		if(eventId != null){
+			eventCriteria.add(Restrictions.eq("event.id", eventId));
+		}
+		
+		if(userId != null){
+			eventCriteria.add(Restrictions.eq("user.id", userId));
+		}
+		
+		userEventList = eventCriteria.list();
+		
+		if(userEventList != null && userEventList.size()>0){
+			event = userEventList.get(0).getEvent();
+		}
+		return event;
 	}
 
 }
