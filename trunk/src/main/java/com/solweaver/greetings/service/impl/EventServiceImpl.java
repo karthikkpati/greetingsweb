@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.solweaver.greetings.dao.EventDAO;
 import com.solweaver.greetings.dao.UserDAO;
@@ -216,6 +217,27 @@ public class EventServiceImpl implements IEventService{
 		if(emailInviteeUserEventList != null){
 			event.setUserEventList(emailInviteeUserEventList);
 		}
+		
+		if(eventUpdateRequest.getEventDate() != null){
+			event.setEventDate(eventUpdateRequest.getEventDate());
+		}
+		
+		if(eventUpdateRequest.getEventDescription() != null){
+			event.setDescription(eventUpdateRequest.getEventDescription());
+		}
+		
+		if(eventUpdateRequest.getEventName() != null){
+			event.setEventName(eventUpdateRequest.getEventName());
+		}
+
+		if(eventUpdateRequest.getFromMessage() != null){
+			event.setFromMessage(eventUpdateRequest.getFromMessage());
+		}
+		
+		if(eventUpdateRequest.getVideoSubmissionDate() != null){
+			event.setVideoSubmissionDate(eventUpdateRequest.getVideoSubmissionDate());
+		}
+		
 		eventDAO.merge(event);
 		eventUpdateResponse.setEventID(event.getId());
 		
