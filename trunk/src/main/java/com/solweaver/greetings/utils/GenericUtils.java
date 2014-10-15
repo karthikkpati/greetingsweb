@@ -26,6 +26,10 @@ public class GenericUtils {
 	}
 	
 	public static void buildErrorDetail(BaseResponse baseResponse, GenericEnum genericEnum){
+		buildErrorDetail(baseResponse, genericEnum, null);
+	}
+	
+	public static void buildErrorDetail(BaseResponse baseResponse, GenericEnum genericEnum, String message){
 		
 		List<ErrorDetail> errorDetailList = baseResponse.getErrorDetailList();
 		if(errorDetailList == null){
@@ -33,7 +37,11 @@ public class GenericUtils {
 		}
 		ErrorDetail errorDetail = new ErrorDetail();
 		errorDetail.setCode(genericEnum.code);
-		errorDetail.setMessage(genericEnum.message);
+		if(message != null){
+			errorDetail.setMessage(message);
+		}else{
+			errorDetail.setMessage(genericEnum.message);
+		}
 		errorDetailList.add(errorDetail);
 		baseResponse.setErrorDetailList(errorDetailList);
 	}

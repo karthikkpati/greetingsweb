@@ -1,7 +1,9 @@
 package com.solweaver.greetings.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,9 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.solweaver.greetings.dao.EventDAO;
 import com.solweaver.greetings.dao.UserDAO;
+import com.solweaver.greetings.dao.UserEventDAO;
 import com.solweaver.greetings.dto.EventCreationRequest;
 import com.solweaver.greetings.dto.EventCreationResponse;
 import com.solweaver.greetings.dto.EventDTO;
+import com.solweaver.greetings.dto.EventUpdateRequest;
+import com.solweaver.greetings.dto.EventUpdateResponse;
 import com.solweaver.greetings.dto.GenericEnum;
 import com.solweaver.greetings.dto.GetEventRequest;
 import com.solweaver.greetings.dto.GetEventResponse;
@@ -34,6 +39,9 @@ public class EventServiceImpl implements IEventService{
 	
 	@Autowired
 	private UserDAO userDAO;
+	
+	@Autowired
+	private UserEventDAO userEventDAO;
 	
 	@Override
 	@Transactional
@@ -123,5 +131,95 @@ public class EventServiceImpl implements IEventService{
 		getEventResponse.setEventDTOList(eventDTOList);
 		GenericUtils.buildErrorDetail(getEventResponse, GenericEnum.Success);
 		return getEventResponse;
+	}
+
+	@Override
+	@Transactional
+	public EventUpdateResponse updateEvent(EventUpdateRequest eventUpdateRequest) {
+		EventUpdateResponse eventUpdateResponse = new EventUpdateResponse();
+		User user = userDAO.findById(eventUpdateRequest.getUserId(), false);
+		if(user == null || !user.getUserStatus().equals(UserStatus.Active)){
+			GenericUtils.buildErrorDetail(eventUpdateResponse, GenericEnum.INVALID_USER);
+			return eventUpdateResponse;
+		}
+
+		Event event = eventDAO.findByEventAndUserId(eventUpdateRequest.getEventId(), eventUpdateRequest.getUserId());
+		
+		if(event == null){
+			GenericUtils.buildErrorDetail(eventUpdateResponse, GenericEnum.INVALID_EVENT);
+			return eventUpdateResponse;
+		}
+		
+		List<UserEvent> userEventList = event.getUserEventList();
+		Map<Long, User> userEventMap = null;
+		UserEvent recipieUserEvent = null;
+		if(userEventList != null && userEventList.size() > 0){
+			userEventMap= new HashMap<Long, User>();
+			for(UserEvent userEvent : userEventList){
+				User eventUser = userEvent.getUser();
+				userEventMap.put(eventUser .getId(), eventUser);
+				if(userEvent.getInviteStatus().equals(UserEventType.RECIPIENT)){
+					recipieUserEvent = userEvent;
+				}
+			}
+		}
+		List<String> emailInviteeList = eventUpdateRequest.getEmailInviteeList();
+		List<UserEvent> emailInviteeUserEventList = event.getUserEventList();;
+		
+		if(emailInviteeUserEventList == null){
+			emailInviteeUserEventList = new ArrayList<UserEvent>();
+		}
+		
+		if(emailInviteeList != null && !emailInviteeList.isEmpty()){
+			for(String emailInvitee : emailInviteeList){
+				User emailInviteeUser = userDAO.findExistingUserByEmail(emailInvitee);
+				if(emailInviteeUser == null){
+					emailInviteeUser = new User();
+					emailInviteeUser.setEmail(emailInvitee);
+					emailInviteeUser.setUserStatus(UserStatus.InActive);
+					userDAO.makePersistent(emailInviteeUser);
+				}else{
+					if(userEventMap.get(emailInviteeUser.getId()) != null){
+						GenericUtils.buildErrorDetail(eventUpdateResponse, GenericEnum.USER_EVENT_EXISTS, emailInviteeUser.getEmail()+" "+GenericEnum.USER_EVENT_EXISTS.message);
+						return eventUpdateResponse;
+					}
+				}
+				
+				UserEvent userEvent = EntityDtoUtils.getUserEvent(emailInviteeUser, event, InviteStatus.Pending, UserEventType.Invitee);
+				emailInviteeUserEventList.add(userEvent);
+			}
+		}
+		
+		if(eventUpdateRequest.getReceiverEmail() != null){
+			User recipientUser = event.getRecipientUser();
+			
+			if(recipientUser == null || !recipientUser.getEmail().equals(eventUpdateRequest.getReceiverEmail())){
+				User newRecipientUser = userDAO.findExistingUserByEmail(eventUpdateRequest.getReceiverEmail());
+				if(recipientUser == null){
+					recipientUser = new User();
+					recipientUser.setEmail(eventUpdateRequest.getReceiverEmail());
+					recipientUser.setUserStatus(UserStatus.InActive);
+					userDAO.makePersistent(recipientUser);
+				}
+				
+				UserEvent newRecipientUserEvent = EntityDtoUtils.getUserEvent(recipientUser, event, InviteStatus.Pending, UserEventType.RECIPIENT);
+				emailInviteeUserEventList.add(newRecipientUserEvent);
+				
+				if(recipieUserEvent != null && recipientUser != null && !recipientUser.getEmail().equals(eventUpdateRequest.getReceiverEmail())){
+					userEventDAO.makeTransient(recipieUserEvent);
+					emailInviteeUserEventList.remove(recipieUserEvent);
+				}
+				event.setRecipientUser(newRecipientUser);
+			}
+		}
+		
+		if(emailInviteeUserEventList != null){
+			event.setUserEventList(emailInviteeUserEventList);
+		}
+		eventDAO.merge(event);
+		eventUpdateResponse.setEventID(event.getId());
+		
+		GenericUtils.buildErrorDetail(eventUpdateResponse, GenericEnum.Success);
+		return eventUpdateResponse;
 	}
 }

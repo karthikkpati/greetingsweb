@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.solweaver.greetings.dto.EventCreationRequest;
 import com.solweaver.greetings.dto.EventCreationResponse;
+import com.solweaver.greetings.dto.EventUpdateRequest;
+import com.solweaver.greetings.dto.EventUpdateResponse;
 import com.solweaver.greetings.dto.GetEventRequest;
 import com.solweaver.greetings.dto.GetEventResponse;
 import com.solweaver.greetings.model.Channel;
@@ -64,7 +66,11 @@ public class EventController {
 		eventCreationRequest.setVideoSubmissionDate(new Date());
 		return eventCreationRequest;
 	}
-	
+
+	@RequestMapping(value="/event/update", method=RequestMethod.POST)
+	public @ResponseBody EventUpdateResponse updateEvent(@Valid @RequestBody EventUpdateRequest eventUpdateRequest) throws IOException{
+		return eventService.updateEvent(eventUpdateRequest);
+	}
 
 }
 
