@@ -5,5 +5,6 @@ public enum UserEventType {
 	Invitee,
 	Inviter,
 	Event,
-	All, RECIPIENT
+	All, RECIPIENT,
+	Removed
 }
