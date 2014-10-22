@@ -61,7 +61,7 @@ public class XugglerMediaUtils {
 					convertVideo.run();
 					
 					//flvFiles[i] = formattedFile;
-					converToFlv(videoDTO.getFormattedFile(), formattedFile);
+					convertVideoFormat(videoDTO.getFormattedFile(), formattedFile);
 				}
 			}else{
 				//formattedFile = inputFile;
@@ -96,6 +96,8 @@ public class XugglerMediaUtils {
 		
 		outputFileName = outputFolderName + outputFileName;
 		
+		System.out.println("Output file name is "+outputFileName);
+		
 		IMediaWriter mediaWriter =	ToolFactory.makeWriter(outputFileName, mediaReader);
 
 		IMediaTool imageMediaTool = new StaticImageMediaTool(makeVideoRequest.getOverlayImage(), makeVideoRequest.getEmbeddedImageMinWidth(), makeVideoRequest.getEmbeddedImageMaxWidth(),
@@ -115,6 +117,21 @@ public class XugglerMediaUtils {
 
 		while (mediaReader.readPacket() == null);
 
+		/*mediaReader.setCloseOnEofOnly(false); 
+		mediaWriter.setForceInterleave(false);*/ 
+
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//mediaWriter.close();
+		String mp4OutputFile = outputFileName.substring(0, outputFileName.indexOf(".")) + ".mp4";
+		System.out.println(mp4OutputFile);
+	
+		convertVideoFormat(outputFileName, mp4OutputFile);
 		Date endDate = new Date();
 		System.out.println("End Date is "+endDate);
 	}
@@ -127,8 +144,8 @@ public class XugglerMediaUtils {
 	   final int videoStreamIndex = 0;
 	   final int videoStreamId = 0;
 
-	   final int width = 369;
-	   final int height = 221;
+	   final int width = 400;
+	   final int height = 240;
 	   
 	   //audio parameters
 	      
@@ -176,8 +193,8 @@ public class XugglerMediaUtils {
 	   final int videoStreamIndex = 0;
 	   final int videoStreamId = 0;
 
-	   final int width = 369;
-	   final int height = 221;
+	   final int width = 400;
+	   final int height = 240;
 	   
 	   //audio parameters
 	      
@@ -237,7 +254,7 @@ public class XugglerMediaUtils {
 	   writer.close(); 
 	   System.out.println("finished merging");
 	  }
-	 public static boolean converToFlv(String inputFileName, String outputFileName){
+	 public static boolean convertVideoFormat(String inputFileName, String outputFileName){
 		try{
 			IMediaReader mediaReader = ToolFactory.makeReader(inputFileName);
 			IMediaWriter mediaWriter = ToolFactory.makeWriter(outputFileName, mediaReader);

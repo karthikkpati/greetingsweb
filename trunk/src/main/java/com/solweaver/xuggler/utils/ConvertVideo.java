@@ -19,8 +19,8 @@ import com.xuggle.xuggler.IVideoPicture;
 import com.xuggle.xuggler.IVideoResampler;
 
 public class ConvertVideo extends MediaToolAdapter implements Runnable {
-	 private int VIDEO_WIDTH = 369;
-	 private int VIDEO_HEIGHT = 221;
+	 private int VIDEO_WIDTH = 400;
+	 private int VIDEO_HEIGHT = 240;
 	 
 	 private IMediaWriter writer;
 	 private IMediaReader reader;
