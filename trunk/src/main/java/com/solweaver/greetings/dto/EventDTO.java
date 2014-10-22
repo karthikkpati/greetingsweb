@@ -5,6 +5,8 @@ import java.util.List;
 
 public class EventDTO {
 
+	private Long eventId;
+	
 	private Long userId;
 	
 	private String eventName;
@@ -143,4 +145,11 @@ public class EventDTO {
 		this.userEventDTOList = userEventDTOList;
 	}
 
+	public Long getEventId() {
+		return eventId;
+	}
+
+	public void setEventId(Long eventId) {
+		this.eventId = eventId;
+	}
 }
