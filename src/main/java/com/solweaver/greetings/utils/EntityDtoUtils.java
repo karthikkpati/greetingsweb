@@ -67,7 +67,9 @@ public class EntityDtoUtils {
 		if(eventList != null && eventList.size() > 0){
 			eventDTOList = new ArrayList<EventDTO>();
 			for(Event event:eventList){
-				eventDTOList.add(getEventDTO(event, isUserEvent));
+				EventDTO eventDTO = getEventDTO(event, isUserEvent);
+				eventDTO.setEventId(event.getId());
+				eventDTOList.add(eventDTO);
 			}
 		}
 		return eventDTOList;
