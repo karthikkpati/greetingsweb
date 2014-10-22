@@ -17,6 +17,7 @@
 		<mapping class="com.solweaver.greetings.model.User"/>
 		<mapping class="com.solweaver.greetings.model.Event"/>
 		<mapping class="com.solweaver.greetings.model.UserEvent"/>
+		<mapping class="com.solweaver.greetings.model.Theme"/>
 		<!-- <mapping class="com.solweaver.greetings.entity.Event"/>
 		<mapping class="com.solweaver.greetings.entity.Country"/>
 		<mapping class="com.solweaver.greetings.entity.User"/>

@@ -22,14 +22,20 @@ import com.solweaver.greetings.dto.EventUpdateRequest;
 import com.solweaver.greetings.dto.EventUpdateResponse;
 import com.solweaver.greetings.dto.GetEventRequest;
 import com.solweaver.greetings.dto.GetEventResponse;
+import com.solweaver.greetings.dto.GetThemeRequest;
+import com.solweaver.greetings.dto.GetThemeResponse;
 import com.solweaver.greetings.model.Channel;
 import com.solweaver.greetings.service.IEventService;
+import com.solweaver.greetings.service.IThemeService;
 
 @Controller
 public class EventController {
 
 	@Autowired
 	private IEventService eventService;
+	
+	@Autowired
+	private IThemeService themeService;
 	
 	@RequestMapping(value="/event/create", method=RequestMethod.POST)
 	public @ResponseBody EventCreationResponse createEvent(@Valid @RequestBody EventCreationRequest eventCreationRequest) throws IOException{
@@ -79,5 +85,9 @@ public class EventController {
 		return eventService.deleteEvent(eventDeleteRequest);
 	}
 
+	@RequestMapping(value="/getThemes", method=RequestMethod.POST)
+	public @ResponseBody GetThemeResponse getThemes(@Valid @RequestBody GetThemeRequest getThemeRequest) throws IOException{
+		return themeService.getThemes(getThemeRequest);
+	}
 }
 
