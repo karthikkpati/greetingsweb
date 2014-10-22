@@ -18,6 +18,7 @@
 	<annotation-driven /> 
 	
 	<context:annotation-config></context:annotation-config>
+	<default-servlet-handler/>
 	
 	 <context:component-scan base-package="com.solweaver">
 	 </context:component-scan>
@@ -56,7 +57,7 @@
 		 <beans:property name="driverClass" value="com.mysql.jdbc.Driver" />
       <beans:property name="jdbcUrl" value="jdbc:mysql://localhost:3306/greetings" />
       <beans:property name="username" value="root" />
-      <beans:property name="password" value="password" />  
+      <beans:property name="password" value="root" />  
 		<beans:property name="idleConnectionTestPeriodInMinutes" value="1" />
 		<beans:property name="idleMaxAgeInMinutes" value="4" />
 		<beans:property name="maxConnectionsPerPartition" value="2" />

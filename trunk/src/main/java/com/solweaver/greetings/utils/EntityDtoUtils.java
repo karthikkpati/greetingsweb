@@ -6,10 +6,12 @@ import java.util.List;
 
 import com.solweaver.greetings.dto.EventCreationRequest;
 import com.solweaver.greetings.dto.EventDTO;
+import com.solweaver.greetings.dto.ThemeDTO;
 import com.solweaver.greetings.dto.UserDTO;
 import com.solweaver.greetings.dto.UserEventDTO;
 import com.solweaver.greetings.model.Event;
 import com.solweaver.greetings.model.InviteStatus;
+import com.solweaver.greetings.model.Theme;
 import com.solweaver.greetings.model.User;
 import com.solweaver.greetings.model.UserEvent;
 import com.solweaver.greetings.model.UserEventType;
@@ -118,5 +120,25 @@ public class EntityDtoUtils {
 		userEventDTO.setUserEventID(userEvent.getId());
 		userEventDTO.setUserEventType(userEvent.getUserEventType().name());
 		return userEventDTO;
+	}
+	
+	public static ThemeDTO getThemeDTO(Theme theme){
+		ThemeDTO themeDTO = new ThemeDTO();
+		themeDTO.setDescription(theme.getDescription());
+		themeDTO.setPath(theme.getPath());
+		themeDTO.setThemeId(theme.getId());
+		themeDTO.setThemeName(theme.getThemeName());
+		return themeDTO;
+	}
+	
+	public static List<ThemeDTO> getThemeDTOList(List<Theme> themesList){
+		List<ThemeDTO> themeDTOList = null;
+		if(themesList != null){
+			themeDTOList = new ArrayList<ThemeDTO>();
+			for(Theme theme : themesList){
+				themeDTOList.add(getThemeDTO(theme));
+			}
+		}
+		return themeDTOList;
 	}
 }
