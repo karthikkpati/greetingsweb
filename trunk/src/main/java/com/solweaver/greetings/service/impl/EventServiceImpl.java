@@ -16,6 +16,8 @@ import com.solweaver.greetings.dao.UserEventDAO;
 import com.solweaver.greetings.dto.EventCreationRequest;
 import com.solweaver.greetings.dto.EventCreationResponse;
 import com.solweaver.greetings.dto.EventDTO;
+import com.solweaver.greetings.dto.EventDeleteRequest;
+import com.solweaver.greetings.dto.EventDeleteResponse;
 import com.solweaver.greetings.dto.EventUpdateRequest;
 import com.solweaver.greetings.dto.EventUpdateResponse;
 import com.solweaver.greetings.dto.GenericEnum;
@@ -243,5 +245,23 @@ public class EventServiceImpl implements IEventService{
 		
 		GenericUtils.buildErrorDetail(eventUpdateResponse, GenericEnum.Success);
 		return eventUpdateResponse;
+	}
+
+	@Override
+	@Transactional
+	public EventDeleteResponse deleteEvent(EventDeleteRequest eventDeleteRequest) {
+		EventDeleteResponse eventDeleteResponse = new EventDeleteResponse();
+		Event event = eventDAO.findByEventAndUserId(eventDeleteRequest.getEventId(), eventDeleteRequest.getUserId());
+
+		if(event != null){
+			event.setEventStatus(EventStatus.Deleted);
+			eventDAO.merge(event);
+		}else{
+			GenericUtils.buildErrorDetail(eventDeleteResponse, GenericEnum.INVALID_EVENT);
+			return eventDeleteResponse;
+		}
+		
+		GenericUtils.buildErrorDetail(eventDeleteResponse, GenericEnum.Success);
+		return eventDeleteResponse;
 	}
 }

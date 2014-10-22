@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.solweaver.greetings.dto.EventCreationRequest;
 import com.solweaver.greetings.dto.EventCreationResponse;
+import com.solweaver.greetings.dto.EventDeleteRequest;
+import com.solweaver.greetings.dto.EventDeleteResponse;
 import com.solweaver.greetings.dto.EventUpdateRequest;
 import com.solweaver.greetings.dto.EventUpdateResponse;
 import com.solweaver.greetings.dto.GetEventRequest;
@@ -70,6 +72,11 @@ public class EventController {
 	@RequestMapping(value="/event/update", method=RequestMethod.POST)
 	public @ResponseBody EventUpdateResponse updateEvent(@Valid @RequestBody EventUpdateRequest eventUpdateRequest) throws IOException{
 		return eventService.updateEvent(eventUpdateRequest);
+	}
+
+	@RequestMapping(value="/event/delete", method=RequestMethod.POST)
+	public @ResponseBody EventDeleteResponse deleteEvent(@Valid @RequestBody EventDeleteRequest eventDeleteRequest) throws IOException{
+		return eventService.deleteEvent(eventDeleteRequest);
 	}
 
 }
