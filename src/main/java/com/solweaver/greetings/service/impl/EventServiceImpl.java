@@ -8,7 +8,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import com.solweaver.greetings.dao.EventDAO;
 import com.solweaver.greetings.dao.UserDAO;
@@ -263,5 +262,11 @@ public class EventServiceImpl implements IEventService{
 		
 		GenericUtils.buildErrorDetail(eventDeleteResponse, GenericEnum.Success);
 		return eventDeleteResponse;
+	}
+
+	@Override
+	@Transactional
+	public UserEvent getUserEvent(Long userId, Long eventId) {
+		return userEventDAO.findByUserAndEvent(userId, eventId);
 	}
 }
