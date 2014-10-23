@@ -19,11 +19,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.solweaver.greetings.dto.DownloadVideoRequest;
+import com.solweaver.greetings.dto.DownloadVideoResponse;
+import com.solweaver.greetings.dto.GenericEnum;
 import com.solweaver.greetings.dto.MakeVideoRequest;
+import com.solweaver.greetings.dto.MakeVideoResponse;
 import com.solweaver.greetings.dto.VideoDTO;
 import com.solweaver.greetings.dto.VideoUploadRequest;
 import com.solweaver.greetings.dto.VideoUploadResponse;
+import com.solweaver.greetings.model.UserEvent;
+import com.solweaver.greetings.service.IEventService;
 import com.solweaver.greetings.service.IVideoService;
+import com.solweaver.greetings.utils.GenericUtils;
 import com.solweaver.xuggler.utils.XugglerMediaUtils;
 
 @Controller
@@ -31,6 +38,9 @@ public class VideoController {
 
 	@Autowired
 	private IVideoService videoService;
+
+	@Autowired
+	private IEventService eventService;
 	
 	public static final String EVENTS_FOLDER = "c:/karthik/junk/grite/";
 	@RequestMapping(value="/hello")
@@ -46,12 +56,12 @@ public class VideoController {
 	}
 	
 	@RequestMapping(value="/makeGreeting", method=RequestMethod.POST)
-	public @ResponseBody String makeGreetingWithEvent(@RequestBody MakeVideoRequest makeVideoRequest,
+	public @ResponseBody MakeVideoResponse makeGreetingWithEvent(@RequestBody MakeVideoRequest makeVideoRequest,
 			HttpServletRequest request, 
 			HttpServletResponse response) throws IOException{
 		
-		String eventIdStr = makeVideoRequest.getEventId();
-		Long eventId = Long.valueOf(eventIdStr);
+		MakeVideoResponse makeVideoResponse = videoService.makeGreeting(makeVideoRequest);
+		/*Long eventId = Long.valueOf(makeVideoRequest.getEventId());
 		
 		String eventUploadFolderName = EVENTS_FOLDER+eventId+"/upload/";
 		File eventOutputFolder = new File(eventUploadFolderName);
@@ -73,8 +83,10 @@ public class VideoController {
 		XugglerMediaUtils.mergeVideos(makeVideoRequest);
 		
 		String requestUrl = request.getScheme()+"://"+request.getServerName()+request.getContextPath()+"/download?eventId="+makeVideoRequest.getEventId();
-		
-		return requestUrl;
+	
+		String requestUrl = request.getScheme()+"://"+request.getServerName()+request.getContextPath()+"/download?eventId="+makeVideoRequest.getEventId();
+		makeVideoResponse.setOutputVideo(requestUrl);*/	
+		return makeVideoResponse;
 	}
 	
 	@RequestMapping(value="/makeGreeting1", method=RequestMethod.POST)
@@ -82,7 +94,7 @@ public class VideoController {
 		MakeVideoRequest makeVideoRequest = new MakeVideoRequest();
 		makeVideoRequest.setOverlayImage("c:/karthik/junk/grite/Birthday.jpg");
 		makeVideoRequest.setOutputFileName("myvideo1.flv");
-		makeVideoRequest.setEventId("1");
+		makeVideoRequest.setEventId(1L);
 		VideoDTO[] videoDTOs = new VideoDTO[2];
 		VideoDTO videoDTO = new VideoDTO();
 		VideoDTO videoDTO1 = new VideoDTO();
@@ -117,7 +129,6 @@ public class VideoController {
 			@RequestParam("userId") Long userId,
 			HttpServletRequest request, 
 			HttpServletResponse response) throws IOException{
-		
 		VideoUploadRequest videoUploadRequest = new VideoUploadRequest();
 		videoUploadRequest.setEventId(eventId);
 		videoUploadRequest.setUserId(userId);
@@ -126,16 +137,20 @@ public class VideoController {
 		return videoService.uploadVideo(videoUploadRequest, inputStream, fileName);
 	}
 	
-	@RequestMapping(value="/download", method=RequestMethod.GET)
-	public void downloadVideo(
+	@RequestMapping(value="/downloadRequest", method=RequestMethod.POST)
+	public void downloadVideoFromRequest(
 			Model model,
-			@RequestParam("eventId") String eventId,
+			@RequestBody DownloadVideoRequest downloadVideoRequest,
+			/*@RequestParam("eventId") String eventId,*/
 			HttpServletRequest request, 
 			HttpServletResponse response) throws IOException{
-		
 		String fileName = null;
-		
-		String outputFolderName = EVENTS_FOLDER+eventId+"/output/";
+		DownloadVideoResponse downloadVideoResponse = new DownloadVideoResponse();
+		videoService.validateEventUser(downloadVideoRequest.getEventId(), downloadVideoRequest.getUserId(), downloadVideoResponse);
+		if(!GenericUtils.isSuccess(downloadVideoResponse.getErrorDetailList())){
+			throw new RuntimeException(downloadVideoResponse.getErrorDetailList().get(0).getMessage());
+		}
+		String outputFolderName = EVENTS_FOLDER+downloadVideoRequest.getEventId()+"/output/";
 		File outputFolder = new File(outputFolderName);
 		if(outputFolder.isDirectory()){
 			String[] fileList = outputFolder.list();
@@ -153,8 +168,92 @@ public class VideoController {
 			fileIn.close();
 			out.flush();
 			out.close();
-			
+		}
+	}
+	
+	@RequestMapping(value="/downloadFinal", method=RequestMethod.GET)
+	public void downloadFinalVideo(
+			Model model,
+			@RequestParam("eventId") Long eventId,
+			@RequestParam("userId") Long userId,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws IOException{
+		
+		String fileName = null;
+		
+		DownloadVideoResponse downloadVideoResponse = new DownloadVideoResponse();
+		
+		UserEvent userEvent = eventService.getUserEvent(userId, eventId);
+		if(userEvent == null){
+			GenericUtils.buildErrorDetail(downloadVideoResponse, GenericEnum.INVALID_USER_EVENT);
+			throw new RuntimeException(downloadVideoResponse.getErrorDetailList().get(0).getMessage());
 		}
 
+		String outputFolderName = EVENTS_FOLDER+eventId+"/output/";
+		File outputFolder = new File(outputFolderName);
+		if(outputFolder.isDirectory()){
+			String[] fileList = outputFolder.list();
+			if(fileList.length <= 0){
+				GenericUtils.buildErrorDetail(downloadVideoResponse, GenericEnum.EVENT_IN_PROGRESS);
+				throw new RuntimeException(downloadVideoResponse.getErrorDetailList().get(0).getMessage());
+			}
+			response.setContentType("application/octet-stream");
+			for(String fileStr : fileList){
+				if(fileStr.endsWith(".mp4")){
+					fileName = fileStr;
+				}
+			}
+			response.setHeader("Content-Disposition","attachment;filename="+fileName);
+
+			File file = new File(outputFolderName+fileName);
+			FileInputStream fileIn = new FileInputStream(file);
+			ServletOutputStream out = response.getOutputStream();
+			byte[] outputByte = new byte[4096];
+			while(fileIn.read(outputByte, 0, 4096) != -1) {
+				out.write(outputByte, 0, 4096);
+			}
+			fileIn.close();
+			out.flush();
+			out.close();
+		}
+	}
+	
+	@RequestMapping(value="/download", method=RequestMethod.GET)
+	public void downloadVideo(
+			Model model,
+			@RequestParam("eventId") Long eventId,
+			@RequestParam("userId") Long userId,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws IOException{
+		
+		String fileName = null;
+		
+		DownloadVideoResponse downloadVideoResponse = new DownloadVideoResponse();
+		
+		UserEvent userEvent = eventService.getUserEvent(userId, eventId);
+		if(userEvent == null){
+			GenericUtils.buildErrorDetail(downloadVideoResponse, GenericEnum.INVALID_USER_EVENT);
+			throw new RuntimeException(downloadVideoResponse.getErrorDetailList().get(0).getMessage());
+		}
+
+		String outputFolderName = EVENTS_FOLDER+eventId+"/upload/";
+		File outputFolder = new File(outputFolderName);
+		if(outputFolder.isDirectory()){
+			String userRecordedFile = userEvent.getRecordedLink();
+			fileName = userRecordedFile.substring(userRecordedFile.indexOf("_")+1, userRecordedFile.length());
+			File outputFile = new File(outputFolderName+userRecordedFile);
+			response.setContentType("application/octet-stream");
+			response.setHeader("Content-Disposition","attachment;filename="+fileName);
+
+			FileInputStream fileIn = new FileInputStream(outputFile);
+			ServletOutputStream out = response.getOutputStream();
+			byte[] outputByte = new byte[4096];
+			while(fileIn.read(outputByte, 0, 4096) != -1) {
+				out.write(outputByte, 0, 4096);
+			}
+			fileIn.close();
+			out.flush();
+			out.close();
+		}
 	}
 }

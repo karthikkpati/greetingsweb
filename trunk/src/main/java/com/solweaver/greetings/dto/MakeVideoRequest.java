@@ -1,6 +1,7 @@
 package com.solweaver.greetings.dto;
 
-import java.util.List;
+import javax.validation.constraints.NotNull;
+
 
 
 public class MakeVideoRequest {
@@ -13,7 +14,10 @@ public class MakeVideoRequest {
 	private int embeddedImageMaxWidth;
 	private int embeddedImageMinHeight;
 	private int embeddedImageMaxHeight;
-	private String eventId;
+	@NotNull(message="Event Id cannot be null")
+	private Long eventId;
+	@NotNull(message="User Id cannot be null")
+	private Long userId;
 	/*public String[] getInputFiles() {
 		return inputFiles;
 	}
@@ -56,10 +60,10 @@ public class MakeVideoRequest {
 	public void setEmbeddedImageMaxHeight(int embeddedImageMaxHeight) {
 		this.embeddedImageMaxHeight = embeddedImageMaxHeight;
 	}
-	public String getEventId() {
+	public Long getEventId() {
 		return eventId;
 	}
-	public void setEventId(String eventId) {
+	public void setEventId(Long eventId) {
 		this.eventId = eventId;
 	}
 	public VideoDTO[] getVideoDTOList() {
@@ -67,6 +71,12 @@ public class MakeVideoRequest {
 	}
 	public void setVideoDTOList(VideoDTO[] videoDTOList) {
 		this.videoDTOList = videoDTOList;
+	}
+	public Long getUserId() {
+		return userId;
+	}
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 	
 }

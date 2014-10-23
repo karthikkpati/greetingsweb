@@ -8,6 +8,7 @@ import com.solweaver.greetings.dto.EventUpdateRequest;
 import com.solweaver.greetings.dto.EventUpdateResponse;
 import com.solweaver.greetings.dto.GetEventRequest;
 import com.solweaver.greetings.dto.GetEventResponse;
+import com.solweaver.greetings.model.UserEvent;
 
 
 public interface IEventService {
@@ -19,4 +20,6 @@ public interface IEventService {
 	public EventUpdateResponse updateEvent(EventUpdateRequest eventUpdateRequest);
 
 	public EventDeleteResponse deleteEvent(EventDeleteRequest eventDeleteRequest);
+
+	public UserEvent getUserEvent(Long userId, Long eventId);
 }
