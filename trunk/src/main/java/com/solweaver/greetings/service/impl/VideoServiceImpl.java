@@ -89,7 +89,7 @@ public class VideoServiceImpl implements IVideoService{
 			outputFolder.mkdirs();
 		}
 		
-		fileName = Calendar.getInstance().getTimeInMillis() + "_" + fileName;
+		fileName = userEvent.getId() + "_" + fileName;
 		String outputFileName = outputFolderName+ fileName;
 		
 		FileOutputStream fos;

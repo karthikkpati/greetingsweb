@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -223,10 +224,9 @@ public class VideoController {
 			Model model,
 			@RequestParam("eventId") Long eventId,
 			@RequestParam("userId") Long userId,
+			@RequestParam(value="fileName",required=false) String fileName,
 			HttpServletRequest request, 
 			HttpServletResponse response) throws IOException{
-		
-		String fileName = null;
 		
 		DownloadVideoResponse downloadVideoResponse = new DownloadVideoResponse();
 		
@@ -239,9 +239,10 @@ public class VideoController {
 		String outputFolderName = EVENTS_FOLDER+eventId+"/upload/";
 		File outputFolder = new File(outputFolderName);
 		if(outputFolder.isDirectory()){
-			String userRecordedFile = userEvent.getRecordedLink();
-			fileName = userRecordedFile.substring(userRecordedFile.indexOf("_")+1, userRecordedFile.length());
-			File outputFile = new File(outputFolderName+userRecordedFile);
+			if(fileName == null || fileName.isEmpty()){
+				fileName = userEvent.getRecordedLink();
+			}
+			File outputFile = new File(outputFolderName+fileName);
 			response.setContentType("application/octet-stream");
 			response.setHeader("Content-Disposition","attachment;filename="+fileName);
 
