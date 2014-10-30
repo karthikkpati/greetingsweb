@@ -118,7 +118,7 @@ public class EntityDtoUtils {
 		userEventDTO.setUserDTO(getUserDTO(userEvent.getUser()));
 		/*userEventDTO.setInviteeLink(userEvent.getInviteeLink());*/
 		userEventDTO.setInviteStatus(userEvent.getInviteStatus().name());
-		String userEventRecordedLink = recordedLink + "fileName="+userEvent.getInviteeLink()+"&eventId="+userEvent.getEvent().getId();
+		String userEventRecordedLink = recordedLink + "fileName="+userEvent.getRecordedLink()+"&eventId="+userEvent.getEvent().getId();
 		userEventDTO.setRecordedLink(userEventRecordedLink);
 		userEventDTO.setUserEventID(userEvent.getId());
 		userEventDTO.setUserEventType(userEvent.getUserEventType().name());
