@@ -1,9 +1,13 @@
 package com.solweaver.greetings.service;
 
+import com.solweaver.greetings.dto.BaseResponse;
 import com.solweaver.greetings.dto.EventCreationRequest;
 import com.solweaver.greetings.dto.EventCreationResponse;
 import com.solweaver.greetings.dto.EventDeleteRequest;
 import com.solweaver.greetings.dto.EventDeleteResponse;
+import com.solweaver.greetings.dto.EventReminderRequest;
+import com.solweaver.greetings.dto.EventReminderResponse;
+import com.solweaver.greetings.dto.EventRespondRequest;
 import com.solweaver.greetings.dto.EventUpdateRequest;
 import com.solweaver.greetings.dto.EventUpdateResponse;
 import com.solweaver.greetings.dto.GetEventRequest;
@@ -22,4 +26,11 @@ public interface IEventService {
 	public EventDeleteResponse deleteEvent(EventDeleteRequest eventDeleteRequest);
 
 	public UserEvent getUserEvent(Long userId, Long eventId);
+
+	public EventReminderResponse remind(EventReminderRequest eventReminderRequest);
+
+	public GetEventResponse getEventDetails(GetEventRequest getEventRequest);
+
+	public BaseResponse respondEvent(
+			EventRespondRequest eventRespondRequest);
 }

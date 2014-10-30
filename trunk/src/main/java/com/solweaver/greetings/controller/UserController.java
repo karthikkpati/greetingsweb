@@ -2,6 +2,8 @@ package com.solweaver.greetings.controller;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -12,11 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.solweaver.greetings.dto.GenericEnum;
 import com.solweaver.greetings.dto.LoginRequest;
 import com.solweaver.greetings.dto.LoginResponse;
 import com.solweaver.greetings.dto.UserRegistrationRequest;
 import com.solweaver.greetings.dto.UserRegistrationResponse;
 import com.solweaver.greetings.service.IUserService;
+import com.solweaver.greetings.service.IVelocityService;
+import com.solweaver.greetings.utils.GenericUtils;
 
 @Controller
 public class UserController {
@@ -24,9 +29,26 @@ public class UserController {
 	@Autowired
 	private IUserService userService;
 	
+	@Autowired
+	private IVelocityService velocityService;
+	
 	@RequestMapping(value="/register", method=RequestMethod.POST)
 	public @ResponseBody UserRegistrationResponse registerUser(@Valid @RequestBody UserRegistrationRequest userRegistrationRequest) throws IOException{
-		return userService.createUserIfNotExists(userRegistrationRequest);
+		UserRegistrationResponse userRegistrationResponse = userService.createUserIfNotExists(userRegistrationRequest);
+		
+		if(GenericUtils.isSuccess(userRegistrationResponse)){
+			Map<String,Object> emailMap = new HashMap<String, Object>();
+			emailMap.put("firstname", userRegistrationRequest.getFirstName());
+			emailMap.put("lastname", userRegistrationRequest.getLastName());
+			emailMap.put("username", userRegistrationRequest.getEmail());
+			try {
+				velocityService.sendEmail(emailMap, "Registration", userRegistrationRequest.getEmail());
+			} catch (Exception e) {
+				e.printStackTrace();
+				GenericUtils.buildErrorDetail(userRegistrationResponse, GenericEnum.Success, "Unable to send Confirmation email");
+			}
+		}
+		return userRegistrationResponse;
 	}
 	
 	@RequestMapping(value="/login", method=RequestMethod.POST)

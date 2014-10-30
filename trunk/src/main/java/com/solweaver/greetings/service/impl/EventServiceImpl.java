@@ -1,6 +1,7 @@
 package com.solweaver.greetings.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,11 +13,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.solweaver.greetings.dao.EventDAO;
 import com.solweaver.greetings.dao.UserDAO;
 import com.solweaver.greetings.dao.UserEventDAO;
+import com.solweaver.greetings.dto.BaseResponse;
 import com.solweaver.greetings.dto.EventCreationRequest;
 import com.solweaver.greetings.dto.EventCreationResponse;
 import com.solweaver.greetings.dto.EventDTO;
 import com.solweaver.greetings.dto.EventDeleteRequest;
 import com.solweaver.greetings.dto.EventDeleteResponse;
+import com.solweaver.greetings.dto.EventReminderRequest;
+import com.solweaver.greetings.dto.EventReminderResponse;
+import com.solweaver.greetings.dto.EventRespondRequest;
 import com.solweaver.greetings.dto.EventUpdateRequest;
 import com.solweaver.greetings.dto.EventUpdateResponse;
 import com.solweaver.greetings.dto.GenericEnum;
@@ -30,12 +35,16 @@ import com.solweaver.greetings.model.UserEvent;
 import com.solweaver.greetings.model.UserEventType;
 import com.solweaver.greetings.model.UserStatus;
 import com.solweaver.greetings.service.IEventService;
+import com.solweaver.greetings.service.IVelocityService;
 import com.solweaver.greetings.utils.EntityDtoUtils;
 import com.solweaver.greetings.utils.GenericUtils;
 
 @Service
 public class EventServiceImpl implements IEventService{
 
+	@Autowired
+	private IVelocityService velocityService;
+	
 	@Autowired
 	private EventDAO eventDAO;
 	
@@ -268,5 +277,68 @@ public class EventServiceImpl implements IEventService{
 	@Transactional
 	public UserEvent getUserEvent(Long userId, Long eventId) {
 		return userEventDAO.findByUserAndEvent(userId, eventId);
+	}
+
+	@Override
+	@Transactional
+	public EventReminderResponse remind(
+			EventReminderRequest eventReminderRequest) {
+		EventReminderResponse eventReminderResponse = new EventReminderResponse();
+		UserEvent userEvent = userEventDAO.findByUserAndEvent(eventReminderRequest.getUserId(), eventReminderRequest.getEventId());
+		if(userEvent == null){
+			GenericUtils.buildErrorDetail(eventReminderResponse, GenericEnum.INVALID_USER_EVENT);
+			return eventReminderResponse;
+		}
+		
+		if(userEvent.getEvent().getEventDate().compareTo(new Date()) > 0){
+			Map<String,Object> eventReminderMap = new HashMap<String, Object>();
+			Event event = userEvent.getEvent();
+			List<UserEvent> userEventList = event.getUserEventList();
+		//	velocityService.sendEmail(eventReminderMap, "EventReminder", emailList);
+		}
+		return eventReminderResponse;
+	}
+
+	@Override
+	public GetEventResponse getEventDetails(GetEventRequest getEventRequest) {
+		GetEventResponse getEventResponse = new GetEventResponse();
+		
+		UserEvent userEvent = userEventDAO.findByUserAndEvent(getEventRequest.getUserId(), getEventRequest.getEventId());
+		if(userEvent == null){
+			GenericUtils.buildErrorDetail(getEventResponse, GenericEnum.INVALID_USER_EVENT);
+			return getEventResponse;
+		}
+		return null;
+	}
+
+	@Override
+	public BaseResponse respondEvent(
+			EventRespondRequest eventRespondRequest) {
+		BaseResponse getEventResponse = new BaseResponse();
+
+		UserEvent userEvent = userEventDAO.findByUserAndEvent(eventRespondRequest.getUserId(), eventRespondRequest.getEventId());
+		if(userEvent == null){
+			GenericUtils.buildErrorDetail(getEventResponse, GenericEnum.INVALID_USER_EVENT);
+			return getEventResponse;
+		}
+
+		InviteStatus inviteeStatus = null;
+		try{
+			inviteeStatus = InviteStatus.valueOf(eventRespondRequest.getInviteeStatus());
+		}catch(Exception exception){
+			GenericUtils.buildErrorDetail(getEventResponse, GenericEnum.INVALID_INVITEE_STATUS);
+			return getEventResponse;
+		}
+		
+		if(inviteeStatus.equals(InviteStatus.Accepted) || inviteeStatus.equals(InviteStatus.Rejected)){
+			userEvent.setInviteStatus(inviteeStatus);
+		}else{
+			GenericUtils.buildErrorDetail(getEventResponse, GenericEnum.INVALID_INVITEE_STATUS);
+			return getEventResponse;
+		}
+		
+		userEventDAO.merge(userEvent);
+		GenericUtils.buildErrorDetail(getEventResponse, GenericEnum.Success);
+		return getEventResponse;
 	}
 }
