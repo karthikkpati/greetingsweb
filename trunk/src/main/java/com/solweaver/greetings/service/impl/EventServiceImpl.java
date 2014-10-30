@@ -312,6 +312,7 @@ public class EventServiceImpl implements IEventService{
 	}
 
 	@Override
+	@Transactional
 	public BaseResponse respondEvent(
 			EventRespondRequest eventRespondRequest) {
 		BaseResponse getEventResponse = new BaseResponse();
