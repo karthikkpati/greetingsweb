@@ -62,4 +62,8 @@ public class EventDAO extends BaseDAO<Event, Long > {
 		return event;
 	}
 
+	public List<String> getInviteesEmail(Long eventId){
+		Criteria eventCriteria = getSession().createCriteria(UserEvent.class);
+		return null;
+	}
 }

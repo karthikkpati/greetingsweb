@@ -115,4 +115,33 @@
 	<beans:bean id="messageSource"
 		class="org.springframework.context.support.ResourceBundleMessageSource">
 	</beans:bean>
+	
+	<beans:bean id="velocityEngine"
+		class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+		<beans:property name="velocityProperties">
+			<beans:map>
+				<beans:entry key="resource.loader"><beans:value>ds</beans:value></beans:entry>
+				<beans:entry key="ds.resource.loader.instance">
+					<beans:ref bean="velocityTemplateLoader"/>
+				</beans:entry>
+				<beans:entry key="ds.resource.loader.resource.table">
+					<beans:value>EmailTemplate</beans:value>
+				</beans:entry>
+				<beans:entry key="ds.resource.loader.resource.keycolumn">
+					<beans:value>TemplateName</beans:value>
+				</beans:entry>
+				<beans:entry key="ds.resource.loader.resource.templatecolumn">
+					<beans:value>Content</beans:value>
+				</beans:entry>
+				<beans:entry key="ds.resource.loader.resource.timestampcolumn">
+					<beans:value>ModifiedTime</beans:value>
+				</beans:entry>
+			</beans:map>
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="velocityTemplateLoader"
+		class="org.apache.velocity.runtime.resource.loader.DataSourceResourceLoader">
+		<beans:property name="dataSource" ><beans:ref local="dataSource"/></beans:property>
+	</beans:bean>
 </beans:beans>

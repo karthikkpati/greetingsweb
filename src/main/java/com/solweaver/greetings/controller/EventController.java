@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.solweaver.greetings.dto.BaseResponse;
 import com.solweaver.greetings.dto.EventCreationRequest;
 import com.solweaver.greetings.dto.EventCreationResponse;
 import com.solweaver.greetings.dto.EventDeleteRequest;
 import com.solweaver.greetings.dto.EventDeleteResponse;
+import com.solweaver.greetings.dto.EventRespondRequest;
 import com.solweaver.greetings.dto.EventUpdateRequest;
 import com.solweaver.greetings.dto.EventUpdateResponse;
 import com.solweaver.greetings.dto.GetEventRequest;
@@ -45,6 +47,11 @@ public class EventController {
 	@RequestMapping(value="/event/viewAll", method=RequestMethod.POST)
 	public @ResponseBody GetEventResponse getEvents(@Valid @RequestBody GetEventRequest getEventRequest) throws IOException{
 		return eventService.getEvents(getEventRequest);
+	}
+	
+	@RequestMapping(value="/event/view", method=RequestMethod.POST)
+	public @ResponseBody GetEventResponse getEvent(@Valid @RequestBody GetEventRequest getEventRequest) throws IOException{
+		return eventService.getEventDetails(getEventRequest);
 	}
 	
 	@RequestMapping(value="/event/viewAll1", method=RequestMethod.GET)
@@ -84,10 +91,20 @@ public class EventController {
 	public @ResponseBody EventDeleteResponse deleteEvent(@Valid @RequestBody EventDeleteRequest eventDeleteRequest) throws IOException{
 		return eventService.deleteEvent(eventDeleteRequest);
 	}
+	
+	@RequestMapping(value="/event/respond", method=RequestMethod.POST)
+	public @ResponseBody BaseResponse respondEvent(@Valid @RequestBody EventRespondRequest eventRespondRequest) throws IOException{
+		return eventService.respondEvent(eventRespondRequest);
+	}
 
 	@RequestMapping(value="/getThemes", method=RequestMethod.POST)
 	public @ResponseBody GetThemeResponse getThemes(@Valid @RequestBody GetThemeRequest getThemeRequest) throws IOException{
 		return themeService.getThemes(getThemeRequest);
 	}
+	
+	/*@RequestMapping(value="/event/remind", method=RequestMethod.POST)
+	public @ResponseBody EventReminderRequest sendReminder(@Valid @RequestBody EventReminderRequest eventReminderRequest) throws IOException{
+		return eventService.remind(eventReminderRequest);
+	}*/
 }
 

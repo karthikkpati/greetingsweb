@@ -53,6 +53,10 @@ public class GenericUtils {
 		}
 		return result;
 	}
+	
+	public static boolean isSuccess(BaseResponse baseResponse){
+		return isSuccess(baseResponse.getErrorDetailList());
+	}
 
 	public static Date converToDate(String date) throws Exception{
 		
