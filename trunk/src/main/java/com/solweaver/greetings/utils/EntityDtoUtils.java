@@ -18,6 +18,8 @@ import com.solweaver.greetings.model.UserEventType;
 
 public class EntityDtoUtils {
 	
+	public static String recordedLink = "http://greetings.cloudapp.net/Greetings/download?";
+	
 	public static UserDTO getUserDTO(User user){
 		UserDTO userDTO = null;
 		if(user != null){
@@ -116,7 +118,8 @@ public class EntityDtoUtils {
 		userEventDTO.setUserDTO(getUserDTO(userEvent.getUser()));
 		/*userEventDTO.setInviteeLink(userEvent.getInviteeLink());*/
 		userEventDTO.setInviteStatus(userEvent.getInviteStatus().name());
-		userEventDTO.setRecordedLink(userEvent.getRecordedLink());
+		String userEventRecordedLink = recordedLink + "fileName="+userEvent.getInviteeLink()+"&eventId="+userEvent.getEvent().getId();
+		userEventDTO.setRecordedLink(userEventRecordedLink);
 		userEventDTO.setUserEventID(userEvent.getId());
 		userEventDTO.setUserEventType(userEvent.getUserEventType().name());
 		return userEventDTO;
