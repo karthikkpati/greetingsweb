@@ -73,6 +73,10 @@ public class EventServiceImpl implements IEventService{
 		if(emailInviteeList != null && !emailInviteeList.isEmpty()){
 			emailInviteeUserEventList = new ArrayList<UserEvent>();
 			for(String emailInvitee : emailInviteeList){
+				if(eventCreationRequest.getReceiverEmail() != null && eventCreationRequest.getReceiverEmail().equalsIgnoreCase(emailInvitee)){
+					GenericUtils.buildErrorDetail(eventCreationResponse, GenericEnum.INVALID_INVITEE_RECIPIENT);
+					return eventCreationResponse;
+				}
 				User emailInviteeUser = userDAO.findExistingUserByEmail(emailInvitee);
 				if(emailInviteeUser == null){
 					emailInviteeUser = new User();
@@ -183,6 +187,11 @@ public class EventServiceImpl implements IEventService{
 		
 		if(emailInviteeList != null && !emailInviteeList.isEmpty()){
 			for(String emailInvitee : emailInviteeList){
+				if((recipieUserEvent != null && recipieUserEvent.getUser().getEmail().equalsIgnoreCase(emailInvitee)) || 
+						(eventUpdateRequest.getReceiverEmail() != null && eventUpdateRequest.getReceiverEmail().equalsIgnoreCase(emailInvitee))){
+					GenericUtils.buildErrorDetail(eventUpdateResponse, GenericEnum.INVALID_INVITEE_RECIPIENT);
+					return eventUpdateResponse;
+				}
 				User emailInviteeUser = userDAO.findExistingUserByEmail(emailInvitee);
 				if(emailInviteeUser == null){
 					emailInviteeUser = new User();
