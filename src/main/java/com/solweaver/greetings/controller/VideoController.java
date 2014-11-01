@@ -257,4 +257,44 @@ public class VideoController {
 			out.close();
 		}
 	}
+	
+	@RequestMapping(value="/streamMp4", method=RequestMethod.GET)
+	public void streamMp4Video(
+			Model model,
+			@RequestParam("eventId") Long eventId,
+			@RequestParam("userId") Long userId,
+			@RequestParam(value="fileName",required=false) String fileName,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws IOException{
+		
+		DownloadVideoResponse downloadVideoResponse = new DownloadVideoResponse();
+		
+		UserEvent userEvent = eventService.getUserEvent(userId, eventId);
+		if(userEvent == null){
+			GenericUtils.buildErrorDetail(downloadVideoResponse, GenericEnum.INVALID_USER_EVENT);
+			throw new RuntimeException(downloadVideoResponse.getErrorDetailList().get(0).getMessage());
+		}
+
+		String outputFolderName = EVENTS_FOLDER+eventId+"/upload/";
+		File outputFolder = new File(outputFolderName);
+		if(outputFolder.isDirectory()){
+			if(fileName == null || fileName.isEmpty()){
+				fileName = userEvent.getRecordedLink();
+			}
+			File outputFile = new File(outputFolderName+fileName);
+			response.setContentType("video/mp4");
+			response.setHeader("Content-Disposition","inline; filename="+fileName);
+
+			FileInputStream fileIn = new FileInputStream(outputFile);
+			ServletOutputStream out = response.getOutputStream();
+			byte[] outputByte = new byte[4096];
+			while(fileIn.read(outputByte, 0, 4096) != -1) {
+				out.write(outputByte, 0, 4096);
+			}
+			fileIn.close();
+			out.flush();
+			out.close();
+		}
+	}
+	
 }
