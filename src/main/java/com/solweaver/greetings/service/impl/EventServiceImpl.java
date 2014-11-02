@@ -198,15 +198,15 @@ public class EventServiceImpl implements IEventService{
 					emailInviteeUser.setEmail(emailInvitee);
 					emailInviteeUser.setUserStatus(UserStatus.InActive);
 					userDAO.makePersistent(emailInviteeUser);
+					UserEvent userEvent = EntityDtoUtils.getUserEvent(emailInviteeUser, event, InviteStatus.Pending, UserEventType.Invitee);
+					emailInviteeUserEventList.add(userEvent);
 				}else{
 					if(userEventMap.get(emailInviteeUser.getId()) != null){
-						GenericUtils.buildErrorDetail(eventUpdateResponse, GenericEnum.USER_EVENT_EXISTS, emailInviteeUser.getEmail()+" "+GenericEnum.USER_EVENT_EXISTS.message);
-						return eventUpdateResponse;
+						/*GenericUtils.buildErrorDetail(eventUpdateResponse, GenericEnum.USER_EVENT_EXISTS, emailInviteeUser.getEmail()+" "+GenericEnum.USER_EVENT_EXISTS.message);
+						return eventUpdateResponse;*/
+						break;
 					}
 				}
-				
-				UserEvent userEvent = EntityDtoUtils.getUserEvent(emailInviteeUser, event, InviteStatus.Pending, UserEventType.Invitee);
-				emailInviteeUserEventList.add(userEvent);
 			}
 		}
 		
