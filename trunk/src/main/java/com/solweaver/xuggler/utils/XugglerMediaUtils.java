@@ -10,6 +10,7 @@ import java.util.Map;
 
 import com.solweaver.greetings.dto.MakeVideoRequest;
 import com.solweaver.greetings.dto.VideoDTO;
+import com.solweaver.greetings.model.Theme;
 import com.xuggle.mediatool.IMediaReader;
 import com.xuggle.mediatool.IMediaTool;
 import com.xuggle.mediatool.IMediaWriter;
@@ -21,7 +22,7 @@ public class XugglerMediaUtils {
 	
 	public static void mergeVideos(/*String eventId,String[] inputFiles, String outputFileName, String overlayImage,
 			int embeddedImageMinWidth, int embeddedImageMaxWidth,
-			int embeddedImageMinHeight, int embeddedImageMaxHeight*/MakeVideoRequest makeVideoRequest) throws IOException{
+			int embeddedImageMinHeight, int embeddedImageMaxHeight*/MakeVideoRequest makeVideoRequest, Theme theme) throws IOException{
 		Date startTime = new Date();
 		System.out.println("Start Date is "+startTime);
 		String eventFolder =  VIDEOFILESLOCN + makeVideoRequest.getEventId();
@@ -98,9 +99,14 @@ public class XugglerMediaUtils {
 		
 		System.out.println("Output file name is "+outputFileName);
 		
+		String overlayImage = makeVideoRequest.getOverlayImage();
+
+		if(theme != null){
+			overlayImage = theme.getPath();
+		}
 		IMediaWriter mediaWriter =	ToolFactory.makeWriter(outputFileName, mediaReader);
 
-		IMediaTool imageMediaTool = new StaticImageMediaTool(makeVideoRequest.getOverlayImage(), makeVideoRequest.getEmbeddedImageMinWidth(), makeVideoRequest.getEmbeddedImageMaxWidth(),
+		IMediaTool imageMediaTool = new StaticImageMediaTool(overlayImage, makeVideoRequest.getEmbeddedImageMinWidth(), makeVideoRequest.getEmbeddedImageMaxWidth(),
 				makeVideoRequest.getEmbeddedImageMinHeight(), makeVideoRequest.getEmbeddedImageMaxHeight());
 
 		IMediaTool audioVolumeMediaTool = new VolumeAdjustMediaTool(0.1);

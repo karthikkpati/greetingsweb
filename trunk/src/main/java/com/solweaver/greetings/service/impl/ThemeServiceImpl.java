@@ -1,6 +1,5 @@
 package com.solweaver.greetings.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import com.solweaver.greetings.dao.UserDAO;
 import com.solweaver.greetings.dto.GenericEnum;
 import com.solweaver.greetings.dto.GetThemeRequest;
 import com.solweaver.greetings.dto.GetThemeResponse;
-import com.solweaver.greetings.dto.ThemeDTO;
 import com.solweaver.greetings.model.Theme;
 import com.solweaver.greetings.model.User;
 import com.solweaver.greetings.service.IThemeService;
@@ -45,6 +43,12 @@ public class ThemeServiceImpl implements IThemeService {
 		GenericUtils.buildErrorDetail(getThemeResponse, GenericEnum.Success);
 
 		return getThemeResponse;
+	}
+
+	@Override
+	@Transactional
+	public Theme getTheme(Long themeId) {
+		return themeDAO.findById(themeId, false);
 	}
 
 }

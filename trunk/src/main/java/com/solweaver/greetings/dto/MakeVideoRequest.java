@@ -10,6 +10,7 @@ public class MakeVideoRequest {
 	private VideoDTO[] videoDTOList;
 	private String outputFileName;
 	private String overlayImage;
+	private Long themeId;
 	private int embeddedImageMinWidth;
 	private int embeddedImageMaxWidth;
 	private int embeddedImageMinHeight;
@@ -78,5 +79,10 @@ public class MakeVideoRequest {
 	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
-	
+	public Long getThemeId() {
+		return themeId;
+	}
+	public void setThemeId(Long themeId) {
+		this.themeId = themeId;
+	}
 }
