@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,8 +27,10 @@ import com.solweaver.greetings.dto.MakeVideoResponse;
 import com.solweaver.greetings.dto.VideoDTO;
 import com.solweaver.greetings.dto.VideoUploadRequest;
 import com.solweaver.greetings.dto.VideoUploadResponse;
+import com.solweaver.greetings.model.Theme;
 import com.solweaver.greetings.model.UserEvent;
 import com.solweaver.greetings.service.IEventService;
+import com.solweaver.greetings.service.IThemeService;
 import com.solweaver.greetings.service.IVideoService;
 import com.solweaver.greetings.utils.GenericUtils;
 import com.solweaver.xuggler.utils.XugglerMediaUtils;
@@ -43,6 +44,9 @@ public class VideoController {
 	@Autowired
 	private IEventService eventService;
 	
+	@Autowired
+	private IThemeService themeService;
+	
 	public static final String EVENTS_FOLDER = "c:/karthik/junk/grite/";
 	@RequestMapping(value="/hello")
 	public @ResponseBody String hello(){
@@ -51,8 +55,8 @@ public class VideoController {
 	
 	@RequestMapping(value="/makeGreetingWithFiles", method=RequestMethod.POST)
 	public @ResponseBody String makeGreeting(@RequestBody MakeVideoRequest makeVideoRequest) throws IOException{
-		
-		XugglerMediaUtils.mergeVideos(makeVideoRequest);
+		Theme theme = themeService.getTheme(makeVideoRequest.getThemeId());
+		XugglerMediaUtils.mergeVideos(makeVideoRequest, theme);
 		return makeVideoRequest.getOutputFileName();
 	}
 	
