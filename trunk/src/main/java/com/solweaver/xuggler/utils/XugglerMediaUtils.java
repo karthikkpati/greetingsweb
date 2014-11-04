@@ -102,7 +102,7 @@ public class XugglerMediaUtils {
 		String overlayImage = makeVideoRequest.getOverlayImage();
 
 		if(theme != null){
-			overlayImage = theme.getPath();
+			overlayImage = theme.getFileSystemPath();
 		}
 		IMediaWriter mediaWriter =	ToolFactory.makeWriter(outputFileName, mediaReader);
 
