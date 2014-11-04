@@ -68,10 +68,9 @@ public class EventServiceImpl implements IEventService{
 		Event event = EntityDtoUtils.getEvent(eventCreationRequest);
 		
 		List<String> emailInviteeList = eventCreationRequest.getEmailInviteeList();
-		List<UserEvent> emailInviteeUserEventList = null;
+		List<UserEvent> emailInviteeUserEventList = new ArrayList<UserEvent>();
 		
 		if(emailInviteeList != null && !emailInviteeList.isEmpty()){
-			emailInviteeUserEventList = new ArrayList<UserEvent>();
 			for(String emailInvitee : emailInviteeList){
 				if(eventCreationRequest.getReceiverEmail() != null && eventCreationRequest.getReceiverEmail().equalsIgnoreCase(emailInvitee)){
 					GenericUtils.buildErrorDetail(eventCreationResponse, GenericEnum.INVALID_INVITEE_RECIPIENT);
@@ -257,6 +256,7 @@ public class EventServiceImpl implements IEventService{
 			event.setVideoSubmissionDate(eventUpdateRequest.getVideoSubmissionDate());
 		}
 		
+		event.setEnableReminder(eventUpdateRequest.isEnableReminder());
 		eventDAO.merge(event);
 		eventUpdateResponse.setEventID(event.getId());
 		
