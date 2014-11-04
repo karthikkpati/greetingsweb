@@ -28,6 +28,8 @@ public class Theme extends BaseEntity{
 	private boolean active;
 	
 	private String path;
+	
+	private String fileSystemPath;
 
 	public Long getId() {
 		return id;
@@ -67,6 +69,14 @@ public class Theme extends BaseEntity{
 
 	public void setPath(String path) {
 		this.path = path;
+	}
+
+	public String getFileSystemPath() {
+		return fileSystemPath;
+	}
+
+	public void setFileSystemPath(String fileSystemPath) {
+		this.fileSystemPath = fileSystemPath;
 	}
 
 }
