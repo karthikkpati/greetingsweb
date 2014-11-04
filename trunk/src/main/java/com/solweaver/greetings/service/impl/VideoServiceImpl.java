@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Calendar;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.solweaver.greetings.dao.EventDAO;
+import com.solweaver.greetings.dao.ThemeDAO;
 import com.solweaver.greetings.dao.UserDAO;
 import com.solweaver.greetings.dao.UserEventDAO;
 import com.solweaver.greetings.dto.BaseResponse;
@@ -24,6 +24,7 @@ import com.solweaver.greetings.dto.VideoUploadRequest;
 import com.solweaver.greetings.dto.VideoUploadResponse;
 import com.solweaver.greetings.model.Event;
 import com.solweaver.greetings.model.EventStatus;
+import com.solweaver.greetings.model.Theme;
 import com.solweaver.greetings.model.User;
 import com.solweaver.greetings.model.UserEvent;
 import com.solweaver.greetings.service.IVideoService;
@@ -43,6 +44,9 @@ public class VideoServiceImpl implements IVideoService{
 
 	@Autowired
 	private UserEventDAO userEventDAO;
+	
+	@Autowired
+	private ThemeDAO themeDAO;
 	
 	@Override
 	@Transactional
@@ -145,7 +149,9 @@ public class VideoServiceImpl implements IVideoService{
 			makeVideoRequest.setVideoDTOList(videoDTOList);
 		}
 		
-		XugglerMediaUtils.mergeVideos(makeVideoRequest);
+		Theme theme = themeDAO.findById(makeVideoRequest.getThemeId(), false);
+		
+		XugglerMediaUtils.mergeVideos(makeVideoRequest, theme);
 		
 		GenericUtils.buildErrorDetail(makeVideoResponse, GenericEnum.Success);
 		
