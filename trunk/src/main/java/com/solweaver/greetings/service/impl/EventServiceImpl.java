@@ -172,7 +172,7 @@ public class EventServiceImpl implements IEventService{
 			for(UserEvent userEvent : userEventList){
 				User eventUser = userEvent.getUser();
 				userEventMap.put(eventUser .getId(), eventUser);
-				if(userEvent.getInviteStatus().equals(UserEventType.RECIPIENT)){
+				if(userEvent.getUserEventType().equals(UserEventType.RECIPIENT)){
 					recipieUserEvent = userEvent;
 				}
 			}
@@ -204,6 +204,9 @@ public class EventServiceImpl implements IEventService{
 						/*GenericUtils.buildErrorDetail(eventUpdateResponse, GenericEnum.USER_EVENT_EXISTS, emailInviteeUser.getEmail()+" "+GenericEnum.USER_EVENT_EXISTS.message);
 						return eventUpdateResponse;*/
 						break;
+					}else{
+						UserEvent userEvent = EntityDtoUtils.getUserEvent(emailInviteeUser, event, InviteStatus.Pending, UserEventType.Invitee);
+						emailInviteeUserEventList.add(userEvent);
 					}
 				}
 			}
@@ -213,7 +216,7 @@ public class EventServiceImpl implements IEventService{
 			User recipientUser = event.getRecipientUser();
 			
 			if(recipientUser == null || !recipientUser.getEmail().equals(eventUpdateRequest.getReceiverEmail())){
-				User newRecipientUser = userDAO.findExistingUserByEmail(eventUpdateRequest.getReceiverEmail());
+				recipientUser = userDAO.findExistingUserByEmail(eventUpdateRequest.getReceiverEmail());
 				if(recipientUser == null){
 					recipientUser = new User();
 					recipientUser.setEmail(eventUpdateRequest.getReceiverEmail());
@@ -228,7 +231,7 @@ public class EventServiceImpl implements IEventService{
 					userEventDAO.makeTransient(recipieUserEvent);
 					emailInviteeUserEventList.remove(recipieUserEvent);
 				}
-				event.setRecipientUser(newRecipientUser);
+				event.setRecipientUser(recipientUser);
 			}
 		}
 		
