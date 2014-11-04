@@ -72,19 +72,21 @@ public class EventServiceImpl implements IEventService{
 		
 		if(emailInviteeList != null && !emailInviteeList.isEmpty()){
 			for(String emailInvitee : emailInviteeList){
-				if(eventCreationRequest.getReceiverEmail() != null && eventCreationRequest.getReceiverEmail().equalsIgnoreCase(emailInvitee)){
-					GenericUtils.buildErrorDetail(eventCreationResponse, GenericEnum.INVALID_INVITEE_RECIPIENT);
-					return eventCreationResponse;
+				if(!emailInvitee.isEmpty()){
+					if(eventCreationRequest.getReceiverEmail() != null && !eventCreationRequest.getReceiverEmail().isEmpty() && eventCreationRequest.getReceiverEmail().equalsIgnoreCase(emailInvitee)){
+						GenericUtils.buildErrorDetail(eventCreationResponse, GenericEnum.INVALID_INVITEE_RECIPIENT);
+						return eventCreationResponse;
+					}
+					User emailInviteeUser = userDAO.findExistingUserByEmail(emailInvitee);
+					if(emailInviteeUser == null){
+						emailInviteeUser = new User();
+						emailInviteeUser.setEmail(emailInvitee);
+						emailInviteeUser.setUserStatus(UserStatus.InActive);
+						userDAO.makePersistent(emailInviteeUser);
+					}
+					UserEvent userEvent = EntityDtoUtils.getUserEvent(emailInviteeUser, event, InviteStatus.Pending, UserEventType.Invitee);
+					emailInviteeUserEventList.add(userEvent);
 				}
-				User emailInviteeUser = userDAO.findExistingUserByEmail(emailInvitee);
-				if(emailInviteeUser == null){
-					emailInviteeUser = new User();
-					emailInviteeUser.setEmail(emailInvitee);
-					emailInviteeUser.setUserStatus(UserStatus.InActive);
-					userDAO.makePersistent(emailInviteeUser);
-				}
-				UserEvent userEvent = EntityDtoUtils.getUserEvent(emailInviteeUser, event, InviteStatus.Pending, UserEventType.Invitee);
-				emailInviteeUserEventList.add(userEvent);
 			}
 		}
 		
