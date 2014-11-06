@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.Cascade;
+
 @Entity
 public class Event extends BaseEntity{
 
@@ -72,7 +74,7 @@ public class Event extends BaseEntity{
 	@OneToMany(mappedBy="event")
 	private List<Invitee> inviteeList;*/
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy="event")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="event", orphanRemoval=true)
 	private List<UserEvent> userEventList;
 	
 	public Long getId() {
