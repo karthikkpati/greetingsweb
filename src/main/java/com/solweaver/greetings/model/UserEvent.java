@@ -20,11 +20,11 @@ public class UserEvent extends BaseEntity {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 	
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name="event_id")
 	private Event event;
 	
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name="user_id")
 	private User user;
 	

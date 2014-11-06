@@ -184,6 +184,7 @@ public class EventServiceImpl implements IEventService{
 		
 		if(emailInviteeUserEventList == null){
 			emailInviteeUserEventList = new ArrayList<UserEvent>();
+			event.setUserEventList(emailInviteeUserEventList);
 		}
 		
 		if(emailInviteeList != null && !emailInviteeList.isEmpty()){
@@ -229,17 +230,17 @@ public class EventServiceImpl implements IEventService{
 				UserEvent newRecipientUserEvent = EntityDtoUtils.getUserEvent(recipientUser, event, InviteStatus.Pending, UserEventType.RECIPIENT);
 				emailInviteeUserEventList.add(newRecipientUserEvent);
 				
-				if(recipieUserEvent != null && recipientUser != null && !recipientUser.getEmail().equals(eventUpdateRequest.getReceiverEmail())){
-					userEventDAO.makeTransient(recipieUserEvent);
+				if(recipieUserEvent != null || (recipientUser != null && !recipientUser.getEmail().equals(eventUpdateRequest.getReceiverEmail()))){
+					//userEventDAO.makeTransient(recipieUserEvent);
 					emailInviteeUserEventList.remove(recipieUserEvent);
 				}
 				event.setRecipientUser(recipientUser);
 			}
 		}
 		
-		if(emailInviteeUserEventList != null){
+		/*if(emailInviteeUserEventList != null){
 			event.setUserEventList(emailInviteeUserEventList);
-		}
+		}*/
 		
 		if(eventUpdateRequest.getEventDate() != null){
 			event.setEventDate(eventUpdateRequest.getEventDate());
