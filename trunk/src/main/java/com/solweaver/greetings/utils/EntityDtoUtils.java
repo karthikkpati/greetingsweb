@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.solweaver.greetings.dto.CategoryDTO;
 import com.solweaver.greetings.dto.EventCreationRequest;
 import com.solweaver.greetings.dto.EventDTO;
 import com.solweaver.greetings.dto.ThemeDTO;
 import com.solweaver.greetings.dto.UserDTO;
 import com.solweaver.greetings.dto.UserEventDTO;
+import com.solweaver.greetings.model.Category;
 import com.solweaver.greetings.model.Event;
 import com.solweaver.greetings.model.InviteStatus;
 import com.solweaver.greetings.model.Theme;
@@ -133,9 +135,32 @@ public class EntityDtoUtils {
 		themeDTO.setPath(theme.getPath());
 		themeDTO.setThemeId(theme.getId());
 		themeDTO.setThemeName(theme.getThemeName());
+		if(theme.getCategory() != null){
+			themeDTO.setCategoryDTO(getCategoryDTO(theme.getCategory()));
+		}
+		
 		return themeDTO;
 	}
+
+	public static CategoryDTO getCategoryDTO(Category category){
+		CategoryDTO categoryDTO = new CategoryDTO();
+		categoryDTO.setCategoryId(category.getId());
+		categoryDTO.setCategoryName(category.getCategoryName());
+		categoryDTO.setCategoryDescription(category.getDescription());
+		return categoryDTO;
+	}
 	
+	public static List<CategoryDTO> getCategoryDTOList(List<Category> categoryList){
+		List<CategoryDTO> categoryDTOList = null;
+		if(categoryList != null && categoryList.size() > 0){
+			categoryDTOList = new ArrayList<CategoryDTO>();
+			for(Category category : categoryList){
+				categoryDTOList.add(getCategoryDTO(category));
+			}
+		}
+		return categoryDTOList;
+	}
+
 	public static List<ThemeDTO> getThemeDTOList(List<Theme> themesList){
 		List<ThemeDTO> themeDTOList = null;
 		if(themesList != null){

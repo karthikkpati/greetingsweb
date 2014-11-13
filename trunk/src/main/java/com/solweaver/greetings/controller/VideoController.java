@@ -169,6 +169,7 @@ public class VideoController {
 			byte[] outputByte = new byte[4096];
 			while(fileIn.read(outputByte, 0, 4096) != -1) {
 				out.write(outputByte, 0, 4096);
+				outputByte = new byte[4096];
 			}
 			fileIn.close();
 			out.flush();
@@ -216,6 +217,7 @@ public class VideoController {
 			byte[] outputByte = new byte[4096];
 			while(fileIn.read(outputByte, 0, 4096) != -1) {
 				out.write(outputByte, 0, 4096);
+				outputByte = new byte[4096];
 			}
 			fileIn.close();
 			out.flush();
@@ -255,6 +257,7 @@ public class VideoController {
 			byte[] outputByte = new byte[4096];
 			while(fileIn.read(outputByte, 0, 4096) != -1) {
 				out.write(outputByte, 0, 4096);
+				outputByte = new byte[4096];
 			}
 			fileIn.close();
 			out.flush();
@@ -288,17 +291,21 @@ public class VideoController {
 			File outputFile = new File(outputFolderName+fileName);
 			response.setContentType("video/mp4");
 			response.setHeader("Content-Disposition","inline; filename="+fileName);
-
+			response.setHeader("Accept-Ranges", "bytes");
+			Long outputFileLength = outputFile.length();
+			response.setContentLength(outputFileLength.intValue());
+            
 			FileInputStream fileIn = new FileInputStream(outputFile);
 			ServletOutputStream out = response.getOutputStream();
 			byte[] outputByte = new byte[4096];
 			while(fileIn.read(outputByte, 0, 4096) != -1) {
-				out.write(outputByte, 0, 4096);
+				out.write(outputByte);
+				outputByte = new byte[4096];
 			}
 			fileIn.close();
 			out.flush();
 			out.close();
 		}
 	}
-	
+
 }

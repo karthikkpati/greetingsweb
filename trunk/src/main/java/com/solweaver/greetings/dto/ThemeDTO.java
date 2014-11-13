@@ -13,6 +13,8 @@ public class ThemeDTO {
 	
 	private String path;
 
+	private CategoryDTO categoryDTO;
+	
 	public Long getThemeId() {
 		return themeId;
 	}
@@ -43,6 +45,14 @@ public class ThemeDTO {
 
 	public void setPath(String path) {
 		this.path = path;
+	}
+
+	public CategoryDTO getCategoryDTO() {
+		return categoryDTO;
+	}
+
+	public void setCategoryDTO(CategoryDTO categoryDTO) {
+		this.categoryDTO = categoryDTO;
 	}
 
 }
