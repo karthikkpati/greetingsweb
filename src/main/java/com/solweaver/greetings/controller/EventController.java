@@ -22,6 +22,8 @@ import com.solweaver.greetings.dto.EventDeleteResponse;
 import com.solweaver.greetings.dto.EventRespondRequest;
 import com.solweaver.greetings.dto.EventUpdateRequest;
 import com.solweaver.greetings.dto.EventUpdateResponse;
+import com.solweaver.greetings.dto.GetCategoryRequest;
+import com.solweaver.greetings.dto.GetCategoryResponse;
 import com.solweaver.greetings.dto.GetEventRequest;
 import com.solweaver.greetings.dto.GetEventResponse;
 import com.solweaver.greetings.dto.GetThemeRequest;
@@ -100,6 +102,11 @@ public class EventController {
 	@RequestMapping(value="/getThemes", method=RequestMethod.POST)
 	public @ResponseBody GetThemeResponse getThemes(@Valid @RequestBody GetThemeRequest getThemeRequest) throws IOException{
 		return themeService.getThemes(getThemeRequest);
+	}
+	
+	@RequestMapping(value="/getCategories", method=RequestMethod.POST)
+	public @ResponseBody GetCategoryResponse getThemes(@Valid @RequestBody GetCategoryRequest getCategoryRequest) throws IOException{
+		return themeService.getCategories(getCategoryRequest);
 	}
 	
 	/*@RequestMapping(value="/event/remind", method=RequestMethod.POST)

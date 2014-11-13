@@ -6,7 +6,8 @@ public class VideoDTO {
 	private Double angleOfRotation;
 	private String formattedFile;
 	private String flvFile;
-
+	private Long userEventId;
+	
 	public String getFileName() {
 		return fileName;
 	}
@@ -39,5 +40,12 @@ public class VideoDTO {
 		this.flvFile = flvFile;
 	}
 
-	
+	public Long getUserEventId() {
+		return userEventId;
+	}
+
+	public void setUserEventId(Long userEventId) {
+		this.userEventId = userEventId;
+	}
+
 }
