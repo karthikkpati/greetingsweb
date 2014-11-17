@@ -52,6 +52,7 @@ public class EntityDtoUtils {
 			event.setVideoSubmissionDate(eventCreationRequest.getVideoSubmissionDate());
 			event.setEventName(eventCreationRequest.getEventName());
 			event.setFromMessage(eventCreationRequest.getFromMessage());
+			event.setRecipientMessage(eventCreationRequest.getRecipientMessage());
 		}
 		return event;
 	}
@@ -88,6 +89,7 @@ public class EntityDtoUtils {
 		eventDTO.setEnableReminder(event.isEnableReminder());
 		eventDTO.setEventDate(event.getEventDate());
 		eventDTO.setEventName(event.getEventName());
+		eventDTO.setRecipientMessage(event.getRecipientMessage());
 		if(event.getEventStatus() != null){
 			eventDTO.setEventStatus(event.getEventStatus().name());
 		}
@@ -138,7 +140,6 @@ public class EntityDtoUtils {
 		if(theme.getCategory() != null){
 			themeDTO.setCategoryDTO(getCategoryDTO(theme.getCategory()));
 		}
-		
 		return themeDTO;
 	}
 

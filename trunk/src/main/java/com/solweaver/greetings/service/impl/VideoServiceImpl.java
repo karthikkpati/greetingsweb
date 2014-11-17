@@ -5,6 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,6 +126,12 @@ public class VideoServiceImpl implements IVideoService{
 		}
 		
 		Event event = eventDAO.findByEventAndUserId(makeVideoRequest.getEventId(),makeVideoRequest.getUserId());
+
+		List<UserEvent> userEventList = event.getUserEventList();
+		Map<Long, UserEvent> userEventMap = new HashMap<Long, UserEvent>();
+		for(UserEvent userEvent : userEventList){
+			userEventMap.put(userEvent.getId(), userEvent);
+		}
 		
 		if(event == null){
 			GenericUtils.buildErrorDetail(makeVideoResponse, GenericEnum.INVALID_EVENT);
@@ -136,9 +145,20 @@ public class VideoServiceImpl implements IVideoService{
 		File eventOutputFolder = new File(eventUploadFolderName);
 		
 		if(eventOutputFolder.isDirectory()){
-			String[] eventFiles = eventOutputFolder.list();
 			VideoDTO[] videoDTOList = makeVideoRequest.getVideoDTOList();
-			if(videoDTOList == null){
+			if(videoDTOList != null && videoDTOList.length > 0){
+				for(int i=0;i<videoDTOList.length;i++){
+					VideoDTO videoDTO = videoDTOList[i];
+					if(videoDTO.getUserEventId() != null){
+						videoDTO.setFileName(userEventMap.get(videoDTO.getUserEventId()).getRecordedLink());
+					}
+				}
+			}else{
+				GenericUtils.buildErrorDetail(makeVideoResponse, GenericEnum.USER_EVENT_ORDER_IS_REQUIRED);
+				return makeVideoResponse;
+			}
+			
+/*			if(videoDTOList == null){
 				videoDTOList = new VideoDTO[eventFiles.length];
 			}
 			for(int i=0;i<eventFiles.length;i++){
@@ -146,7 +166,7 @@ public class VideoServiceImpl implements IVideoService{
 				videoDTO.setFileName(eventUploadFolderName+eventFiles[i]);
 				videoDTOList[i] = videoDTO;
 			}
-			makeVideoRequest.setVideoDTOList(videoDTOList);
+*/			makeVideoRequest.setVideoDTOList(videoDTOList);
 		}
 		
 		Theme theme = themeDAO.findById(makeVideoRequest.getThemeId(), false);

@@ -14,8 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
-import org.hibernate.annotations.Cascade;
-
 @Entity
 public class Event extends BaseEntity{
 
@@ -67,6 +65,8 @@ public class Event extends BaseEntity{
 	private String createdByRecordedLink;
 	
 	private String fromMessage;
+
+	private String recipientMessage;
 	
 	/**
 	 * List of Invitees participating in this event
@@ -179,6 +179,14 @@ public class Event extends BaseEntity{
 
 	public void setRecipientUser(User recipientUser) {
 		this.recipientUser = recipientUser;
+	}
+
+	public String getRecipientMessage() {
+		return recipientMessage;
+	}
+
+	public void setRecipientMessage(String recipientMessage) {
+		this.recipientMessage = recipientMessage;
 	}
 
 /*	public List<Invitee> getInviteeList() {

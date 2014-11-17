@@ -47,6 +47,8 @@ public class EventDTO {
 	
 	private String fromMessage;
 
+	private String recipientMessage;
+	
 	private List<UserEventDTO> userEventDTOList;
 	
 	public Long getUserId() {
@@ -152,4 +154,13 @@ public class EventDTO {
 	public void setEventId(Long eventId) {
 		this.eventId = eventId;
 	}
+
+	public String getRecipientMessage() {
+		return recipientMessage;
+	}
+
+	public void setRecipientMessage(String recipientMessage) {
+		this.recipientMessage = recipientMessage;
+	}
+	
 }

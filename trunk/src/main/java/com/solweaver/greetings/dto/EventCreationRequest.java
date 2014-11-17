@@ -26,6 +26,8 @@ public class EventCreationRequest extends BaseRequest{
 	private List<String> emailInviteeList;
 	
 	private String receiverEmail;
+	
+	private String recipientMessage;
 
 	public Long getUserId() {
 		return userId;
@@ -97,6 +99,14 @@ public class EventCreationRequest extends BaseRequest{
 
 	public void setReceiverEmail(String receiverEmail) {
 		this.receiverEmail = receiverEmail;
+	}
+
+	public String getRecipientMessage() {
+		return recipientMessage;
+	}
+
+	public void setRecipientMessage(String recipientMessage) {
+		this.recipientMessage = recipientMessage;
 	}
 
 }
