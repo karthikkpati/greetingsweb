@@ -40,7 +40,8 @@ public class XugglerMediaUtils {
 		String formattedFiles[] = new String[makeVideoRequest.getVideoDTOList().length];*/
 		for(int i=0;i<makeVideoRequest.getVideoDTOList().length; i++){
 			VideoDTO videoDTO = makeVideoRequest.getVideoDTOList()[i];
-			String inputFile = eventFolder +"/upload/"+videoDTO.getFileName();
+			videoDTO.setFileName(eventFolder +"/upload/"+ videoDTO.getFileName());
+			String inputFile = videoDTO.getFileName();
 			File file = new File(inputFile);
 			String inputFileName = file.getName();
 		//	String formattedFile = null;
