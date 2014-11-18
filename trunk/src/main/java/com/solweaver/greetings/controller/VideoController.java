@@ -91,12 +91,10 @@ public class VideoController {
 			makeVideoRequest.setVideoDTOList(videoDTOList);
 		}
 		
-		XugglerMediaUtils.mergeVideos(makeVideoRequest);
+		XugglerMediaUtils.mergeVideos(makeVideoRequest);*/
 		
-		String requestUrl = request.getScheme()+"://"+request.getServerName()+request.getContextPath()+"/download?eventId="+makeVideoRequest.getEventId();
-	
-		String requestUrl = request.getScheme()+"://"+request.getServerName()+request.getContextPath()+"/download?eventId="+makeVideoRequest.getEventId();
-		makeVideoResponse.setOutputVideo(requestUrl);*/	
+		String requestUrl = request.getScheme()+"://"+request.getServerName()+request.getContextPath()+"/streamMp4Final.mp4?eventId="+makeVideoRequest.getEventId()+"&userId="+makeVideoRequest.getUserId();
+		makeVideoResponse.setOutputVideo(requestUrl);	
 		return makeVideoResponse;
 	}
 	
