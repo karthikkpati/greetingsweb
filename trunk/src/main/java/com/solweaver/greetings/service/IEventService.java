@@ -12,6 +12,7 @@ import com.solweaver.greetings.dto.EventUpdateRequest;
 import com.solweaver.greetings.dto.EventUpdateResponse;
 import com.solweaver.greetings.dto.GetEventRequest;
 import com.solweaver.greetings.dto.GetEventResponse;
+import com.solweaver.greetings.model.Event;
 import com.solweaver.greetings.model.UserEvent;
 
 
@@ -33,4 +34,6 @@ public interface IEventService {
 
 	public BaseResponse respondEvent(
 			EventRespondRequest eventRespondRequest);
+
+	public Event getEvent(Long eventId);
 }

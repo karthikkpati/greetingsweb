@@ -100,4 +100,10 @@ public class UserServiceImpl implements IUserService{
 		return loginResponse;
 	}
 
+	@Override
+	@Transactional
+	public User findUserById(Long userId) {
+		return userDAO.findActiveUserById(userId);
+	}
+
 }
