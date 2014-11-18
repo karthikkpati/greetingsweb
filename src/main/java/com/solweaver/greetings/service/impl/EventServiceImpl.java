@@ -357,4 +357,10 @@ public class EventServiceImpl implements IEventService{
 		GenericUtils.buildErrorDetail(getEventResponse, GenericEnum.Success);
 		return getEventResponse;
 	}
+
+	@Override
+	@Transactional
+	public Event getEvent(Long eventId) {
+		return eventDAO.findEventById(eventId);
+	}
 }

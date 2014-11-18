@@ -27,10 +27,13 @@ import com.solweaver.greetings.dto.MakeVideoResponse;
 import com.solweaver.greetings.dto.VideoDTO;
 import com.solweaver.greetings.dto.VideoUploadRequest;
 import com.solweaver.greetings.dto.VideoUploadResponse;
+import com.solweaver.greetings.model.Event;
 import com.solweaver.greetings.model.Theme;
+import com.solweaver.greetings.model.User;
 import com.solweaver.greetings.model.UserEvent;
 import com.solweaver.greetings.service.IEventService;
 import com.solweaver.greetings.service.IThemeService;
+import com.solweaver.greetings.service.IUserService;
 import com.solweaver.greetings.service.IVideoService;
 import com.solweaver.greetings.utils.GenericUtils;
 import com.solweaver.xuggler.utils.XugglerMediaUtils;
@@ -46,6 +49,9 @@ public class VideoController {
 	
 	@Autowired
 	private IThemeService themeService;
+
+	@Autowired
+	private IUserService userService;
 	
 	public static final String EVENTS_FOLDER = "c:/karthik/junk/grite/";
 	@RequestMapping(value="/hello")
@@ -313,18 +319,23 @@ public class VideoController {
 			Model model,
 			@RequestParam("eventId") Long eventId,
 			@RequestParam("userId") Long userId,
-			@RequestParam(value="fileName",required=false) String fileName,
 			HttpServletRequest request, 
 			HttpServletResponse response) throws IOException{
-		
+		String fileName = null;
 		DownloadVideoResponse downloadVideoResponse = new DownloadVideoResponse();
-		
-		UserEvent userEvent = eventService.getUserEvent(userId, eventId);
-		if(userEvent == null){
-			GenericUtils.buildErrorDetail(downloadVideoResponse, GenericEnum.INVALID_USER_EVENT);
+
+		User user = userService.findUserById(userId);
+		if(user == null){
+			GenericUtils.buildErrorDetail(downloadVideoResponse, GenericEnum.INVALID_USER);
 			throw new RuntimeException(downloadVideoResponse.getErrorDetailList().get(0).getMessage());
 		}
-
+		
+		Event event = eventService.getEvent(eventId);
+		if(event == null){
+			GenericUtils.buildErrorDetail(downloadVideoResponse, GenericEnum.INVALID_EVENT);
+			throw new RuntimeException(downloadVideoResponse.getErrorDetailList().get(0).getMessage());
+		}
+		
 		String outputFolderName = EVENTS_FOLDER+eventId+"/output/";
 		File outputFolder = new File(outputFolderName);
 		if(outputFolder.isDirectory()){

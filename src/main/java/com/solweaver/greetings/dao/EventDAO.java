@@ -1,5 +1,6 @@
 package com.solweaver.greetings.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -38,6 +39,32 @@ public class EventDAO extends BaseDAO<Event, Long > {
 		eventList = eventCriteria.list();
 		
 		return eventList;
+	}
+	
+	public Event findEventById(Long eventId) {
+
+		List<Event> eventList = null;
+		Event event = null;
+
+		Criteria eventCriteria = getSession().createCriteria(Event.class);
+
+		EventStatus eventStatus = EventStatus.Deleted;
+		
+		if(eventStatus != null){
+			eventCriteria.add(Restrictions.ne("eventStatus", eventStatus));
+		}
+		
+		if(eventId != null){
+			eventCriteria.add(Restrictions.eq("id", eventId));
+		}
+		
+		eventList = eventCriteria.list();
+		
+		if(eventList != null && eventList.size() > 0){
+			event = eventList.get(0);
+		}
+		
+		return event;
 	}
 
 	public Event findByEventAndUserId(Long eventId, Long userId) {
