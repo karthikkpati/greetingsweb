@@ -220,10 +220,13 @@ public class XugglerMediaUtils {
 	   for(int i=0; i<videoDTOList.length ; i++){
 		   mediaReaderArray[i] = ToolFactory.makeReader(videoDTOList[i].getFormattedFile());
 		   //mediaReaderArray[i].addListener(concatenator);
-		   if(videoDTOList[i].getAngleOfRotation() == null){
-			   MediaConcatenator concatenator = new MediaConcatenator(audioStreamIndex,videoStreamIndex, null);
+		   if(videoDTOList[i].getAngleOfRotation() == null ) {
+			   MediaConcatenator concatenator = mediaConcatenatorMap.get(0.0); 
+			   if(concatenator == null){
+				   concatenator = new MediaConcatenator(audioStreamIndex,videoStreamIndex, null);
+				   mediaConcatenatorMap.put(0.0, concatenator);
+			   }
 			   mediaReaderArray[i].addListener(concatenator);
-			   mediaConcatenatorMap.put(0.0, concatenator);
 		   }else{
 			   MediaConcatenator mediaConcatenator = mediaConcatenatorMap.get(videoDTOList[i].getAngleOfRotation());
 			   if(mediaConcatenator == null){
