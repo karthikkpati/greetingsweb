@@ -5,8 +5,6 @@ public class RecipientEventDTO {
 
 	private Long eventId;
 	
-	private Long userId;
-	
 	private String eventName;
 
 	private String description;
@@ -21,14 +19,6 @@ public class RecipientEventDTO {
 
 	public void setEventId(Long eventId) {
 		this.eventId = eventId;
-	}
-
-	public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
 	}
 
 	public String getEventName() {

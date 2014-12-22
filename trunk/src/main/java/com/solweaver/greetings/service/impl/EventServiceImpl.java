@@ -415,7 +415,7 @@ public class EventServiceImpl implements IEventService{
 		if(event != null){
 			recipientEventDTO = new RecipientEventDTO();
 			recipientEventDTO.setDescription(event.getDescription());
-			recipientEventDTO.setEventId(recipientEventDTO.getEventId());
+			recipientEventDTO.setEventId(event.getId());
 			recipientEventDTO.setEventName(event.getEventName());
 			recipientEventDTO.setRecipientMessage(event.getRecipientMessage());
 			recipientEventDTO.setVideoUrl(mp4FinalUrl+"?eventId="+event.getId()+"&userId="+getRecipientEventRequest.getUserId());
@@ -423,13 +423,13 @@ public class EventServiceImpl implements IEventService{
 		}else{
 			List<Event> recipientevents = eventDAO.findEventsByRecipientUserId(user.getId());
 			if(recipientevents != null){
-				for(Event recipientevent : recipientevents){
+				for(Event recipientEvent : recipientevents){
 					recipientEventDTO = new RecipientEventDTO();
-					recipientEventDTO.setDescription(recipientevent.getDescription());
-					recipientEventDTO.setEventId(recipientEventDTO.getEventId());
-					recipientEventDTO.setEventName(recipientevent.getEventName());
-					recipientEventDTO.setRecipientMessage(recipientevent.getRecipientMessage());
-					recipientEventDTO.setVideoUrl(mp4FinalUrl+"?eventId="+recipientevent.getId()+"&userId="+getRecipientEventRequest.getUserId());
+					recipientEventDTO.setDescription(recipientEvent.getDescription());
+					recipientEventDTO.setEventId(recipientEvent.getId());
+					recipientEventDTO.setEventName(recipientEvent.getEventName());
+					recipientEventDTO.setRecipientMessage(recipientEvent.getRecipientMessage());
+					recipientEventDTO.setVideoUrl(mp4FinalUrl+"?eventId="+recipientEvent.getId()+"&userId="+getRecipientEventRequest.getUserId());
 					recipientEventDTOList.add(recipientEventDTO);
 				}
 			}
