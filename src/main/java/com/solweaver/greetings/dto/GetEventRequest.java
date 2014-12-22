@@ -12,7 +12,11 @@ public class GetEventRequest extends BaseRequest{
 	
 	private String eventStatus;
 
+	private String inviteeStatus;
+	
 	private boolean getUserDetails;
+	
+	private String userEventType;
 	
 	public Long getUserId() {
 		return userId;
@@ -44,6 +48,22 @@ public class GetEventRequest extends BaseRequest{
 
 	public void setEventId(Long eventId) {
 		this.eventId = eventId;
+	}
+
+	public String getInviteeStatus() {
+		return inviteeStatus;
+	}
+
+	public void setInviteeStatus(String inviteeStatus) {
+		this.inviteeStatus = inviteeStatus;
+	}
+
+	public String getUserEventType() {
+		return userEventType;
+	}
+
+	public void setUserEventType(String userEventType) {
+		this.userEventType = userEventType;
 	}
 
 }

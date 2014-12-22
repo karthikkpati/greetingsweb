@@ -12,6 +12,8 @@ import com.solweaver.greetings.dto.EventUpdateRequest;
 import com.solweaver.greetings.dto.EventUpdateResponse;
 import com.solweaver.greetings.dto.GetEventRequest;
 import com.solweaver.greetings.dto.GetEventResponse;
+import com.solweaver.greetings.dto.GetRecipientEventRequest;
+import com.solweaver.greetings.dto.GetRecipientEventResponse;
 import com.solweaver.greetings.model.Event;
 import com.solweaver.greetings.model.UserEvent;
 
@@ -36,4 +38,7 @@ public interface IEventService {
 			EventRespondRequest eventRespondRequest);
 
 	public Event getEvent(Long eventId);
+
+	public GetRecipientEventResponse getRecipientEventDetails(
+			GetRecipientEventRequest getRecipientEventRequest, String mp4FinalUrl);
 }

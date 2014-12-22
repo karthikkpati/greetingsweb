@@ -1,8 +1,10 @@
 package com.solweaver.greetings.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -42,7 +44,8 @@ public class UserController {
 			emailMap.put("lastname", userRegistrationRequest.getLastName());
 			emailMap.put("username", userRegistrationRequest.getEmail());
 			try {
-				velocityService.sendEmail(emailMap, "Registration", userRegistrationRequest.getEmail());
+				List<String> emailList = new ArrayList<String>();
+				velocityService.sendEmail(emailMap, "Registration", emailList);
 			} catch (Exception e) {
 				e.printStackTrace();
 				GenericUtils.buildErrorDetail(userRegistrationResponse, GenericEnum.Success, "Unable to send Confirmation email");

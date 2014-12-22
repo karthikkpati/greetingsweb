@@ -27,6 +27,9 @@ import com.solweaver.greetings.dto.EventUpdateResponse;
 import com.solweaver.greetings.dto.GenericEnum;
 import com.solweaver.greetings.dto.GetEventRequest;
 import com.solweaver.greetings.dto.GetEventResponse;
+import com.solweaver.greetings.dto.GetRecipientEventRequest;
+import com.solweaver.greetings.dto.GetRecipientEventResponse;
+import com.solweaver.greetings.dto.RecipientEventDTO;
 import com.solweaver.greetings.model.Event;
 import com.solweaver.greetings.model.EventStatus;
 import com.solweaver.greetings.model.InviteStatus;
@@ -60,6 +63,7 @@ public class EventServiceImpl implements IEventService{
 			EventCreationRequest eventCreationRequest) {
 		EventCreationResponse eventCreationResponse = new EventCreationResponse();
 		User user = userDAO.findById(eventCreationRequest.getUserId(), false);
+		
 		if(user == null || !user.getUserStatus().equals(UserStatus.Active)){
 			GenericUtils.buildErrorDetail(eventCreationResponse, GenericEnum.INVALID_USER);
 			return eventCreationResponse;
@@ -140,7 +144,29 @@ public class EventServiceImpl implements IEventService{
 			}
 		}
 		
-		List<Event> eventList = eventDAO.findEventsByUserId(user.getId(), getEventRequest.getEventId(), getEventRequest.isGetUserDetails(), eventStatus);
+		InviteStatus inviteeStatus = null;
+		
+		if(getEventRequest.getInviteeStatus() != null){
+			try{
+				inviteeStatus = InviteStatus.valueOf(getEventRequest.getInviteeStatus());
+			}catch(Exception exception){
+				GenericUtils.buildErrorDetail(getEventResponse, GenericEnum.INVALID_INVITEE_STATUS);
+				return getEventResponse;
+			}
+		}
+		
+		UserEventType userEventType = null;
+		
+		if(getEventRequest.getUserEventType() != null){
+			try{
+				userEventType = UserEventType.valueOf(getEventRequest.getUserEventType());
+			}catch(Exception exception){
+				GenericUtils.buildErrorDetail(getEventResponse, GenericEnum.INVALID_USER_EVENT);
+				return getEventResponse;
+			}
+		}
+				
+		List<Event> eventList = eventDAO.findEventsByUserId(user.getId(), getEventRequest.getEventId(), getEventRequest.isGetUserDetails(), eventStatus, inviteeStatus, userEventType);
 		
 		List<EventDTO> eventDTOList = EntityDtoUtils.getEventDTOList(eventList, getEventRequest.isGetUserDetails());
 		
@@ -362,5 +388,55 @@ public class EventServiceImpl implements IEventService{
 	@Transactional
 	public Event getEvent(Long eventId) {
 		return eventDAO.findEventById(eventId);
+	}
+
+	@Override
+	@Transactional
+	public GetRecipientEventResponse getRecipientEventDetails(
+			GetRecipientEventRequest getRecipientEventRequest, String mp4FinalUrl) {
+		GetRecipientEventResponse getRecipientEventResponse = new GetRecipientEventResponse();
+		Event event = null;
+		User user = userDAO.findActiveUserById(getRecipientEventRequest.getUserId());
+		if(user == null ){
+			GenericUtils.buildErrorDetail(getRecipientEventResponse, GenericEnum.INVALID_USER);
+			return getRecipientEventResponse;
+		}
+		
+		if(getRecipientEventRequest.getEventId() != null){
+			event = eventDAO.findEventById(getRecipientEventRequest.getEventId());
+			if(event == null){
+				GenericUtils.buildErrorDetail(getRecipientEventResponse, GenericEnum.INVALID_EVENT);
+				return getRecipientEventResponse;
+			}
+		}
+
+		List<RecipientEventDTO> recipientEventDTOList = new ArrayList<RecipientEventDTO>();
+		RecipientEventDTO recipientEventDTO = null;
+		if(event != null){
+			recipientEventDTO = new RecipientEventDTO();
+			recipientEventDTO.setDescription(event.getDescription());
+			recipientEventDTO.setEventId(recipientEventDTO.getEventId());
+			recipientEventDTO.setEventName(event.getEventName());
+			recipientEventDTO.setRecipientMessage(event.getRecipientMessage());
+			recipientEventDTO.setVideoUrl(mp4FinalUrl+"?eventId="+event.getId()+"&userId="+getRecipientEventRequest.getUserId());
+			recipientEventDTOList.add(recipientEventDTO);
+		}else{
+			List<Event> recipientevents = eventDAO.findEventsByRecipientUserId(user.getId());
+			if(recipientevents != null){
+				for(Event recipientevent : recipientevents){
+					recipientEventDTO = new RecipientEventDTO();
+					recipientEventDTO.setDescription(recipientevent.getDescription());
+					recipientEventDTO.setEventId(recipientEventDTO.getEventId());
+					recipientEventDTO.setEventName(recipientevent.getEventName());
+					recipientEventDTO.setRecipientMessage(recipientevent.getRecipientMessage());
+					recipientEventDTO.setVideoUrl(mp4FinalUrl+"?eventId="+recipientevent.getId()+"&userId="+getRecipientEventRequest.getUserId());
+					recipientEventDTOList.add(recipientEventDTO);
+				}
+			}
+		}
+		
+		getRecipientEventResponse.setRecipientEventDTOList(recipientEventDTOList);
+		GenericUtils.buildErrorDetail(getRecipientEventResponse, GenericEnum.Success);
+		return getRecipientEventResponse;
 	}
 }
