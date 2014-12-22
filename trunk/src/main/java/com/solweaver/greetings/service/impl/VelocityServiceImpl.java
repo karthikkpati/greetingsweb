@@ -60,14 +60,15 @@ public class VelocityServiceImpl implements IVelocityService {
 				
 				String emailContent = getEmailContent(emailTemplateName, model);
 				Properties props = new Properties();
-				props.put("mail.smtp.host", "smtp.gmail.com");
+				props.put("mail.smtp.host", "smtp.mail.yahoo.com");
 				props.put("mail.transport.protocol", "smtp");
 				props.put("mail.smtp.port", "587");
 				props.put("mail.smtp.starttls.enable", "true");
 				props.put("mail.smtp.auth", "true");
 				Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
 					protected PasswordAuthentication getPasswordAuthentication() {
-						return new PasswordAuthentication("solgrite@gmail.com", "Greetings@123");
+						//return new PasswordAuthentication("solgrite@gmail.com", "Greetings@123");
+						return new PasswordAuthentication("greetings.invitations@yahoo.com", "Greetings@123");
 					}
 				  });
 				MimeMessage message = new MimeMessage(session);
