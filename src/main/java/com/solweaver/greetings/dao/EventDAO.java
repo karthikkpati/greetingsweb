@@ -116,7 +116,7 @@ public class EventDAO extends BaseDAO<Event, Long> {
 	}
 
 	public List<Event> findEventsByRecipientUserId(Long userId) {
-		Criteria eventCriteria = getSession().createCriteria(UserEvent.class);
+		Criteria eventCriteria = getSession().createCriteria(Event.class);
 
 		if (userId != null) {
 			eventCriteria.add(Restrictions.eq("recipientUser.id", userId));
