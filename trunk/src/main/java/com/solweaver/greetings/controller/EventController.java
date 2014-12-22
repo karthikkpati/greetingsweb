@@ -3,8 +3,12 @@ package com.solweaver.greetings.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +26,22 @@ import com.solweaver.greetings.dto.EventDeleteResponse;
 import com.solweaver.greetings.dto.EventRespondRequest;
 import com.solweaver.greetings.dto.EventUpdateRequest;
 import com.solweaver.greetings.dto.EventUpdateResponse;
+import com.solweaver.greetings.dto.GenericEnum;
 import com.solweaver.greetings.dto.GetCategoryRequest;
 import com.solweaver.greetings.dto.GetCategoryResponse;
 import com.solweaver.greetings.dto.GetEventRequest;
 import com.solweaver.greetings.dto.GetEventResponse;
+import com.solweaver.greetings.dto.GetRecipientEventRequest;
+import com.solweaver.greetings.dto.GetRecipientEventResponse;
 import com.solweaver.greetings.dto.GetThemeRequest;
 import com.solweaver.greetings.dto.GetThemeResponse;
 import com.solweaver.greetings.model.Channel;
+import com.solweaver.greetings.model.User;
 import com.solweaver.greetings.service.IEventService;
 import com.solweaver.greetings.service.IThemeService;
+import com.solweaver.greetings.service.IUserService;
+import com.solweaver.greetings.service.IVelocityService;
+import com.solweaver.greetings.utils.GenericUtils;
 
 @Controller
 public class EventController {
@@ -40,10 +51,41 @@ public class EventController {
 	
 	@Autowired
 	private IThemeService themeService;
+
+	@Autowired
+	private IVelocityService velocityService;
+	
+	@Autowired
+	private IUserService userService;
 	
 	@RequestMapping(value="/event/create", method=RequestMethod.POST)
 	public @ResponseBody EventCreationResponse createEvent(@Valid @RequestBody EventCreationRequest eventCreationRequest) throws IOException{
-		return eventService.createEvent(eventCreationRequest);
+		EventCreationResponse eventCreationResponse = eventService.createEvent(eventCreationRequest);
+		
+		if(GenericUtils.isSuccess(eventCreationResponse)){
+			try{
+				User user = userService.findUserById(eventCreationRequest.getUserId());
+				List<String> eventCreatorEmail = new ArrayList<String>(); 
+				eventCreatorEmail.add(user.getEmail());
+				Map<String,Object> emailMap = new HashMap<String, Object>();
+				emailMap.put("firstname", user.getFirstName());
+				emailMap.put("lastname", user.getLastName());
+				emailMap.put("eventname", eventCreationRequest.getEventName());
+				velocityService.sendEmail(emailMap, "Event_Creation_Confirmation", eventCreatorEmail);
+			}catch (Exception e) {
+				e.printStackTrace();
+				GenericUtils.buildErrorDetail(eventCreationResponse, GenericEnum.Success, "Unable to send event creation confirmation");
+			}
+			
+			try {
+				velocityService.sendEmail(null, "Event_Creation_Invitee", eventCreationRequest.getEmailInviteeList());
+			} catch (Exception e) {
+				e.printStackTrace();
+				GenericUtils.buildErrorDetail(eventCreationResponse, GenericEnum.Success, "Unable to send email to Invitees");
+			}
+		}
+		
+		return eventCreationResponse;
 	}
 	
 	@RequestMapping(value="/event/viewAll", method=RequestMethod.POST)
@@ -107,6 +149,14 @@ public class EventController {
 	@RequestMapping(value="/getCategories", method=RequestMethod.POST)
 	public @ResponseBody GetCategoryResponse getThemes(@Valid @RequestBody GetCategoryRequest getCategoryRequest) throws IOException{
 		return themeService.getCategories(getCategoryRequest);
+	}
+	
+	@RequestMapping(value="/getRecipientEvents", method=RequestMethod.POST)
+	public @ResponseBody GetRecipientEventResponse getRecipientVideo(@Valid @RequestBody GetRecipientEventRequest getRecipientEventRequest,
+			HttpServletRequest request, HttpServletResponse response) throws IOException{
+		String mp4FinalUrl =  request.getScheme()+"://"+request.getServerName()+request.getContextPath()+"/streamMp4Final.mp4";
+		GetRecipientEventResponse getRecipientEventResponse = eventService.getRecipientEventDetails(getRecipientEventRequest, mp4FinalUrl);
+		return getRecipientEventResponse;
 	}
 	
 	/*@RequestMapping(value="/event/remind", method=RequestMethod.POST)

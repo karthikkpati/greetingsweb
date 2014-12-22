@@ -1,6 +1,7 @@
 package com.solweaver.greetings.service.impl;
 
 import java.io.StringWriter;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -51,7 +52,7 @@ public class VelocityServiceImpl implements IVelocityService {
 	
 	@Override
 	@Transactional
-	public void sendEmail(Map<String, Object> model, String emailTemplateName,String emailList) throws Exception {
+	public void sendEmail(Map<String, Object> model, String emailTemplateName,List<String> emailList) throws Exception {
 			
 		EmailTemplate emailTemplate = emailTemplateDAO.getEmailTemplateByName(emailTemplateName);
 		if(emailTemplate != null ){
@@ -72,8 +73,10 @@ public class VelocityServiceImpl implements IVelocityService {
 				MimeMessage message = new MimeMessage(session);
 				try {
 					message.setFrom(new InternetAddress(emailTemplate.getFromEmail()));
-					message.setRecipients(Message.RecipientType.TO,
-							InternetAddress.parse(emailList));
+					for(String email : emailList){
+						message.setRecipients(Message.RecipientType.TO,
+								InternetAddress.parse(email));
+					}
 					message.setSubject(emailTemplate.getSubject());
 					message.setContent(emailContent, "text/html");
 					Transport.send(message);
