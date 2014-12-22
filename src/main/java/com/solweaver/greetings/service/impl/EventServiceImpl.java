@@ -97,7 +97,7 @@ public class EventServiceImpl implements IEventService{
 		event.setCreatedBy(user);
 		event.setEventStatus(EventStatus.Active);
 		
-		UserEvent userEvent = EntityDtoUtils.getUserEvent(user, event, InviteStatus.Pending, UserEventType.Invitee);
+		UserEvent userEvent = EntityDtoUtils.getUserEvent(user, event, InviteStatus.Accepted, UserEventType.Inviter);
 		emailInviteeUserEventList.add(userEvent);
 		
 		if(eventCreationRequest.getReceiverEmail() != null){
