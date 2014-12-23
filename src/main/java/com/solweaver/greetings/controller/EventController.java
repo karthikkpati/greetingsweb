@@ -94,8 +94,13 @@ public class EventController {
 	}
 	
 	@RequestMapping(value="/event/view", method=RequestMethod.POST)
-	public @ResponseBody GetEventResponse getEvent(@Valid @RequestBody GetEventRequest getEventRequest) throws IOException{
-		return eventService.getEventDetails(getEventRequest);
+	public @ResponseBody GetEventResponse getEvent(@Valid @RequestBody GetEventRequest getEventRequest,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws IOException{
+		GetEventResponse getEventResponse = eventService.getEventDetails(getEventRequest);
+		String requestUrl = request.getScheme()+"://"+request.getServerName()+request.getContextPath()+"/streamMp4Final.mp4?eventId="+getEventRequest.getEventId()+"&userId="+getEventRequest.getUserId();
+		getEventResponse.setOutputVideo(requestUrl);
+		return getEventResponse;
 	}
 	
 	@RequestMapping(value="/event/viewAll1", method=RequestMethod.GET)
