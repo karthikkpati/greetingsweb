@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -409,7 +410,7 @@ public class VideoController {
 			model.addAttribute(StreamingUtils.INPUT_STREAM, fileIn);
 			model.addAttribute(StreamingUtils.FILENAME, fileName);
 			model.addAttribute(StreamingUtils.CONTENT_LENGTH, outputFile.length());
-			model.addAttribute(StreamingUtils.LAST_MODIFIED, outputFile.lastModified());
+			model.addAttribute(StreamingUtils.LAST_MODIFIED, new Date(outputFile.lastModified()));
 		}
 		
 		return modelAndView;
