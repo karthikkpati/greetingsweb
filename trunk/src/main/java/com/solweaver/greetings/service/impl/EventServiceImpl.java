@@ -472,7 +472,7 @@ public class EventServiceImpl implements IEventService{
 								inviteeList.append(" , ");
 							}
 						}
-						if(event.getVideoStatus().equals(VideoStatus.Completed)){
+						if(event.getVideoStatus() != null && event.getVideoStatus().equals(VideoStatus.Completed)){
 							emailMap.put(GenericConstants.SENDERS, inviteeList.toString());
 						}
 						velocityService.sendEmail(emailMap, "Event_Sender", recipientUser.getEmail());
@@ -484,7 +484,7 @@ public class EventServiceImpl implements IEventService{
 			}
 		}
 
-		if(baseResponse.getErrorDetailList() != null && GenericUtils.isSuccess(baseResponse)){
+		if(baseResponse.getErrorDetailList() == null && GenericUtils.isSuccess(baseResponse)){
 			GenericUtils.buildErrorDetail(baseResponse, GenericEnum.Success);
 		}
 		return baseResponse;
