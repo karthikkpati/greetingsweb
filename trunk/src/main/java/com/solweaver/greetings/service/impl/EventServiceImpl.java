@@ -449,36 +449,43 @@ public class EventServiceImpl implements IEventService{
 		BaseResponse baseResponse = new BaseResponse();
 		List<Event> eventsList = eventDAO.findEventsToSend();
 		Map<String,Object> emailMap = null;
-		for(Event event : eventsList){
-			User recipientUser = event.getRecipientUser();
-			if(event.getEventStatus().equals(EventStatus.Completed) && recipientUser != null){
-				try{
-					emailMap = new HashMap<String, Object>();
-					if(recipientUser.getFirstName() != null ){
-						emailMap.put(GenericConstants.FIRST_NAME, recipientUser.getFirstName());
-					}
-					if(recipientUser.getLastName() != null){
-						emailMap.put(GenericConstants.LAST_NAME, recipientUser.getLastName());
-					}
-					List<UserEvent> userEventList = event.getUserEventList();
-					StringBuffer inviteeList = new StringBuffer();
-					for(UserEvent userEvent : userEventList){
-						if(!userEvent.getUserEventType().equals(UserEventType.RECIPIENT) && userEvent.getInviteStatus().equals(InviteStatus.Accepted)){
-							inviteeList.append(userEvent.getUser().getFirstName());
-							inviteeList.append(" ");
-							inviteeList.append(userEvent.getUser().getLastName());
-							inviteeList.append(" , ");
+		if(eventsList != null){
+			System.out.println("Number of events to send email are : "+eventsList.size());
+			for(Event event : eventsList){
+				User recipientUser = event.getRecipientUser();
+				if(event.getEventStatus().equals(EventStatus.Completed) && recipientUser != null){
+					try{
+						emailMap = new HashMap<String, Object>();
+						if(recipientUser.getFirstName() != null ){
+							emailMap.put(GenericConstants.FIRST_NAME, recipientUser.getFirstName());
 						}
+						if(recipientUser.getLastName() != null){
+							emailMap.put(GenericConstants.LAST_NAME, recipientUser.getLastName());
+						}
+						List<UserEvent> userEventList = event.getUserEventList();
+						StringBuffer inviteeList = new StringBuffer();
+						for(UserEvent userEvent : userEventList){
+							if(!userEvent.getUserEventType().equals(UserEventType.RECIPIENT) && userEvent.getInviteStatus().equals(InviteStatus.Accepted)){
+								inviteeList.append(userEvent.getUser().getFirstName());
+								inviteeList.append(" ");
+								inviteeList.append(userEvent.getUser().getLastName());
+								inviteeList.append(" , ");
+							}
+						}
+						if(event.getVideoStatus().equals(VideoStatus.Completed)){
+							emailMap.put(GenericConstants.SENDERS, inviteeList.toString());
+						}
+						velocityService.sendEmail(emailMap, "Event_Sender", recipientUser.getEmail());
+					}catch (Exception e) {
+						e.printStackTrace();
+						GenericUtils.buildErrorDetail(baseResponse, GenericEnum.SENDER_EMAIL_FAILED, "Failed to Send email for event : "+event.getId());
 					}
-					if(event.getVideoStatus().equals(VideoStatus.Completed)){
-						emailMap.put(GenericConstants.SENDERS, inviteeList.toString());
-					}
-					velocityService.sendEmail(emailMap, "Event_Sender", recipientUser.getEmail());
-				}catch (Exception e) {
-					e.printStackTrace();
-					GenericUtils.buildErrorDetail(baseResponse, GenericEnum.SENDER_EMAIL_FAILED, "Failed to Send email for event : "+event.getId());
 				}
 			}
+		}
+
+		if(baseResponse.getErrorDetailList() != null && GenericUtils.isSuccess(baseResponse)){
+			GenericUtils.buildErrorDetail(baseResponse, GenericEnum.Success);
 		}
 		return baseResponse;
 	}
