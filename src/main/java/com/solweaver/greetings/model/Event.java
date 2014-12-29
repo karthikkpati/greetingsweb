@@ -68,6 +68,8 @@ public class Event extends BaseEntity{
 
 	private String recipientMessage;
 	
+	private VideoStatus videoStatus;
+	
 	/**
 	 * List of Invitees participating in this event
 	 *//*
@@ -187,6 +189,14 @@ public class Event extends BaseEntity{
 
 	public void setRecipientMessage(String recipientMessage) {
 		this.recipientMessage = recipientMessage;
+	}
+
+	public VideoStatus getVideoStatus() {
+		return videoStatus;
+	}
+
+	public void setVideoStatus(VideoStatus videoStatus) {
+		this.videoStatus = videoStatus;
 	}
 
 /*	public List<Invitee> getInviteeList() {

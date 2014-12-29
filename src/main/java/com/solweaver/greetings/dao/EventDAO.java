@@ -1,7 +1,10 @@
 package com.solweaver.greetings.dao;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.criterion.Restrictions;
@@ -123,5 +126,15 @@ public class EventDAO extends BaseDAO<Event, Long> {
 		}
 
 		return eventCriteria.list();
+	}
+
+	public List<Event> findEventsToSend() {
+		Date date = new Date();
+		Date today = DateUtils.truncate(date, Calendar.DAY_OF_MONTH);
+		Date tommorrow = DateUtils.addDays(today, 1); 
+		Criteria eventCriteria = getSession().createCriteria(Event.class);
+		eventCriteria.add(Restrictions.ge("eventDate", today)); 
+		eventCriteria.add(Restrictions.lt("eventDate", tommorrow));
+		return (List<Event>) eventCriteria.list();		
 	}
 }

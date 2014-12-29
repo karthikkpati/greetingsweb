@@ -41,4 +41,6 @@ public interface IEventService {
 
 	public GetRecipientEventResponse getRecipientEventDetails(
 			GetRecipientEventRequest getRecipientEventRequest, String mp4FinalUrl);
+
+	public BaseResponse sendRecipientEmail();
 }

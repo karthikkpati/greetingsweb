@@ -65,13 +65,11 @@ public class EventController {
 		if(GenericUtils.isSuccess(eventCreationResponse)){
 			try{
 				User user = userService.findUserById(eventCreationRequest.getUserId());
-				List<String> eventCreatorEmail = new ArrayList<String>(); 
-				eventCreatorEmail.add(user.getEmail());
 				Map<String,Object> emailMap = new HashMap<String, Object>();
 				emailMap.put("firstname", user.getFirstName());
 				emailMap.put("lastname", user.getLastName());
 				emailMap.put("eventname", eventCreationRequest.getEventName());
-				velocityService.sendEmail(emailMap, "Event_Creation_Confirmation", eventCreatorEmail);
+				velocityService.sendEmail(emailMap, "Event_Creation_Confirmation", user.getEmail());
 			}catch (Exception e) {
 				e.printStackTrace();
 				GenericUtils.buildErrorDetail(eventCreationResponse, GenericEnum.Success, "Unable to send event creation confirmation");
@@ -98,8 +96,8 @@ public class EventController {
 			HttpServletRequest request, 
 			HttpServletResponse response) throws IOException{
 		GetEventResponse getEventResponse = eventService.getEventDetails(getEventRequest);
-		String requestUrl = request.getScheme()+"://"+request.getServerName()+request.getContextPath()+"/streamMp4Final.mp4?eventId="+getEventRequest.getEventId()+"&userId="+getEventRequest.getUserId();
-		getEventResponse.setOutputVideo(requestUrl);
+		//String requestUrl = request.getScheme()+"://"+request.getServerName()+request.getContextPath()+"/streamMp4Final.mp4?eventId="+getEventRequest.getEventId()+"&userId="+getEventRequest.getUserId();
+	//	getEventResponse.setOutputVideo(requestUrl);
 		return getEventResponse;
 	}
 	
@@ -162,6 +160,11 @@ public class EventController {
 		String mp4FinalUrl =  request.getScheme()+"://"+request.getServerName()+request.getContextPath()+"/streamMp4Final.mp4";
 		GetRecipientEventResponse getRecipientEventResponse = eventService.getRecipientEventDetails(getRecipientEventRequest, mp4FinalUrl);
 		return getRecipientEventResponse;
+	}
+	
+	@RequestMapping(value="/sendEmailToSender", method=RequestMethod.POST)
+	public @ResponseBody BaseResponse sendEmailToSender() throws IOException{
+		return eventService.sendRecipientEmail();
 	}
 	
 	/*@RequestMapping(value="/event/remind", method=RequestMethod.POST)
