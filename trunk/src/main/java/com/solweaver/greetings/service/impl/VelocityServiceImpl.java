@@ -1,6 +1,7 @@
 package com.solweaver.greetings.service.impl;
 
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -48,6 +49,14 @@ public class VelocityServiceImpl implements IVelocityService {
 			e.printStackTrace();
 		}
 		return mergedTemplate;
+	}
+	
+	@Override
+	@Transactional
+	public void sendEmail(Map<String, Object> model, String emailTemplateName,String email) throws Exception {
+		List<String> emailList = new ArrayList<String>();
+		emailList.add(email);
+		sendEmail(model, emailTemplateName, emailList);
 	}
 	
 	@Override

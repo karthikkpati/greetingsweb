@@ -30,6 +30,7 @@ import com.solweaver.greetings.model.EventStatus;
 import com.solweaver.greetings.model.Theme;
 import com.solweaver.greetings.model.User;
 import com.solweaver.greetings.model.UserEvent;
+import com.solweaver.greetings.model.VideoStatus;
 import com.solweaver.greetings.service.IVideoService;
 import com.solweaver.greetings.utils.GenericUtils;
 import com.solweaver.xuggler.utils.XugglerMediaUtils;
@@ -172,6 +173,11 @@ public class VideoServiceImpl implements IVideoService{
 		Theme theme = themeDAO.findById(makeVideoRequest.getThemeId(), false);
 		
 		XugglerMediaUtils.mergeVideos(makeVideoRequest, theme);
+		
+		event.setVideoStatus(VideoStatus.Completed);
+		event.setEventStatus(EventStatus.Completed);
+		
+		eventDAO.merge(event);
 		
 		GenericUtils.buildErrorDetail(makeVideoResponse, GenericEnum.Success);
 		

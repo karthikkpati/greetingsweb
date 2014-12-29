@@ -19,6 +19,7 @@ import com.solweaver.greetings.dto.EventCreationResponse;
 import com.solweaver.greetings.dto.EventDTO;
 import com.solweaver.greetings.dto.EventDeleteRequest;
 import com.solweaver.greetings.dto.EventDeleteResponse;
+import com.solweaver.greetings.dto.EventErrorEnum;
 import com.solweaver.greetings.dto.EventReminderRequest;
 import com.solweaver.greetings.dto.EventReminderResponse;
 import com.solweaver.greetings.dto.EventRespondRequest;
@@ -32,11 +33,13 @@ import com.solweaver.greetings.dto.GetRecipientEventResponse;
 import com.solweaver.greetings.dto.RecipientEventDTO;
 import com.solweaver.greetings.model.Event;
 import com.solweaver.greetings.model.EventStatus;
+import com.solweaver.greetings.model.GenericConstants;
 import com.solweaver.greetings.model.InviteStatus;
 import com.solweaver.greetings.model.User;
 import com.solweaver.greetings.model.UserEvent;
 import com.solweaver.greetings.model.UserEventType;
 import com.solweaver.greetings.model.UserStatus;
+import com.solweaver.greetings.model.VideoStatus;
 import com.solweaver.greetings.service.IEventService;
 import com.solweaver.greetings.service.IVelocityService;
 import com.solweaver.greetings.utils.EntityDtoUtils;
@@ -439,4 +442,45 @@ public class EventServiceImpl implements IEventService{
 		GenericUtils.buildErrorDetail(getRecipientEventResponse, GenericEnum.Success);
 		return getRecipientEventResponse;
 	}
+	
+	@Override
+	@Transactional
+	public BaseResponse sendRecipientEmail(){
+		BaseResponse baseResponse = new BaseResponse();
+		List<Event> eventsList = eventDAO.findEventsToSend();
+		Map<String,Object> emailMap = null;
+		for(Event event : eventsList){
+			User recipientUser = event.getRecipientUser();
+			if(event.getEventStatus().equals(EventStatus.Completed) && recipientUser != null){
+				try{
+					emailMap = new HashMap<String, Object>();
+					if(recipientUser.getFirstName() != null ){
+						emailMap.put(GenericConstants.FIRST_NAME, recipientUser.getFirstName());
+					}
+					if(recipientUser.getLastName() != null){
+						emailMap.put(GenericConstants.LAST_NAME, recipientUser.getLastName());
+					}
+					List<UserEvent> userEventList = event.getUserEventList();
+					StringBuffer inviteeList = new StringBuffer();
+					for(UserEvent userEvent : userEventList){
+						if(!userEvent.getUserEventType().equals(UserEventType.RECIPIENT) && userEvent.getInviteStatus().equals(InviteStatus.Accepted)){
+							inviteeList.append(userEvent.getUser().getFirstName());
+							inviteeList.append(" ");
+							inviteeList.append(userEvent.getUser().getLastName());
+							inviteeList.append(" , ");
+						}
+					}
+					if(event.getVideoStatus().equals(VideoStatus.Completed)){
+						emailMap.put(GenericConstants.SENDERS, inviteeList.toString());
+					}
+					velocityService.sendEmail(emailMap, "Event_Sender", recipientUser.getEmail());
+				}catch (Exception e) {
+					e.printStackTrace();
+					GenericUtils.buildErrorDetail(baseResponse, GenericEnum.SENDER_EMAIL_FAILED, "Failed to Send email for event : "+event.getId());
+				}
+			}
+		}
+		return baseResponse;
+	}
+	
 }

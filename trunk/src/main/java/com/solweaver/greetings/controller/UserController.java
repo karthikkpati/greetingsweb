@@ -21,6 +21,7 @@ import com.solweaver.greetings.dto.LoginRequest;
 import com.solweaver.greetings.dto.LoginResponse;
 import com.solweaver.greetings.dto.UserRegistrationRequest;
 import com.solweaver.greetings.dto.UserRegistrationResponse;
+import com.solweaver.greetings.model.GenericConstants;
 import com.solweaver.greetings.service.IUserService;
 import com.solweaver.greetings.service.IVelocityService;
 import com.solweaver.greetings.utils.GenericUtils;
@@ -40,9 +41,9 @@ public class UserController {
 		
 		if(GenericUtils.isSuccess(userRegistrationResponse)){
 			Map<String,Object> emailMap = new HashMap<String, Object>();
-			emailMap.put("firstname", userRegistrationRequest.getFirstName());
-			emailMap.put("lastname", userRegistrationRequest.getLastName());
-			emailMap.put("username", userRegistrationRequest.getEmail());
+			emailMap.put(GenericConstants.FIRST_NAME, userRegistrationRequest.getFirstName());
+			emailMap.put(GenericConstants.LAST_NAME, userRegistrationRequest.getLastName());
+			emailMap.put(GenericConstants.USER_NAME, userRegistrationRequest.getEmail());
 			try {
 				List<String> emailList = new ArrayList<String>();
 				velocityService.sendEmail(emailMap, "Registration", emailList);
