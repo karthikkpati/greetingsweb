@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.solweaver.greetings.dto.DownloadVideoRequest;
 import com.solweaver.greetings.dto.DownloadVideoResponse;
@@ -36,6 +37,7 @@ import com.solweaver.greetings.service.IThemeService;
 import com.solweaver.greetings.service.IUserService;
 import com.solweaver.greetings.service.IVideoService;
 import com.solweaver.greetings.utils.GenericUtils;
+import com.solweaver.xuggler.utils.StreamingUtils;
 import com.solweaver.xuggler.utils.XugglerMediaUtils;
 
 @Controller
@@ -362,6 +364,55 @@ public class VideoController {
 			out.flush();
 			out.close();
 		}
+	}
+	
+	@RequestMapping(value="/streamingMp4Final", method=RequestMethod.GET)
+	public ModelAndView streamingMp4FinalVideo(
+			Model model,
+			@RequestParam("eventId") Long eventId,
+			@RequestParam("userId") Long userId,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws IOException{
+		String fileName = null;
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setView(new StreamingView());
+		DownloadVideoResponse downloadVideoResponse = new DownloadVideoResponse();
+
+		User user = userService.findUserById(userId);
+		if(user == null){
+			GenericUtils.buildErrorDetail(downloadVideoResponse, GenericEnum.INVALID_USER);
+			throw new RuntimeException(downloadVideoResponse.getErrorDetailList().get(0).getMessage());
+		}
+		
+		Event event = eventService.getEvent(eventId);
+		if(event == null){
+			GenericUtils.buildErrorDetail(downloadVideoResponse, GenericEnum.INVALID_EVENT);
+			throw new RuntimeException(downloadVideoResponse.getErrorDetailList().get(0).getMessage());
+		}
+		
+		String outputFolderName = EVENTS_FOLDER+eventId+"/output/";
+		File outputFolder = new File(outputFolderName);
+		if(outputFolder.isDirectory()){
+			String[] outputFiles = outputFolder.list();
+			for(String outputFile : outputFiles){
+				if(outputFile.endsWith(".mp4")){
+					fileName = outputFile;
+					break;
+				}
+			}
+			File outputFile = new File(outputFolderName+fileName);
+			model.addAttribute(StreamingUtils.CONTENT_TYPE, "video/mp4");
+			Long outputFileLength = outputFile.length();
+			response.setContentLength(outputFileLength.intValue());
+            
+			FileInputStream fileIn = new FileInputStream(outputFile);
+			model.addAttribute(StreamingUtils.INPUT_STREAM, fileIn);
+			model.addAttribute(StreamingUtils.FILENAME, fileName);
+			model.addAttribute(StreamingUtils.CONTENT_LENGTH, outputFile.length());
+			model.addAttribute(StreamingUtils.LAST_MODIFIED, outputFile.lastModified());
+		}
+		
+		return modelAndView;
 	}
 
 }
