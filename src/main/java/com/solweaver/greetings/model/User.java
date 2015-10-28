@@ -51,6 +51,11 @@ public class User extends BaseEntity{
 
 	private boolean emailVerified;
 	
+	private SocialAuthProvider socialAuthProvider;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="loggedInUser")
+	private List<LoginActivity> loginActivity;
+	
 	public Long getId() {
 		return id;
 	}
@@ -169,6 +174,22 @@ public class User extends BaseEntity{
 
 	public void setEmailVerified(boolean emailVerified) {
 		this.emailVerified = emailVerified;
+	}
+
+	public SocialAuthProvider getSocialAuthProvider() {
+		return socialAuthProvider;
+	}
+
+	public void setSocialAuthProvider(SocialAuthProvider socialAuthProvider) {
+		this.socialAuthProvider = socialAuthProvider;
+	}
+
+	public List<LoginActivity> getLoginActivity() {
+		return loginActivity;
+	}
+
+	public void setLoginActivity(List<LoginActivity> loginActivity) {
+		this.loginActivity = loginActivity;
 	}
 
 }

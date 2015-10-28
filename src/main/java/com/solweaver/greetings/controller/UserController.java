@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.solweaver.greetings.dto.BaseResponse;
 import com.solweaver.greetings.dto.GenericEnum;
 import com.solweaver.greetings.dto.LoginRequest;
 import com.solweaver.greetings.dto.LoginResponse;
@@ -60,6 +61,11 @@ public class UserController {
 		return userService.login(loginRequest);
 	}
 
+	@RequestMapping(value="/logout", method=RequestMethod.POST)
+	public @ResponseBody BaseResponse logout(@Valid @RequestBody LoginRequest loginRequest) throws IOException{
+		return userService.logout(loginRequest);
+	}
+	
 	@RequestMapping(value="/register1", method=RequestMethod.GET)
 	public @ResponseBody UserRegistrationRequest registerUser1() throws IOException{
 		UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();

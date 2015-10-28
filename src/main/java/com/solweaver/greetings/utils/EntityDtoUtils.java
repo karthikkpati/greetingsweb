@@ -37,6 +37,9 @@ public class EntityDtoUtils {
 			}
 			userDTO.setUserId(user.getId());
 			userDTO.setUserStatus(user.getUserStatus().name());
+			if(user.getSocialAuthProvider() != null){
+				userDTO.setSocialAuthProvider(user.getSocialAuthProvider().name());
+			}
 		}
 		return userDTO;
 	}
@@ -139,6 +142,9 @@ public class EntityDtoUtils {
 		themeDTO.setThemeName(theme.getThemeName());
 		if(theme.getCategory() != null){
 			themeDTO.setCategoryDTO(getCategoryDTO(theme.getCategory()));
+		}
+		if(theme.getSubscriptionType() != null){
+			themeDTO.setSubscriptionType(theme.getSubscriptionType().name());
 		}
 		return themeDTO;
 	}

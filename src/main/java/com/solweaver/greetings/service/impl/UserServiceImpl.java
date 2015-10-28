@@ -1,14 +1,16 @@
 package com.solweaver.greetings.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.solweaver.greetings.dao.LoginActivityDAO;
 import com.solweaver.greetings.dao.UserDAO;
-import com.solweaver.greetings.dto.EventCreationRequest;
-import com.solweaver.greetings.dto.EventCreationResponse;
+import com.solweaver.greetings.dto.BaseResponse;
 import com.solweaver.greetings.dto.GenericEnum;
 import com.solweaver.greetings.dto.LoginRequest;
 import com.solweaver.greetings.dto.LoginResponse;
@@ -17,6 +19,8 @@ import com.solweaver.greetings.dto.UserRegistrationRequest;
 import com.solweaver.greetings.dto.UserRegistrationResponse;
 import com.solweaver.greetings.model.Channel;
 import com.solweaver.greetings.model.Gender;
+import com.solweaver.greetings.model.LoginActivity;
+import com.solweaver.greetings.model.SocialAuthProvider;
 import com.solweaver.greetings.model.User;
 import com.solweaver.greetings.model.UserStatus;
 import com.solweaver.greetings.service.IUserService;
@@ -29,6 +33,9 @@ public class UserServiceImpl implements IUserService{
 	@Autowired
 	private UserDAO userDAO;
 
+	@Autowired
+	private LoginActivityDAO loginActivityDAO;
+	
 	@Override
 	@Transactional
 	public UserRegistrationResponse createUserIfNotExists(
@@ -47,25 +54,68 @@ public class UserServiceImpl implements IUserService{
 			return userRegistrationResponse;
 		}
 		
+		SocialAuthProvider socialAuthProvider = null;
+		try{
+			if(!StringUtils.isEmpty(userRegistrationRequest.getSocialAuthProvider()))
+			socialAuthProvider = SocialAuthProvider.valueOf(userRegistrationRequest.getSocialAuthProvider());
+		}catch(Exception exception){
+			GenericUtils.buildErrorDetail(userRegistrationResponse, GenericEnum.INVALID_SOCIAL_AUTH_PROVIDER);
+			return userRegistrationResponse;
+		}
 		user = userDAO.findExistingUserByEmail(userRegistrationRequest.getEmail());
 		if(user != null){
-			if(user.getUserStatus().equals(UserStatus.Active)){
+			if((socialAuthProvider == null && user.getUserStatus().equals(UserStatus.Active))){
 				GenericUtils.buildErrorDetail(userRegistrationResponse, GenericEnum.DUPLICATE_USER);
 				return userRegistrationResponse;
 			}
+			
 		}else{
 			user = new User();
 		}
-		user.setDateOfBirth(userRegistrationRequest.getDateOfBirth());
-		user.setEmail(userRegistrationRequest.getEmail());
-		user.setFirstName(userRegistrationRequest.getFirstName());
-		user.setLastName(userRegistrationRequest.getLastName());
-		user.setGender(gender);
-		user.setRegisteredDeviceId(userRegistrationRequest.getDeviceId());
+		Date dateOfBirth = userRegistrationRequest.getDateOfBirth();
+		String email = userRegistrationRequest.getEmail();
+		String firstName = userRegistrationRequest.getFirstName();
+		String lastName = userRegistrationRequest.getLastName();
+		String deviceId = userRegistrationRequest.getDeviceId();
+		Channel channel = Channel.valueOf(userRegistrationRequest.getChannel());
+		String password = userRegistrationRequest.getPassword();
+		
+		if(dateOfBirth != null){
+			user.setDateOfBirth(dateOfBirth);
+		}
+		if(email != null){
+			user.setEmail(email);
+		}
+		if(firstName != null){
+			user.setFirstName(firstName);
+		}
+		if(lastName != null){
+			user.setLastName(lastName);
+		}
+		if(gender != null){
+			user.setGender(gender);
+		}
+		if(deviceId != null && user.getRegisteredDeviceId() == null){
+			user.setRegisteredDeviceId(deviceId);
+		}
+		if(channel != null && user.getRegisteredChannel() == null){
+			user.setRegisteredChannel(channel);
+		}
+		if(password != null){
+			user.setPassword(password);
+		}
+		if(socialAuthProvider != null && user.getSocialAuthProvider() == null){
+			user.setSocialAuthProvider(socialAuthProvider);
+		}
+		
 		user.setUserStatus(UserStatus.Active);
-		user.setRegisteredChannel(Channel.valueOf(userRegistrationRequest.getChannel()));
-		user.setPassword(userRegistrationRequest.getPassword());
 		userDAO.makePersistent(user);
+		
+		LoginActivity loginActivity = new LoginActivity();
+		loginActivity.setLoggedInUser(user);
+		loginActivity.setLoginTime(new Date());
+		loginActivity.setDeviceId(userRegistrationRequest.getDeviceId());
+		loginActivityDAO.makePersistent(loginActivity);
 		
 		userRegistrationResponse.setUserDTO(EntityDtoUtils.getUserDTO(user));
 		
@@ -90,10 +140,12 @@ public class UserServiceImpl implements IUserService{
 		UserDTO userDTO = EntityDtoUtils.getUserDTO(user);
 		loginResponse.setUserDTO(userDTO);
 
-		user.setLastLoggedInChannel(Channel.valueOf(loginRequest.getChannel()));
-		user.setLastLoggedInDeviceId(loginRequest.getDeviceId());
-		user.setLastLoggedInTime(new Date());
+		LoginActivity loginActivity = new LoginActivity();
+		loginActivity.setLoggedInUser(user);
+		loginActivity.setLoginTime(new Date());
+		loginActivity.setDeviceId(loginRequest.getDeviceId());
 		
+		loginActivityDAO.makePersistent(loginActivity);
 		userDAO.merge(user);
 		
 		GenericUtils.buildErrorDetail(loginResponse, GenericEnum.Success);
@@ -104,6 +156,28 @@ public class UserServiceImpl implements IUserService{
 	@Transactional
 	public User findUserById(Long userId) {
 		return userDAO.findActiveUserById(userId);
+	}
+
+	@Override
+	@Transactional
+	public BaseResponse logout(LoginRequest loginRequest){
+		BaseResponse logoutResponse = new BaseResponse();
+		User user = userDAO.findActiveUserByEmail(loginRequest.getEmail());
+		if(user == null){
+			GenericUtils.buildErrorDetail(logoutResponse, GenericEnum.USER_DOESNT_EXIST);
+			return logoutResponse;
+		}
+		
+		if(!user.getPassword().equals(loginRequest.getPassword())){
+			GenericUtils.buildErrorDetail(logoutResponse, GenericEnum.INVALID_USERNAME_PASSWORD);
+			return logoutResponse;
+		}
+		
+		loginActivityDAO.logoutUserDevice(user, loginRequest.getDeviceId());
+		loginActivityDAO.findByUserDevice(user, loginRequest.getDeviceId());
+				
+		GenericUtils.buildErrorDetail(logoutResponse, GenericEnum.Success);
+		return logoutResponse;
 	}
 
 }

@@ -4,7 +4,6 @@ import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Any;
 import org.hibernate.validator.constraints.Email;
 
 
@@ -31,6 +30,8 @@ public class UserRegistrationRequest extends BaseRequest{
 	private String lastName;
 	
 	private String registeredChannelId;
+	
+	private String socialAuthProvider;
 
 	public String getEmail() {
 		return email;
@@ -102,6 +103,14 @@ public class UserRegistrationRequest extends BaseRequest{
 
 	public void setRegisteredChannelId(String registeredChannelId) {
 		this.registeredChannelId = registeredChannelId;
+	}
+
+	public String getSocialAuthProvider() {
+		return socialAuthProvider;
+	}
+
+	public void setSocialAuthProvider(String socialAuthProvider) {
+		this.socialAuthProvider = socialAuthProvider;
 	}
 
 }

@@ -15,6 +15,8 @@ public class ThemeDTO {
 
 	private CategoryDTO categoryDTO;
 	
+	public String subscriptionType;
+	
 	public Long getThemeId() {
 		return themeId;
 	}
@@ -53,6 +55,14 @@ public class ThemeDTO {
 
 	public void setCategoryDTO(CategoryDTO categoryDTO) {
 		this.categoryDTO = categoryDTO;
+	}
+
+	public String getSubscriptionType() {
+		return subscriptionType;
+	}
+
+	public void setSubscriptionType(String subscriptionType) {
+		this.subscriptionType = subscriptionType;
 	}
 
 }

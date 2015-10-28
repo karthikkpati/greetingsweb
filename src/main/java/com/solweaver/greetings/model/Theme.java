@@ -32,6 +32,8 @@ public class Theme extends BaseEntity{
 	private String path;
 	
 	private String fileSystemPath;
+	
+	public SubscriptionType subscriptionType;
 
 	@ManyToOne
 	@JoinColumn(name="category_id")
@@ -91,6 +93,14 @@ public class Theme extends BaseEntity{
 
 	public void setCategory(Category category) {
 		this.category = category;
+	}
+
+	public SubscriptionType getSubscriptionType() {
+		return subscriptionType;
+	}
+
+	public void setSubscriptionType(SubscriptionType subscriptionType) {
+		this.subscriptionType = subscriptionType;
 	}
 
 }

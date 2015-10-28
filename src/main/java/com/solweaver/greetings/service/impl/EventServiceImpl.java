@@ -19,7 +19,6 @@ import com.solweaver.greetings.dto.EventCreationResponse;
 import com.solweaver.greetings.dto.EventDTO;
 import com.solweaver.greetings.dto.EventDeleteRequest;
 import com.solweaver.greetings.dto.EventDeleteResponse;
-import com.solweaver.greetings.dto.EventErrorEnum;
 import com.solweaver.greetings.dto.EventReminderRequest;
 import com.solweaver.greetings.dto.EventReminderResponse;
 import com.solweaver.greetings.dto.EventRespondRequest;

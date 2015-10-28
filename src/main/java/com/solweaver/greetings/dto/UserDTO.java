@@ -15,6 +15,8 @@ public class UserDTO {
 	private String gender;
 	
 	private String dateOfBirth;
+	
+	private String socialAuthProvider;
 
 	public Long getUserId() {
 		return userId;
@@ -72,4 +74,12 @@ public class UserDTO {
 		this.dateOfBirth = dateOfBirth;
 	}
 
+	public String getSocialAuthProvider() {
+		return socialAuthProvider;
+	}
+
+	public void setSocialAuthProvider(String socialAuthProvider) {
+		this.socialAuthProvider = socialAuthProvider;
+	}
+	
 }
