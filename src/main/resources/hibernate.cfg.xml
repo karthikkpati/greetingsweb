@@ -20,6 +20,8 @@
 		<mapping class="com.solweaver.greetings.model.Theme"/>
 		<mapping class="com.solweaver.greetings.model.Category"/>
 		<mapping class="com.solweaver.greetings.model.EmailTemplate"/>
+		<mapping class="com.solweaver.greetings.model.NotificationTemplate"/>
+		<mapping class="com.solweaver.greetings.model.LoginActivity"/>
 		<!-- <mapping class="com.solweaver.greetings.entity.Event"/>
 		<mapping class="com.solweaver.greetings.entity.Country"/>
 		<mapping class="com.solweaver.greetings.entity.User"/>
