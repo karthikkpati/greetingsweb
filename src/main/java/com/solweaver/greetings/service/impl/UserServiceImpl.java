@@ -1,7 +1,6 @@
 package com.solweaver.greetings.service.impl;
 
 import java.util.Date;
-import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,6 +114,8 @@ public class UserServiceImpl implements IUserService{
 		loginActivity.setLoggedInUser(user);
 		loginActivity.setLoginTime(new Date());
 		loginActivity.setDeviceId(userRegistrationRequest.getDeviceId());
+		loginActivity.setActive(true);
+		
 		loginActivityDAO.makePersistent(loginActivity);
 		
 		userRegistrationResponse.setUserDTO(EntityDtoUtils.getUserDTO(user));
@@ -144,6 +145,7 @@ public class UserServiceImpl implements IUserService{
 		loginActivity.setLoggedInUser(user);
 		loginActivity.setLoginTime(new Date());
 		loginActivity.setDeviceId(loginRequest.getDeviceId());
+		loginActivity.setActive(true);
 		
 		loginActivityDAO.makePersistent(loginActivity);
 		userDAO.merge(user);
