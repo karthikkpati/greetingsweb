@@ -178,7 +178,7 @@ public class EventServiceImpl implements IEventService{
 				
 		List<Event> eventList = eventDAO.findEventsByUserId(user.getId(), getEventRequest.getEventId(), getEventRequest.isGetUserDetails(), eventStatus, inviteeStatus, userEventType);
 		
-		List<EventDTO> eventDTOList = EntityDtoUtils.getEventDTOList(eventList, getEventRequest.isGetUserDetails());
+		List<EventDTO> eventDTOList = EntityDtoUtils.getEventDTOList(eventList, getEventRequest.isGetUserDetails(), user);
 		
 		getEventResponse.setEventDTOList(eventDTOList);
 		GenericUtils.buildErrorDetail(getEventResponse, GenericEnum.Success);

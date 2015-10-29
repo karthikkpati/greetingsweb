@@ -3,6 +3,8 @@ package com.solweaver.greetings.dto;
 import java.util.Date;
 import java.util.List;
 
+import com.solweaver.greetings.model.UserEventType;
+
 public class EventDTO {
 
 	private Long eventId;
@@ -52,6 +54,8 @@ public class EventDTO {
 	private List<UserEventDTO> userEventDTOList;
 
 	private CategoryDTO categoryDTO;
+	
+	private String userEventType;
 	
 	public Long getUserId() {
 		return userId;
@@ -171,6 +175,14 @@ public class EventDTO {
 
 	public void setCategoryDTO(CategoryDTO categoryDTO) {
 		this.categoryDTO = categoryDTO;
+	}
+
+	public String getUserEventType() {
+		return userEventType;
+	}
+
+	public void setUserEventType(String userEventType) {
+		this.userEventType = userEventType;
 	}
 
 }

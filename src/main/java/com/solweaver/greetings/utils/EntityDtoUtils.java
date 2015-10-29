@@ -72,12 +72,12 @@ public class EntityDtoUtils {
 		return userEvent;
 	}
 
-	public static List<EventDTO> getEventDTOList(List<Event> eventList, boolean isUserEvent) {
+	public static List<EventDTO> getEventDTOList(List<Event> eventList, boolean isUserEvent, User user) {
 		List<EventDTO> eventDTOList = null;
 		if(eventList != null && eventList.size() > 0){
 			eventDTOList = new ArrayList<EventDTO>();
 			for(Event event:eventList){
-				EventDTO eventDTO = getEventDTO(event, isUserEvent);
+				EventDTO eventDTO = getEventDTO(event, isUserEvent, user);
 				eventDTO.setEventId(event.getId());
 				eventDTOList.add(eventDTO);
 			}
@@ -85,7 +85,7 @@ public class EntityDtoUtils {
 		return eventDTOList;
 	}
 	
-	public static EventDTO getEventDTO(Event event, boolean isUserEvent){
+	public static EventDTO getEventDTO(Event event, boolean isUserEvent, User user){
 		EventDTO eventDTO = new EventDTO();
 		eventDTO.setCreatedByRecordedLink(event.getCreatedByRecordedLink());
 		eventDTO.setDescription(event.getDescription());
@@ -103,7 +103,13 @@ public class EntityDtoUtils {
 			if(userEventList != null && userEventList.size() > 0){
 				userEventDTOList = new ArrayList<UserEventDTO>();
 				for(UserEvent userEvent : userEventList){
-					userEventDTOList.add(getUserEventDTO(userEvent));
+					UserEventDTO userEventDTO = getUserEventDTO(userEvent);
+					userEventDTOList.add(userEventDTO);
+					if(userEventDTO != null && userEventDTO.getUserDTO() != null){
+						if(userEventDTO.getUserDTO().getUserId() !=null && userEventDTO.getUserDTO().getUserId().equals(user.getId())){
+							eventDTO.setUserEventType(userEventDTO.getUserEventType());
+						}
+					}
 				}
 			}
 			eventDTO.setUserEventDTOList(userEventDTOList);
