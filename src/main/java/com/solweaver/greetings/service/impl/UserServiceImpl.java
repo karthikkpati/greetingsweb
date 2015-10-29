@@ -13,6 +13,7 @@ import com.solweaver.greetings.dto.BaseResponse;
 import com.solweaver.greetings.dto.GenericEnum;
 import com.solweaver.greetings.dto.LoginRequest;
 import com.solweaver.greetings.dto.LoginResponse;
+import com.solweaver.greetings.dto.LogoutRequest;
 import com.solweaver.greetings.dto.UserDTO;
 import com.solweaver.greetings.dto.UserRegistrationRequest;
 import com.solweaver.greetings.dto.UserRegistrationResponse;
@@ -162,22 +163,16 @@ public class UserServiceImpl implements IUserService{
 
 	@Override
 	@Transactional
-	public BaseResponse logout(LoginRequest loginRequest){
+	public BaseResponse logout(LogoutRequest logoutRequest){
 		BaseResponse logoutResponse = new BaseResponse();
-		User user = userDAO.findActiveUserByEmail(loginRequest.getEmail());
+		User user = userDAO.findActiveUserByEmail(logoutRequest.getEmail());
 		if(user == null){
 			GenericUtils.buildErrorDetail(logoutResponse, GenericEnum.USER_DOESNT_EXIST);
 			return logoutResponse;
 		}
 		
-		if(!user.getPassword().equals(loginRequest.getPassword())){
-			GenericUtils.buildErrorDetail(logoutResponse, GenericEnum.INVALID_USERNAME_PASSWORD);
-			return logoutResponse;
-		}
-		
-		loginActivityDAO.logoutUserDevice(user, loginRequest.getDeviceId());
-		loginActivityDAO.findByUserDevice(user, loginRequest.getDeviceId());
-				
+		loginActivityDAO.logoutUserDevice(user, logoutRequest.getDeviceId());
+			
 		GenericUtils.buildErrorDetail(logoutResponse, GenericEnum.Success);
 		return logoutResponse;
 	}

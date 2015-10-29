@@ -28,6 +28,8 @@ public class EventCreationRequest extends BaseRequest{
 	private String receiverEmail;
 	
 	private String recipientMessage;
+	
+	private String category;
 
 	public Long getUserId() {
 		return userId;
@@ -107,6 +109,14 @@ public class EventCreationRequest extends BaseRequest{
 
 	public void setRecipientMessage(String recipientMessage) {
 		this.recipientMessage = recipientMessage;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 }

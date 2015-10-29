@@ -70,6 +70,9 @@ public class Event extends BaseEntity{
 	
 	private VideoStatus videoStatus;
 	
+	@ManyToOne(fetch=FetchType.EAGER)
+	private Category category;
+	
 	/**
 	 * List of Invitees participating in this event
 	 *//*
@@ -199,6 +202,14 @@ public class Event extends BaseEntity{
 		this.videoStatus = videoStatus;
 	}
 
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+	
 /*	public List<Invitee> getInviteeList() {
 		return inviteeList;
 	}

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.solweaver.greetings.dao.CategoryDAO;
 import com.solweaver.greetings.dao.EventDAO;
 import com.solweaver.greetings.dao.UserDAO;
 import com.solweaver.greetings.dao.UserEventDAO;
@@ -30,6 +31,7 @@ import com.solweaver.greetings.dto.GetEventResponse;
 import com.solweaver.greetings.dto.GetRecipientEventRequest;
 import com.solweaver.greetings.dto.GetRecipientEventResponse;
 import com.solweaver.greetings.dto.RecipientEventDTO;
+import com.solweaver.greetings.model.Category;
 import com.solweaver.greetings.model.Event;
 import com.solweaver.greetings.model.EventStatus;
 import com.solweaver.greetings.model.GenericConstants;
@@ -58,6 +60,9 @@ public class EventServiceImpl implements IEventService{
 	
 	@Autowired
 	private UserEventDAO userEventDAO;
+	
+	@Autowired
+	private CategoryDAO categoryDAO;
 	
 	@Override
 	@Transactional
@@ -95,6 +100,9 @@ public class EventServiceImpl implements IEventService{
 				}
 			}
 		}
+		
+		Category category = categoryDAO.findByName(eventCreationRequest.getCategory());
+		event.setCategory(category);
 		
 		event.setCreatedBy(user);
 		event.setEventStatus(EventStatus.Active);
