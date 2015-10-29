@@ -67,7 +67,9 @@ public class NotificationServiceImpl implements INotificationService{
 				notificationMessage.append(loginActivity.getDeviceId());
 				 notificationMessage.append(", " );
 			}
+			notificationMessage.substring(notificationMessage.length()-2, notificationMessage.length()-1);
 		}
+		
 				
 		notificationMessage.append("devices");
 		GenericUtils.buildErrorDetail(notificationResponse, GenericEnum.Success, notificationMessage.toString());

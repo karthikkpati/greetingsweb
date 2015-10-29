@@ -12,7 +12,7 @@ public class EventDTO {
 	private String eventName;
 
 	private boolean enableReminder;
-
+	
 	/**
 	 * Date on which event should be sent
 	 */
@@ -50,6 +50,8 @@ public class EventDTO {
 	private String recipientMessage;
 	
 	private List<UserEventDTO> userEventDTOList;
+
+	private CategoryDTO categoryDTO;
 	
 	public Long getUserId() {
 		return userId;
@@ -162,5 +164,13 @@ public class EventDTO {
 	public void setRecipientMessage(String recipientMessage) {
 		this.recipientMessage = recipientMessage;
 	}
-	
+
+	public CategoryDTO getCategoryDTO() {
+		return categoryDTO;
+	}
+
+	public void setCategoryDTO(CategoryDTO categoryDTO) {
+		this.categoryDTO = categoryDTO;
+	}
+
 }

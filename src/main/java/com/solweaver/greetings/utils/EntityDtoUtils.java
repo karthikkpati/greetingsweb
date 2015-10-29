@@ -111,6 +111,15 @@ public class EntityDtoUtils {
 		eventDTO.setFromMessage(event.getFromMessage());
 		eventDTO.setVideoSubmissionDate(event.getVideoSubmissionDate());
 		
+		Category eventCategory = event.getCategory();
+		if(eventCategory != null){
+			CategoryDTO categoryDTO = new CategoryDTO();
+			categoryDTO.setCategoryDescription(eventCategory.getDescription());
+			categoryDTO.setCategoryId(eventCategory.getId());
+			categoryDTO.setCategoryName(eventCategory.getCategoryName());
+			eventDTO.setCategoryDTO(categoryDTO);
+		}
+		
 		UserDTO createdByUser = getUserDTO(event.getCreatedBy());
 		eventDTO.setCreatedBy(createdByUser);
 		
