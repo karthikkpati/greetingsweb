@@ -79,6 +79,8 @@ public class UserServiceImpl implements IUserService{
 		String deviceId = userRegistrationRequest.getDeviceId();
 		Channel channel = Channel.valueOf(userRegistrationRequest.getChannel());
 		String password = userRegistrationRequest.getPassword();
+		String countryCode = userRegistrationRequest.getCountryCode();
+		String phoneNumber = userRegistrationRequest.getPhoneNumber();
 		
 		if(dateOfBirth != null){
 			user.setDateOfBirth(dateOfBirth);
@@ -106,6 +108,12 @@ public class UserServiceImpl implements IUserService{
 		}
 		if(socialAuthProvider != null && user.getSocialAuthProvider() == null){
 			user.setSocialAuthProvider(socialAuthProvider);
+		}
+		if(countryCode != null){
+			user.setCountryCode(countryCode);
+		}
+		if(phoneNumber != null){
+			user.setPhoneNumber(phoneNumber);
 		}
 		
 		user.setUserStatus(UserStatus.Active);

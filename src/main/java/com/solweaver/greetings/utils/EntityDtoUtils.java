@@ -40,6 +40,8 @@ public class EntityDtoUtils {
 			if(user.getSocialAuthProvider() != null){
 				userDTO.setSocialAuthProvider(user.getSocialAuthProvider().name());
 			}
+			userDTO.setCountryCode(user.getCountryCode());
+			userDTO.setPhoneNumber(user.getPhoneNumber());
 		}
 		return userDTO;
 	}
@@ -144,6 +146,7 @@ public class EntityDtoUtils {
 			String userEventRecordedLink = recordedLink + "fileName="+userEvent.getRecordedLink()+"&eventId="+userEvent.getEvent().getId()+"&userId="+userEvent.getUser().getId();
 			userEventDTO.setRecordedLink(userEventRecordedLink);
 		}
+		userEventDTO.setMessage(userEvent.getMessage());
 		userEventDTO.setUserEventID(userEvent.getId());
 		userEventDTO.setUserEventType(userEvent.getUserEventType().name());
 		return userEventDTO;

@@ -56,7 +56,7 @@ public class VideoServiceImpl implements IVideoService{
 	@Transactional
 	public VideoUploadResponse uploadVideo(
 			VideoUploadRequest videoUploadRequest, InputStream inputStream,
-			String fileName) throws IOException, FileNotFoundException{
+			String fileName, String message) throws IOException, FileNotFoundException{
 		
 		VideoUploadResponse videoUploadResponse = new VideoUploadResponse();
 		
@@ -106,7 +106,7 @@ public class VideoServiceImpl implements IVideoService{
 		fos.close();
 
 		userEvent.setRecordedLink(fileName);
-		
+		userEvent.setMessage(message);
 		userEventDAO.merge(userEvent);
 		
 		GenericUtils.buildErrorDetail(videoUploadResponse, GenericEnum.Success);

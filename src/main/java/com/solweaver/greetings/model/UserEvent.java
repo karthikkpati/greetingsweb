@@ -34,6 +34,8 @@ public class UserEvent extends BaseEntity {
 	private String recordedLink;
 	
 	private InviteStatus inviteStatus;
+	
+	private String message;
 
 	public Long getId() {
 		return id;
@@ -89,6 +91,14 @@ public class UserEvent extends BaseEntity {
 
 	public void setInviteStatus(InviteStatus inviteStatus) {
 		this.inviteStatus = inviteStatus;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 	
 }
