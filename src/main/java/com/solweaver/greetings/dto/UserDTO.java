@@ -17,6 +17,10 @@ public class UserDTO {
 	private String dateOfBirth;
 	
 	private String socialAuthProvider;
+	
+	private String countryCode;
+	
+	private String phoneNumber;
 
 	public Long getUserId() {
 		return userId;
@@ -80,6 +84,22 @@ public class UserDTO {
 
 	public void setSocialAuthProvider(String socialAuthProvider) {
 		this.socialAuthProvider = socialAuthProvider;
+	}
+
+	public String getCountryCode() {
+		return countryCode;
+	}
+
+	public void setCountryCode(String countryCode) {
+		this.countryCode = countryCode;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 	
 }

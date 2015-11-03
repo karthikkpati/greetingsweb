@@ -126,12 +126,13 @@ public class VideoController {
 	
 	@RequestMapping(value="/upload1", method=RequestMethod.POST)
 	public @ResponseBody VideoUploadResponse uploadVideo(@RequestBody VideoUploadRequest videoUploadRequest, @RequestParam(value="file", required=false) MultipartFile file,
+			@RequestParam("message") String message,
 			Model model,
 			HttpServletRequest request, 
 			HttpServletResponse response) throws IOException{
 		InputStream inputStream = file.getInputStream();
 		String fileName = file.getOriginalFilename();
-		return videoService.uploadVideo(videoUploadRequest, inputStream, fileName);
+		return videoService.uploadVideo(videoUploadRequest, inputStream, fileName, message);
 	}
 	
 	@RequestMapping(value="/upload", method=RequestMethod.POST)
@@ -139,6 +140,7 @@ public class VideoController {
 			Model model,
 			@RequestParam("eventId") Long eventId,
 			@RequestParam("userId") Long userId,
+			@RequestParam("message") String message,
 			HttpServletRequest request, 
 			HttpServletResponse response) throws IOException{
 		VideoUploadRequest videoUploadRequest = new VideoUploadRequest();
@@ -146,7 +148,7 @@ public class VideoController {
 		videoUploadRequest.setUserId(userId);
 		InputStream inputStream = file.getInputStream();
 		String fileName = file.getOriginalFilename();
-		return videoService.uploadVideo(videoUploadRequest, inputStream, fileName);
+		return videoService.uploadVideo(videoUploadRequest, inputStream, fileName, message);
 	}
 	
 	@RequestMapping(value="/downloadRequest", method=RequestMethod.POST)

@@ -17,6 +17,8 @@ public class UserEventDTO {
 	private String recordedLink;
 	
 	private String inviteStatus;
+	
+	private String message;
 
 	public Long getUserEventID() {
 		return userEventID;
@@ -72,6 +74,12 @@ public class UserEventDTO {
 
 	public void setInviteStatus(String inviteStatus) {
 		this.inviteStatus = inviteStatus;
+	}
+	public String getMessage() {
+		return message;
+	}
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 }

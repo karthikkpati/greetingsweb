@@ -32,6 +32,10 @@ public class UserRegistrationRequest extends BaseRequest{
 	private String registeredChannelId;
 	
 	private String socialAuthProvider;
+	
+	private String countryCode;
+	
+	private String phoneNumber;
 
 	public String getEmail() {
 		return email;
@@ -111,6 +115,22 @@ public class UserRegistrationRequest extends BaseRequest{
 
 	public void setSocialAuthProvider(String socialAuthProvider) {
 		this.socialAuthProvider = socialAuthProvider;
+	}
+
+	public String getCountryCode() {
+		return countryCode;
+	}
+
+	public void setCountryCode(String countryCode) {
+		this.countryCode = countryCode;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
 }

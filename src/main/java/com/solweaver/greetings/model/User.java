@@ -53,6 +53,10 @@ public class User extends BaseEntity{
 	
 	private SocialAuthProvider socialAuthProvider;
 	
+	private String countryCode;
+	
+	private String phoneNumber;
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="loggedInUser")
 	private List<LoginActivity> loginActivity;
 	
@@ -190,6 +194,22 @@ public class User extends BaseEntity{
 
 	public void setLoginActivity(List<LoginActivity> loginActivity) {
 		this.loginActivity = loginActivity;
+	}
+
+	public String getCountryCode() {
+		return countryCode;
+	}
+
+	public void setCountryCode(String countryCode) {
+		this.countryCode = countryCode;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
 }
