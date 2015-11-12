@@ -57,7 +57,7 @@ public class UserServiceImpl implements IUserService{
 		SocialAuthProvider socialAuthProvider = null;
 		try{
 			if(!StringUtils.isEmpty(userRegistrationRequest.getSocialAuthProvider()))
-			socialAuthProvider = SocialAuthProvider.valueOf(userRegistrationRequest.getSocialAuthProvider());
+			socialAuthProvider = SocialAuthProvider.valueOf(userRegistrationRequest.getSocialAuthProvider().toUpperCase());
 		}catch(Exception exception){
 			GenericUtils.buildErrorDetail(userRegistrationResponse, GenericEnum.INVALID_SOCIAL_AUTH_PROVIDER);
 			return userRegistrationResponse;

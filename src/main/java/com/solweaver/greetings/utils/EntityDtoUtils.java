@@ -38,7 +38,7 @@ public class EntityDtoUtils {
 			userDTO.setUserId(user.getId());
 			userDTO.setUserStatus(user.getUserStatus().name());
 			if(user.getSocialAuthProvider() != null){
-				userDTO.setSocialAuthProvider(user.getSocialAuthProvider().name());
+				userDTO.setSocialAuthProvider(user.getSocialAuthProvider().name().toUpperCase());
 			}
 			userDTO.setCountryCode(user.getCountryCode());
 			userDTO.setPhoneNumber(user.getPhoneNumber());
