@@ -220,6 +220,7 @@ public class XugglerMediaUtils {
 	   for(int i=0; i<videoDTOList.length ; i++){
 		   mediaReaderArray[i] = ToolFactory.makeReader(videoDTOList[i].getFormattedFile());
 		   //mediaReaderArray[i].addListener(concatenator);
+		   System.out.println("Angle of rotation is "+videoDTOList[i].getAngleOfRotation());
 		   if(videoDTOList[i].getAngleOfRotation() == null ) {
 			   MediaConcatenator concatenator = mediaConcatenatorMap.get(0.0); 
 			   if(concatenator == null){
