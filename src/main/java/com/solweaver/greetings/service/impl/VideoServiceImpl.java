@@ -152,6 +152,15 @@ public class VideoServiceImpl implements IVideoService{
 					VideoDTO videoDTO = videoDTOList[i];
 					if(videoDTO.getUserEventId() != null){
 						videoDTO.setFileName(userEventMap.get(videoDTO.getUserEventId()).getRecordedLink());
+						if(makeVideoRequest.getRotationAngle() != null && makeVideoRequest.getRotationAngle().isEmpty()){
+							double rotationAngle = 0;
+							try{
+								rotationAngle = Double.valueOf(makeVideoRequest.getRotationAngle());
+							}catch(Exception e){
+								e.printStackTrace();
+							}
+							videoDTO.setAngleOfRotation(rotationAngle);
+						}
 					}
 				}
 			}else{

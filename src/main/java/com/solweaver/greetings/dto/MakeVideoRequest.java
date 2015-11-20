@@ -19,6 +19,7 @@ public class MakeVideoRequest {
 	private Long eventId;
 	@NotNull(message="User Id cannot be null")
 	private Long userId;
+	private String rotationAngle;
 	/*public String[] getInputFiles() {
 		return inputFiles;
 	}
@@ -84,5 +85,11 @@ public class MakeVideoRequest {
 	}
 	public void setThemeId(Long themeId) {
 		this.themeId = themeId;
+	}
+	public String getRotationAngle() {
+		return rotationAngle;
+	}
+	public void setRotationAngle(String rotationAngle) {
+		this.rotationAngle = rotationAngle;
 	}
 }
