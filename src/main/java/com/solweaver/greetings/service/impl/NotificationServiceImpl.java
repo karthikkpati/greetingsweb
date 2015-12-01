@@ -161,10 +161,10 @@ public class NotificationServiceImpl implements INotificationService{
 						DashboardNotificationDTO dashboardNotificationDTO = new DashboardNotificationDTO();
 						Event event = userEvent.getEvent();
 						String description = "";
+						dashboardNotificationDTO.setEventId(userEvent.getEvent().getId());
+						dashboardNotificationDTO.setEventType(userEvent.getUserEventType().toString());
+						dashboardNotificationDTO.setUserEventId(userEvent.getId());
 						if(userEvent.getUserEventType().equals(UserEventType.Invitee)){
-							dashboardNotificationDTO.setEventId(userEvent.getEvent().getId());
-							dashboardNotificationDTO.setEventType(userEvent.getUserEventType().toString());
-							dashboardNotificationDTO.setUserEventId(userEvent.getId());
 							if(event.getEventStatus().equals(EventStatus.Completed)){
 								description = "Greeting Ready";
 							}else if(userEvent.getInviteStatus().equals(InviteStatus.Uploaded)){
