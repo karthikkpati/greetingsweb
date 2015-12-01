@@ -148,6 +148,10 @@ public class NotificationServiceImpl implements INotificationService{
 		List<DashboardNotificationDTO> inviterDashboardNotificationList = new ArrayList<DashboardNotificationDTO>();
 		List<DashboardNotificationDTO> inviteeDashboardNotificationList = new ArrayList<DashboardNotificationDTO>();
 		
+		dashboardNotificationResponse.setRecipientDashboardNotificationDTOList(recipientDashboardNotificationList);
+		dashboardNotificationResponse.setInviteeDashboardNotificationDTOList(inviteeDashboardNotificationList);
+		dashboardNotificationResponse.setInviterDashboardNotificationDTOList(inviterDashboardNotificationList);
+		
 		User user = userDAO.findActiveUserById(dashboardNotificationRequest.getUserId());
 		if(user != null){
 			List<UserEvent> userEventList = userEventDAO.findByUserId(user.getId());
