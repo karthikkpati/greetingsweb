@@ -19,4 +19,10 @@ public class NotificationTemplateDAO extends BaseDAO<NotificationTemplate, Long 
 		}
 		return notificationTemplate;
 	}
+	
+	public List<NotificationTemplate> getAllNotificationTemplates(){
+		List<NotificationTemplate> notificationTemplateList = null;
+		notificationTemplateList = findByCriteria(Restrictions.eq("active", true));
+		return notificationTemplateList;
+	}
 }

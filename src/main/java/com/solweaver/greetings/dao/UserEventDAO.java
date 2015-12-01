@@ -19,4 +19,10 @@ public class UserEventDAO extends BaseDAO<UserEvent, Long > {
 		}
 		return userEvent;
 	}
+	
+	public List<UserEvent> findByUserId(Long userId){
+		List<UserEvent> userEventList = null;
+		userEventList = findByCriteria(Restrictions.eq("user.id", userId));
+		return userEventList;
+	}
 }

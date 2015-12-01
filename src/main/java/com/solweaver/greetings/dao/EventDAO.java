@@ -137,4 +137,15 @@ public class EventDAO extends BaseDAO<Event, Long> {
 		eventCriteria.add(Restrictions.lt("eventDate", tommorrow));
 		return (List<Event>) eventCriteria.list();		
 	}
+	
+	public List<Event> findEventsByUserId(Long userId) {
+		Criteria eventCriteria = getSession().createCriteria(Event.class);
+		eventCriteria.createAlias("event.userEventList", "userEventList");
+		if (userId != null) {
+			eventCriteria.add(Restrictions.eq("userEventList.user.id", userId));
+		}
+
+		return eventCriteria.list();
+	}
+
 }

@@ -7,16 +7,20 @@ import java.util.List;
 import com.solweaver.greetings.dto.CategoryDTO;
 import com.solweaver.greetings.dto.EventCreationRequest;
 import com.solweaver.greetings.dto.EventDTO;
+import com.solweaver.greetings.dto.NotificationTemplateDTO;
 import com.solweaver.greetings.dto.ThemeDTO;
 import com.solweaver.greetings.dto.UserDTO;
 import com.solweaver.greetings.dto.UserEventDTO;
+import com.solweaver.greetings.dto.UserNotificationDTO;
 import com.solweaver.greetings.model.Category;
 import com.solweaver.greetings.model.Event;
 import com.solweaver.greetings.model.InviteStatus;
+import com.solweaver.greetings.model.NotificationTemplate;
 import com.solweaver.greetings.model.Theme;
 import com.solweaver.greetings.model.User;
 import com.solweaver.greetings.model.UserEvent;
 import com.solweaver.greetings.model.UserEventType;
+import com.solweaver.greetings.model.UserNotification;
 
 public class EntityDtoUtils {
 	
@@ -196,4 +200,45 @@ public class EntityDtoUtils {
 		}
 		return themeDTOList;
 	}
+
+	public static List<UserNotificationDTO> getUserNotificationDTOList(
+			List<UserNotification> userNotifications) {
+		List<UserNotificationDTO> userNotificationDTOs = new ArrayList<UserNotificationDTO>();
+		if(userNotifications != null){
+			for(UserNotification userNotification : userNotifications){
+				userNotificationDTOs.add(getUserNotificationDTO(userNotification));
+			}
+		}
+		return userNotificationDTOs;
+	}
+
+	public static UserNotificationDTO getUserNotificationDTO(
+			UserNotification userNotification) {
+		UserNotificationDTO userNotificationDTO = new UserNotificationDTO();
+		userNotificationDTO.setDeviceId(userNotification.getDeviceId());
+		userNotificationDTO.setNotificationTemplateDTO(getNotificationTemplateDTO(userNotification.getNotificationTemplate()));
+		userNotificationDTO.setUserNotificationId(userNotification.getId());
+		return userNotificationDTO;
+	}
+	
+	public static NotificationTemplateDTO getNotificationTemplateDTO(NotificationTemplate notificationTemplate){
+		NotificationTemplateDTO notificationTemplateDTO = new NotificationTemplateDTO();
+		notificationTemplateDTO.setContent(notificationTemplate.getContent());
+		notificationTemplateDTO.setDescription(notificationTemplate.getDescription());
+		notificationTemplateDTO.setNotificationTemplateId(notificationTemplate.getId());
+		notificationTemplateDTO.setTemplateName(notificationTemplate.getTemplateName());
+		return notificationTemplateDTO;
+	}
+
+	public static List<NotificationTemplateDTO> getNotificationTemplateDTOList(
+			List<NotificationTemplate> notificationTemplateList) {
+		List<NotificationTemplateDTO> notificationTemplateDTOs = new ArrayList<NotificationTemplateDTO>();
+		if(notificationTemplateList != null){
+			for(NotificationTemplate notificationTemplate : notificationTemplateList){
+				notificationTemplateDTOs.add(getNotificationTemplateDTO(notificationTemplate));
+			}
+		}
+		return notificationTemplateDTOs;
+	}
+	
 }
