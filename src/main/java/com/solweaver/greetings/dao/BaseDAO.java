@@ -124,10 +124,10 @@ public abstract class BaseDAO<T, ID extends Serializable> {
 			crit.add(c);
 		}
 		if(orderByColumn != null){
-			 if(orderByDirection == null || orderByDirection.equalsIgnoreCase("desc")){
-				 orderByClause = Order.desc(orderByColumn);
-			 }else{
+			 if(orderByDirection == null || orderByDirection.equalsIgnoreCase("asc")){
 				 orderByClause = Order.asc(orderByColumn);
+			 }else{
+				 orderByClause = Order.desc(orderByColumn);
 			 }
 		}
 		if(orderByClause != null){
