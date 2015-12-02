@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
+
 import com.solweaver.greetings.dto.MakeVideoRequest;
 import com.solweaver.greetings.dto.VideoDTO;
 import com.solweaver.greetings.model.Theme;
@@ -80,7 +82,20 @@ public class XugglerMediaUtils {
 			convertVideo.run();*/
 		}
 		
-		concatenateFiles(makeVideoRequest.getVideoDTOList(), mergedFile);		
+		String overlayImagePath = makeVideoRequest.getOverlayImage();
+		BufferedImage overlayImage = null;
+		if(theme != null){
+			overlayImagePath = theme.getFileSystemPath();
+			try {
+				overlayImage = ImageIO.read(new File(overlayImagePath));
+			}catch (IOException e) {
+				e.printStackTrace();
+				throw new RuntimeException("Could not open file");
+			}
+
+		}
+		
+		concatenateFiles(makeVideoRequest.getVideoDTOList(), mergedFile, overlayImage.getHeight(), overlayImage.getWidth());		
 		
 		IMediaReader mediaReader = ToolFactory.makeReader(mergedFile);
 
@@ -100,14 +115,10 @@ public class XugglerMediaUtils {
 		
 		System.out.println("Output file name is "+outputFileName);
 		
-		String overlayImage = makeVideoRequest.getOverlayImage();
-
-		if(theme != null){
-			overlayImage = theme.getFileSystemPath();
-		}
+		
 		IMediaWriter mediaWriter =	ToolFactory.makeWriter(outputFileName, mediaReader);
 
-		IMediaTool imageMediaTool = new StaticImageMediaTool(overlayImage, makeVideoRequest.getEmbeddedImageMinWidth(), makeVideoRequest.getEmbeddedImageMaxWidth(),
+		IMediaTool imageMediaTool = new StaticImageMediaTool(overlayImagePath, makeVideoRequest.getEmbeddedImageMinWidth(), makeVideoRequest.getEmbeddedImageMaxWidth(),
 				makeVideoRequest.getEmbeddedImageMinHeight(), makeVideoRequest.getEmbeddedImageMaxHeight());
 
 		IMediaTool audioVolumeMediaTool = new VolumeAdjustMediaTool(0.1);
@@ -192,7 +203,7 @@ public class XugglerMediaUtils {
 	   System.out.println("finished merging");
 	  }
 
-	 public static void concatenateFiles(VideoDTO[] videoDTOList, String destinationUrl) throws IOException
+	 public static void concatenateFiles(VideoDTO[] videoDTOList, String destinationUrl, int height, int width) throws IOException
 	  {
 	   System.out.println("transcoding starts");
 	   
@@ -200,9 +211,6 @@ public class XugglerMediaUtils {
 	   final int videoStreamIndex = 0;
 	   final int videoStreamId = 0;
 
-	   final int width = 400;
-	   final int height = 240;
-	   
 	   //audio parameters
 	      
 	   final int audioStreamIndex = 1;

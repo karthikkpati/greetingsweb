@@ -17,7 +17,7 @@ public class ThemeDAO extends BaseDAO<Theme, Long > {
 		if(categoryId != null){
 			criteria = Restrictions.and(criteria, Restrictions.eq("category.id", categoryId));
 		}
-		themeList = findByCriteria(criteria);
+		themeList = findByCriteria("category.name", null, criteria);
 		return themeList;
 	}
 

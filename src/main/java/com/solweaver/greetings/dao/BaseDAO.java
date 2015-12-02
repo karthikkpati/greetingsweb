@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.Criteria;
 import org.hibernate.LockOptions;
@@ -14,6 +15,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Example;
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.solweaver.greetings.model.BaseEntity;
@@ -110,6 +112,26 @@ public abstract class BaseDAO<T, ID extends Serializable> {
 		Criteria crit = getSession().createCriteria(getPersistentClass());
 		for (Criterion c : criterion) {
 			crit.add(c);
+		}
+		return crit.list();
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected List<T> findByCriteria(String orderByColumn, String orderByDirection, Criterion... criterion) {
+		Criteria crit = getSession().createCriteria(getPersistentClass());
+		Order orderByClause = null;
+		for (Criterion c : criterion) {
+			crit.add(c);
+		}
+		if(orderByColumn != null){
+			 if(orderByDirection == null || orderByDirection.equalsIgnoreCase("desc")){
+				 orderByClause = Order.desc(orderByColumn);
+			 }else{
+				 orderByClause = Order.asc(orderByColumn);
+			 }
+		}
+		if(orderByClause != null){
+			crit.addOrder(orderByClause);
 		}
 		return crit.list();
 	}
