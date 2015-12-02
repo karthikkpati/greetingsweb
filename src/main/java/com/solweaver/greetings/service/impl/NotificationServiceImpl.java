@@ -193,6 +193,8 @@ public class NotificationServiceImpl implements INotificationService{
 									description = users.append(" uploaded").toString();
 								}
 							}
+						}
+						if(!description.isEmpty()){
 							inviteeDashboardNotificationList.add(dashboardNotificationDTO);
 						}
 						dashboardNotificationDTO.setDescription(description);
