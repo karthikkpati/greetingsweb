@@ -49,24 +49,26 @@ public class ThemeServiceImpl implements IThemeService {
 		}
 		
 		List<Theme> themeList = themeDAO.findAllActiveThemes(getThemeRequest.getCategoryId());
-		Map<CategoryDTO, List<ThemeDTO>> categoryThemeMap = null;
+		Map<Long, CategoryDTO> categoryDTOMap = new HashMap<Long, CategoryDTO>();
 		if(themeList != null && themeList.size() > 0){
-			categoryThemeMap = new HashMap<CategoryDTO, List<ThemeDTO>>();
+			categoryDTOMap = new HashMap<Long, CategoryDTO>();
 			for(Theme theme : themeList){
 				ThemeDTO themeDTO = EntityDtoUtils.getThemeDTO(theme);
 				if(theme.getCategory() != null){
-					CategoryDTO categoryDTO = EntityDtoUtils.getCategoryDTO(theme.getCategory());
-					if(categoryThemeMap.containsKey(categoryDTO)){
-						categoryThemeMap.get(categoryDTO).add(themeDTO);
-					}else{
+					CategoryDTO categoryDTO = categoryDTOMap.get(theme.getCategory().getId());
+					if(categoryDTO == null){
+						categoryDTO = EntityDtoUtils.getCategoryDTO(theme.getCategory());
 						List<ThemeDTO> themeDTOList = new ArrayList<ThemeDTO>();
 						themeDTOList.add(themeDTO);
-						categoryThemeMap.put(categoryDTO, themeDTOList);
+						categoryDTO.setThemeDTOList(themeDTOList);
+						categoryDTOMap.put(categoryDTO.getCategoryId(), categoryDTO);
+					}else{
+						categoryDTO.getThemeDTOList().add(themeDTO);
 					}
 				}
 			}
 		}
-		getThemeResponse.setThemeCategoryMap(categoryThemeMap);
+		getThemeResponse.getCategoryDTOList().addAll(categoryDTOMap.values());
 		GenericUtils.buildErrorDetail(getThemeResponse, GenericEnum.Success);
 
 		return getThemeResponse;

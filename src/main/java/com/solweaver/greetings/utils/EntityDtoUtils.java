@@ -85,8 +85,10 @@ public class EntityDtoUtils {
 			eventDTOList = new ArrayList<EventDTO>();
 			for(Event event:eventList){
 				EventDTO eventDTO = getEventDTO(event, isUserEvent, user, videoUrl);
-				eventDTO.setEventId(event.getId());
-				eventDTOList.add(eventDTO);
+				if(eventDTO != null){
+					eventDTO.setEventId(event.getId());
+					eventDTOList.add(eventDTO);
+				}
 			}
 		}
 		return eventDTOList;

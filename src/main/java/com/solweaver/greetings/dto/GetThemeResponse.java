@@ -1,19 +1,18 @@
 package com.solweaver.greetings.dto;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class GetThemeResponse extends BaseResponse{
 
-	Map<CategoryDTO, List<ThemeDTO>> themeCategoryMap;
+	private List<CategoryDTO> categoryDTOList = new ArrayList<CategoryDTO>();
 
-	public Map<CategoryDTO, List<ThemeDTO>> getThemeCategoryMap() {
-		return themeCategoryMap;
+	public List<CategoryDTO> getCategoryDTOList() {
+		return categoryDTOList;
 	}
 
-	public void setThemeCategoryMap(
-			Map<CategoryDTO, List<ThemeDTO>> themeCategoryMap) {
-		this.themeCategoryMap = themeCategoryMap;
+	public void setCategoryDTOList(List<CategoryDTO> categoryDTOList) {
+		this.categoryDTOList = categoryDTOList;
 	}
-
+	
 }

@@ -1,5 +1,7 @@
 package com.solweaver.greetings.dto;
 
+import java.util.List;
+
 public class CategoryDTO {
 
 	private Long categoryId;
@@ -8,6 +10,8 @@ public class CategoryDTO {
 	
 	private String categoryDescription;
 
+	private List<ThemeDTO> themeDTOList;
+	
 	public Long getCategoryId() {
 		return categoryId;
 	}
@@ -30,6 +34,14 @@ public class CategoryDTO {
 
 	public void setCategoryDescription(String categoryDescription) {
 		this.categoryDescription = categoryDescription;
+	}
+
+	public List<ThemeDTO> getThemeDTOList() {
+		return themeDTOList;
+	}
+
+	public void setThemeDTOList(List<ThemeDTO> themeDTOList) {
+		this.themeDTOList = themeDTOList;
 	}
 
 	@Override
@@ -73,7 +85,5 @@ public class CategoryDTO {
 			return false;
 		return true;
 	}
-	
-	
 
 }
