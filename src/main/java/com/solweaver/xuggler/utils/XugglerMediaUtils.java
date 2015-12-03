@@ -40,6 +40,20 @@ public class XugglerMediaUtils {
 		String mergedFile = eventFolder + "/mergedfile.flv"; 
 		/*String flvFiles[] = new String[makeVideoRequest.getVideoDTOList().length];
 		String formattedFiles[] = new String[makeVideoRequest.getVideoDTOList().length];*/
+		
+		String overlayImagePath = makeVideoRequest.getOverlayImage();
+		BufferedImage overlayImage = null;
+		if(theme != null){
+			overlayImagePath = theme.getFileSystemPath();
+			try {
+				overlayImage = ImageIO.read(new File(overlayImagePath));
+			}catch (IOException e) {
+				e.printStackTrace();
+				throw new RuntimeException("Could not open file");
+			}
+
+		}
+
 		for(int i=0;i<makeVideoRequest.getVideoDTOList().length; i++){
 			VideoDTO videoDTO = makeVideoRequest.getVideoDTOList()[i];
 			videoDTO.setFileName(eventFolder +"/upload/"+ videoDTO.getFileName());
@@ -61,7 +75,7 @@ public class XugglerMediaUtils {
 					
 					videoDTO.setFormattedFile(formattedFilesLocation+"\\formattedFile"+i+".flv");
 					
-					ConvertVideo convertVideo = new ConvertVideo(new File(videoDTO.getFileName()), new File(videoDTO.getFormattedFile()));
+					ConvertVideo convertVideo = new ConvertVideo(new File(videoDTO.getFileName()), new File(videoDTO.getFormattedFile()), overlayImage.getHeight(), overlayImage.getWidth());
 					convertVideo.run();
 					
 					//flvFiles[i] = formattedFile;
@@ -80,19 +94,6 @@ public class XugglerMediaUtils {
 			
 			ConvertVideo convertVideo = new ConvertVideo(new File(videoDTO.getFlvFile()), new File(videoDTO.getFormattedFile()));
 			convertVideo.run();*/
-		}
-		
-		String overlayImagePath = makeVideoRequest.getOverlayImage();
-		BufferedImage overlayImage = null;
-		if(theme != null){
-			overlayImagePath = theme.getFileSystemPath();
-			try {
-				overlayImage = ImageIO.read(new File(overlayImagePath));
-			}catch (IOException e) {
-				e.printStackTrace();
-				throw new RuntimeException("Could not open file");
-			}
-
 		}
 		
 		concatenateFiles(makeVideoRequest.getVideoDTOList(), mergedFile, overlayImage.getHeight(), overlayImage.getWidth());		

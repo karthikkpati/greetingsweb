@@ -110,6 +110,15 @@ public class EntityDtoUtils {
 			if(userEventList != null && userEventList.size() > 0){
 				userEventDTOList = new ArrayList<UserEventDTO>();
 				for(UserEvent userEvent : userEventList){
+					boolean skipUserEvent = false;
+					if(userEvent.getUserEventType() != null && userEvent.getUserEventType().equals(UserEventType.RECIPIENT)){
+						if(event.getEventStatus().equals(EventStatus.Completed)){
+							skipUserEvent = true;
+						}
+					}
+					if(!skipUserEvent){
+						
+					}
 					UserEventDTO userEventDTO = getUserEventDTO(userEvent);
 					userEventDTOList.add(userEventDTO);
 					if(userEventDTO != null && userEventDTO.getUserDTO() != null){

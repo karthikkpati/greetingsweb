@@ -26,10 +26,12 @@ public class ConvertVideo extends MediaToolAdapter implements Runnable {
 	 private IMediaReader reader;
 	 private File outputFile;
 	 
-	 public ConvertVideo(File inputFile, File outputFile) {
+	 public ConvertVideo(File inputFile, File outputFile, int height, int width) {
 	 this.outputFile = outputFile;
 	 reader = ToolFactory.makeReader(inputFile.getAbsolutePath());
 	 reader.addListener(this);
+	 VIDEO_WIDTH = width;
+	 VIDEO_HEIGHT = height;
 	}
 	 
 	 private IVideoResampler videoResampler = null;
