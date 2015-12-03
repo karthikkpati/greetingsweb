@@ -1,6 +1,9 @@
 package com.solweaver.greetings.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,7 @@ import com.solweaver.greetings.dto.GetCategoryRequest;
 import com.solweaver.greetings.dto.GetCategoryResponse;
 import com.solweaver.greetings.dto.GetThemeRequest;
 import com.solweaver.greetings.dto.GetThemeResponse;
+import com.solweaver.greetings.dto.ThemeDTO;
 import com.solweaver.greetings.model.Category;
 import com.solweaver.greetings.model.Theme;
 import com.solweaver.greetings.model.User;
@@ -45,9 +49,24 @@ public class ThemeServiceImpl implements IThemeService {
 		}
 		
 		List<Theme> themeList = themeDAO.findAllActiveThemes(getThemeRequest.getCategoryId());
-		
-		getThemeResponse.setThemeDTOList(EntityDtoUtils.getThemeDTOList(themeList));
-		
+		Map<CategoryDTO, List<ThemeDTO>> categoryThemeMap = null;
+		if(themeList != null && themeList.size() > 0){
+			categoryThemeMap = new HashMap<CategoryDTO, List<ThemeDTO>>();
+			for(Theme theme : themeList){
+				ThemeDTO themeDTO = EntityDtoUtils.getThemeDTO(theme);
+				if(theme.getCategory() != null){
+					CategoryDTO categoryDTO = EntityDtoUtils.getCategoryDTO(theme.getCategory());
+					if(categoryThemeMap.containsKey(categoryDTO)){
+						categoryThemeMap.get(categoryDTO).add(themeDTO);
+					}else{
+						List<ThemeDTO> themeDTOList = new ArrayList<ThemeDTO>();
+						themeDTOList.add(themeDTO);
+						categoryThemeMap.put(categoryDTO, themeDTOList);
+					}
+				}
+			}
+		}
+		getThemeResponse.setThemeCategoryMap(categoryThemeMap);
 		GenericUtils.buildErrorDetail(getThemeResponse, GenericEnum.Success);
 
 		return getThemeResponse;

@@ -95,7 +95,7 @@ public class EntityDtoUtils {
 	public static EventDTO getEventDTO(Event event, boolean isUserEvent, User user, String videoUrl){
 		EventDTO eventDTO = null;
 		boolean addEvent = true;
-		if(event.getRecipientUser().getId().equals(user.getId())){
+		if(event.getRecipientUser() != null && event.getRecipientUser().getId().equals(user.getId())){
 			if(!event.getEventStatus().equals(EventStatus.Completed)){
 				addEvent = false;
 			}
@@ -181,9 +181,6 @@ public class EntityDtoUtils {
 		themeDTO.setPath(theme.getPath());
 		themeDTO.setThemeId(theme.getId());
 		themeDTO.setThemeName(theme.getThemeName());
-		if(theme.getCategory() != null){
-			themeDTO.setCategoryDTO(getCategoryDTO(theme.getCategory()));
-		}
 		if(theme.getSubscriptionType() != null){
 			themeDTO.setSubscriptionType(theme.getSubscriptionType().name());
 		}
