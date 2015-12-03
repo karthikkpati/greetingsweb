@@ -14,6 +14,7 @@ import com.solweaver.greetings.dto.UserEventDTO;
 import com.solweaver.greetings.dto.UserNotificationDTO;
 import com.solweaver.greetings.model.Category;
 import com.solweaver.greetings.model.Event;
+import com.solweaver.greetings.model.EventStatus;
 import com.solweaver.greetings.model.InviteStatus;
 import com.solweaver.greetings.model.NotificationTemplate;
 import com.solweaver.greetings.model.Theme;
@@ -78,12 +79,12 @@ public class EntityDtoUtils {
 		return userEvent;
 	}
 
-	public static List<EventDTO> getEventDTOList(List<Event> eventList, boolean isUserEvent, User user) {
+	public static List<EventDTO> getEventDTOList(List<Event> eventList, boolean isUserEvent, User user, String videoUrl) {
 		List<EventDTO> eventDTOList = null;
 		if(eventList != null && eventList.size() > 0){
 			eventDTOList = new ArrayList<EventDTO>();
 			for(Event event:eventList){
-				EventDTO eventDTO = getEventDTO(event, isUserEvent, user);
+				EventDTO eventDTO = getEventDTO(event, isUserEvent, user, videoUrl);
 				eventDTO.setEventId(event.getId());
 				eventDTOList.add(eventDTO);
 			}
@@ -91,7 +92,7 @@ public class EntityDtoUtils {
 		return eventDTOList;
 	}
 	
-	public static EventDTO getEventDTO(Event event, boolean isUserEvent, User user){
+	public static EventDTO getEventDTO(Event event, boolean isUserEvent, User user, String videoUrl){
 		EventDTO eventDTO = new EventDTO();
 		eventDTO.setCreatedByRecordedLink(event.getCreatedByRecordedLink());
 		eventDTO.setDescription(event.getDescription());
@@ -132,6 +133,11 @@ public class EntityDtoUtils {
 			eventDTO.setCategoryDTO(categoryDTO);
 		}
 		
+		if(videoUrl != null && event.getEventStatus().equals(EventStatus.Completed)){
+			videoUrl = videoUrl+"?eventId="+event.getId()+"&userId="+user.getId();
+			eventDTO.setVideoUrl(videoUrl);
+		}
+		
 		UserDTO createdByUser = getUserDTO(event.getCreatedBy());
 		eventDTO.setCreatedBy(createdByUser);
 		
@@ -139,6 +145,10 @@ public class EntityDtoUtils {
 		eventDTO.setRecipientUser(recipientUser);
 		
 		return eventDTO;
+	}
+	
+	public static EventDTO getEventDTO(Event event, boolean isUserEvent, User user){
+		return getEventDTO(event, isUserEvent, user, null);
 	}
 	
 	public static UserEventDTO getUserEventDTO(UserEvent userEvent){

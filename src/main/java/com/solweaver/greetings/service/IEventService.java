@@ -22,7 +22,7 @@ public interface IEventService {
 
 	public EventCreationResponse createEvent(EventCreationRequest eventCreationRequest);
 
-	public GetEventResponse getEvents(GetEventRequest getEventRequest);
+	public GetEventResponse getEvents(GetEventRequest getEventRequest, String mp4FinalUrl);
 
 	public EventUpdateResponse updateEvent(EventUpdateRequest eventUpdateRequest);
 

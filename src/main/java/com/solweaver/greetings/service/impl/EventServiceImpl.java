@@ -135,7 +135,7 @@ public class EventServiceImpl implements IEventService{
 
 	@Override
 	@Transactional
-	public GetEventResponse getEvents(GetEventRequest getEventRequest) {
+	public GetEventResponse getEvents(GetEventRequest getEventRequest, String mp4FinalUrl) {
 		GetEventResponse getEventResponse = new GetEventResponse();
 		User user = userDAO.findById(getEventRequest.getUserId(), false);
 		if(user == null || !user.getUserStatus().equals(UserStatus.Active)){
@@ -178,7 +178,7 @@ public class EventServiceImpl implements IEventService{
 				
 		List<Event> eventList = eventDAO.findEventsByUserId(user.getId(), getEventRequest.getEventId(), getEventRequest.isGetUserDetails(), eventStatus, inviteeStatus, userEventType);
 		
-		List<EventDTO> eventDTOList = EntityDtoUtils.getEventDTOList(eventList, getEventRequest.isGetUserDetails(), user);
+		List<EventDTO> eventDTOList = EntityDtoUtils.getEventDTOList(eventList, getEventRequest.isGetUserDetails(), user, mp4FinalUrl);
 		
 		getEventResponse.setEventDTOList(eventDTOList);
 		GenericUtils.buildErrorDetail(getEventResponse, GenericEnum.Success);
