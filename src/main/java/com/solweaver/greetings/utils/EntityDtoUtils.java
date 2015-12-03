@@ -93,65 +93,65 @@ public class EntityDtoUtils {
 	}
 	
 	public static EventDTO getEventDTO(Event event, boolean isUserEvent, User user, String videoUrl){
-		EventDTO eventDTO = new EventDTO();
-		eventDTO.setCreatedByRecordedLink(event.getCreatedByRecordedLink());
-		eventDTO.setDescription(event.getDescription());
-		eventDTO.setEnableReminder(event.isEnableReminder());
-		eventDTO.setEventDate(event.getEventDate());
-		eventDTO.setEventName(event.getEventName());
-		eventDTO.setRecipientMessage(event.getRecipientMessage());
-		if(event.getEventStatus() != null){
-			eventDTO.setEventStatus(event.getEventStatus().name());
+		EventDTO eventDTO = null;
+		boolean addEvent = true;
+		if(event.getRecipientUser().getId().equals(user.getId())){
+			if(!event.getEventStatus().equals(EventStatus.Completed)){
+				addEvent = false;
+			}
 		}
-		
-		if(isUserEvent){
-			List<UserEvent> userEventList = event.getUserEventList();
-			List<UserEventDTO> userEventDTOList = null;
-			if(userEventList != null && userEventList.size() > 0){
-				userEventDTOList = new ArrayList<UserEventDTO>();
-				for(UserEvent userEvent : userEventList){
-					boolean skipUserEvent = false;
-					if(userEvent.getUserEventType() != null && userEvent.getUserEventType().equals(UserEventType.RECIPIENT)){
-						if(event.getEventStatus().equals(EventStatus.Completed)){
-							skipUserEvent = true;
-						}
-					}
-					if(!skipUserEvent){
-						
-					}
-					UserEventDTO userEventDTO = getUserEventDTO(userEvent);
-					userEventDTOList.add(userEventDTO);
-					if(userEventDTO != null && userEventDTO.getUserDTO() != null){
-						if(userEventDTO.getUserDTO().getUserId() !=null && userEventDTO.getUserDTO().getUserId().equals(user.getId())){
-							eventDTO.setUserEventType(userEventDTO.getUserEventType());
+		if(addEvent){
+			eventDTO = new EventDTO();
+			eventDTO.setCreatedByRecordedLink(event.getCreatedByRecordedLink());
+			eventDTO.setDescription(event.getDescription());
+			eventDTO.setEnableReminder(event.isEnableReminder());
+			eventDTO.setEventDate(event.getEventDate());
+			eventDTO.setEventName(event.getEventName());
+			eventDTO.setRecipientMessage(event.getRecipientMessage());
+			if(event.getEventStatus() != null){
+				eventDTO.setEventStatus(event.getEventStatus().name());
+			}
+			
+			if(isUserEvent){
+				List<UserEvent> userEventList = event.getUserEventList();
+				List<UserEventDTO> userEventDTOList = null;
+				if(userEventList != null && userEventList.size() > 0){
+					userEventDTOList = new ArrayList<UserEventDTO>();
+					for(UserEvent userEvent : userEventList){
+						UserEventDTO userEventDTO = getUserEventDTO(userEvent);
+						userEventDTOList.add(userEventDTO);
+						if(userEventDTO != null && userEventDTO.getUserDTO() != null){
+							if(userEventDTO.getUserDTO().getUserId() !=null && userEventDTO.getUserDTO().getUserId().equals(user.getId())){
+								eventDTO.setUserEventType(userEventDTO.getUserEventType());
+							}
 						}
 					}
 				}
+				eventDTO.setUserEventDTOList(userEventDTOList);
 			}
-			eventDTO.setUserEventDTOList(userEventDTOList);
+			eventDTO.setFromMessage(event.getFromMessage());
+			eventDTO.setVideoSubmissionDate(event.getVideoSubmissionDate());
+			
+			Category eventCategory = event.getCategory();
+			if(eventCategory != null){
+				CategoryDTO categoryDTO = new CategoryDTO();
+				categoryDTO.setCategoryDescription(eventCategory.getDescription());
+				categoryDTO.setCategoryId(eventCategory.getId());
+				categoryDTO.setCategoryName(eventCategory.getCategoryName());
+				eventDTO.setCategoryDTO(categoryDTO);
+			}
+			
+			if(videoUrl != null && event.getEventStatus().equals(EventStatus.Completed)){
+				videoUrl = videoUrl+"?eventId="+event.getId()+"&userId="+user.getId();
+				eventDTO.setVideoUrl(videoUrl);
+			}
+			
+			UserDTO createdByUser = getUserDTO(event.getCreatedBy());
+			eventDTO.setCreatedBy(createdByUser);
+			
+			UserDTO recipientUser = getUserDTO(event.getRecipientUser());
+			eventDTO.setRecipientUser(recipientUser);
 		}
-		eventDTO.setFromMessage(event.getFromMessage());
-		eventDTO.setVideoSubmissionDate(event.getVideoSubmissionDate());
-		
-		Category eventCategory = event.getCategory();
-		if(eventCategory != null){
-			CategoryDTO categoryDTO = new CategoryDTO();
-			categoryDTO.setCategoryDescription(eventCategory.getDescription());
-			categoryDTO.setCategoryId(eventCategory.getId());
-			categoryDTO.setCategoryName(eventCategory.getCategoryName());
-			eventDTO.setCategoryDTO(categoryDTO);
-		}
-		
-		if(videoUrl != null && event.getEventStatus().equals(EventStatus.Completed)){
-			videoUrl = videoUrl+"?eventId="+event.getId()+"&userId="+user.getId();
-			eventDTO.setVideoUrl(videoUrl);
-		}
-		
-		UserDTO createdByUser = getUserDTO(event.getCreatedBy());
-		eventDTO.setCreatedBy(createdByUser);
-		
-		UserDTO recipientUser = getUserDTO(event.getRecipientUser());
-		eventDTO.setRecipientUser(recipientUser);
 		
 		return eventDTO;
 	}
