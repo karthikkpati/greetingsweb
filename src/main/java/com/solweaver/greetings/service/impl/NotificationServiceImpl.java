@@ -144,7 +144,7 @@ public class NotificationServiceImpl implements INotificationService{
 	public DashboardNotificationResponse fetchDashboardNotifications(
 			DashboardNotificationRequest dashboardNotificationRequest){
 		DashboardNotificationResponse dashboardNotificationResponse = new DashboardNotificationResponse();
-		List<DashboardNotificationDTO> dashboardNotificationList = new ArrayList<DashboardNotificationDTO>();
+		List<DashboardNotificationDTO> dashboardNotificationDTOList = new ArrayList<DashboardNotificationDTO>();
 		/*List<DashboardNotificationDTO> recipientDashboardNotificationList = new ArrayList<DashboardNotificationDTO>();
 		List<DashboardNotificationDTO> inviterDashboardNotificationList = new ArrayList<DashboardNotificationDTO>();
 		List<DashboardNotificationDTO> inviteeDashboardNotificationList = new ArrayList<DashboardNotificationDTO>();
@@ -153,6 +153,7 @@ public class NotificationServiceImpl implements INotificationService{
 		dashboardNotificationResponse.setInviteeDashboardNotificationDTOList(inviteeDashboardNotificationList);
 		dashboardNotificationResponse.setInviterDashboardNotificationDTOList(inviterDashboardNotificationList);
 		*/
+		dashboardNotificationResponse.setDashboardNotificationDTOList(dashboardNotificationDTOList);
 		User user = userDAO.findActiveUserById(dashboardNotificationRequest.getUserId());
 		if(user != null){
 			List<UserEvent> userEventList = userEventDAO.findByUserId(user.getId());
@@ -176,12 +177,12 @@ public class NotificationServiceImpl implements INotificationService{
 							}else{
 								description = "Please upload the Video";
 							}
-							dashboardNotificationList.add(dashboardNotificationDTO);
+							dashboardNotificationDTOList.add(dashboardNotificationDTO);
 						}else if(userEvent.getUserEventType().equals(UserEventType.RECIPIENT) || (event.getRecipientUser() != null && event.getRecipientUser().equals(user))){
 							if(event.getEventStatus().equals(EventStatus.Completed)){
 								description = "You Received a Greeting";
 							}
-							dashboardNotificationList.add(dashboardNotificationDTO);
+							dashboardNotificationDTOList.add(dashboardNotificationDTO);
 						}else if(userEvent.getUserEventType().equals(UserEventType.Inviter) || (event.getCreatedBy() != null && event.getCreatedBy().equals(user))){
 							if(event.getEventStatus().equals(EventStatus.Completed)){
 								description = "Greeting Sent";
@@ -199,7 +200,7 @@ public class NotificationServiceImpl implements INotificationService{
 							}
 						}
 						if(!description.isEmpty()){
-							dashboardNotificationList.add(dashboardNotificationDTO);
+							dashboardNotificationDTOList.add(dashboardNotificationDTO);
 						}
 						dashboardNotificationDTO.setDescription(description);
 					}
