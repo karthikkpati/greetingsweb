@@ -165,7 +165,7 @@ public class NotificationServiceImpl implements INotificationService{
 					Date currentDate = cal.getTime();
 			        cal.add(Calendar.DATE, -7);
 			        Date eventDateMinusSeven = cal.getTime();
-					if(userEvent.getEvent().getEventDate().after(currentDate) && userEvent.getEvent().getEventDate().before(eventDateMinusSeven)){
+					if(userEvent.getEvent().getEventDate() == null || (userEvent.getEvent().getEventDate().after(currentDate) && userEvent.getEvent().getEventDate().before(eventDateMinusSeven))){
 						DashboardNotificationDTO dashboardNotificationDTO = new DashboardNotificationDTO();
 						Event event = userEvent.getEvent();
 						String description = "";
