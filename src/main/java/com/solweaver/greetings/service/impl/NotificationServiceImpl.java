@@ -1,6 +1,8 @@
 package com.solweaver.greetings.service.impl;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -159,7 +161,11 @@ public class NotificationServiceImpl implements INotificationService{
 			List<UserEvent> userEventList = userEventDAO.findByUserId(user.getId());
 			if(userEventList != null ){
 				for(UserEvent userEvent : userEventList){
-					if(userEvent.getInviteStatus().equals(InviteStatus.Accepted) || userEvent.getInviteStatus().equals(InviteStatus.Uploaded)){
+					Calendar cal = Calendar.getInstance();
+					Date currentDate = cal.getTime();
+			        cal.add(Calendar.DATE, -7);
+			        Date eventDateMinusSeven = cal.getTime();
+					if(userEvent.getEvent().getEventDate().after(currentDate) && userEvent.getEvent().getEventDate().before(eventDateMinusSeven)){
 						DashboardNotificationDTO dashboardNotificationDTO = new DashboardNotificationDTO();
 						Event event = userEvent.getEvent();
 						String description = "";
@@ -204,6 +210,7 @@ public class NotificationServiceImpl implements INotificationService{
 						}
 						dashboardNotificationDTO.setDescription(description);
 					}
+			
 				}
 			}
 		}
