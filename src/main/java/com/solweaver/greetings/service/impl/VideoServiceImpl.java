@@ -27,6 +27,7 @@ import com.solweaver.greetings.dto.VideoUploadRequest;
 import com.solweaver.greetings.dto.VideoUploadResponse;
 import com.solweaver.greetings.model.Event;
 import com.solweaver.greetings.model.EventStatus;
+import com.solweaver.greetings.model.InviteStatus;
 import com.solweaver.greetings.model.Theme;
 import com.solweaver.greetings.model.User;
 import com.solweaver.greetings.model.UserEvent;
@@ -105,6 +106,7 @@ public class VideoServiceImpl implements IVideoService{
 		IOUtils.copy(inputStream, fos);
 		fos.close();
 
+		userEvent.setInviteStatus(InviteStatus.Uploaded);
 		userEvent.setRecordedLink(fileName);
 		userEvent.setMessage(message);
 		userEventDAO.merge(userEvent);
