@@ -21,6 +21,8 @@ import com.solweaver.greetings.dto.GenericEnum;
 import com.solweaver.greetings.dto.LoginRequest;
 import com.solweaver.greetings.dto.LoginResponse;
 import com.solweaver.greetings.dto.LogoutRequest;
+import com.solweaver.greetings.dto.UpdateUserRequest;
+import com.solweaver.greetings.dto.UpdateUserResponse;
 import com.solweaver.greetings.dto.UserRegistrationRequest;
 import com.solweaver.greetings.dto.UserRegistrationResponse;
 import com.solweaver.greetings.model.GenericConstants;
@@ -65,6 +67,11 @@ public class UserController {
 	@RequestMapping(value="/logout", method=RequestMethod.POST)
 	public @ResponseBody BaseResponse logout(@Valid @RequestBody LogoutRequest logoutRequest) throws IOException{
 		return userService.logout(logoutRequest);
+	}
+	
+	@RequestMapping(value="/user/update", method=RequestMethod.POST)
+	public @ResponseBody UpdateUserResponse update(@Valid @RequestBody UpdateUserRequest updateUserRequest) throws IOException{
+		return userService.updateUser(updateUserRequest);
 	}
 	
 	@RequestMapping(value="/register1", method=RequestMethod.GET)

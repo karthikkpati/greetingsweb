@@ -6,6 +6,8 @@ import com.solweaver.greetings.dto.LoginResponse;
 import com.solweaver.greetings.dto.LogoutRequest;
 import com.solweaver.greetings.dto.UserRegistrationRequest;
 import com.solweaver.greetings.dto.UserRegistrationResponse;
+import com.solweaver.greetings.dto.UpdateUserRequest;
+import com.solweaver.greetings.dto.UpdateUserResponse;
 import com.solweaver.greetings.model.User;
 
 public interface IUserService {
@@ -17,5 +19,7 @@ public interface IUserService {
 	public User findUserById(Long userId);
 
 	public BaseResponse logout(LogoutRequest loginRequest);
+	
+	public UpdateUserResponse updateUser(UpdateUserRequest userUpdateRequest);
 	
 }

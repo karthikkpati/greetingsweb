@@ -14,9 +14,11 @@ import com.solweaver.greetings.dto.GenericEnum;
 import com.solweaver.greetings.dto.LoginRequest;
 import com.solweaver.greetings.dto.LoginResponse;
 import com.solweaver.greetings.dto.LogoutRequest;
+import com.solweaver.greetings.dto.UpdateUserResponse;
 import com.solweaver.greetings.dto.UserDTO;
 import com.solweaver.greetings.dto.UserRegistrationRequest;
 import com.solweaver.greetings.dto.UserRegistrationResponse;
+import com.solweaver.greetings.dto.UpdateUserRequest;
 import com.solweaver.greetings.model.Channel;
 import com.solweaver.greetings.model.Gender;
 import com.solweaver.greetings.model.LoginActivity;
@@ -185,4 +187,49 @@ public class UserServiceImpl implements IUserService{
 		return logoutResponse;
 	}
 
+	@Override
+	@Transactional
+	public UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest) {
+		UpdateUserResponse updateUserResponse = new UpdateUserResponse();
+		User user = userDAO.findActiveUserById(updateUserRequest.getUserId());
+		if(user == null){
+			GenericUtils.buildErrorDetail(updateUserResponse, GenericEnum.USER_DOESNT_EXIST);
+			return updateUserResponse;
+		}
+		
+		if(updateUserRequest.getEmail() != null){
+			user.setEmail(updateUserRequest.getEmail());
+		}
+		
+		if(updateUserRequest.getCountryCode() != null){
+			user.setCountryCode(updateUserRequest.getCountryCode());
+		}
+		
+		if(updateUserRequest.getDateOfBirth() != null){
+			user.setDateOfBirth(updateUserRequest.getDateOfBirth());
+		}
+		
+		if(updateUserRequest.getFirstName() != null){
+			user.setFirstName(updateUserRequest.getFirstName());
+		}
+		
+		if(updateUserRequest.getGender() != null){
+			user.setGender(Gender.valueOf(updateUserRequest.getGender()));
+		}
+		
+		if(updateUserRequest.getLastName() != null){
+			user.setLastName(updateUserRequest.getLastName());
+		}
+		
+		if(updateUserRequest.getPhoneNumber() != null){
+			user.setPhoneNumber(updateUserRequest.getPhoneNumber());
+		}
+		
+		userDAO.merge(user);
+		
+		GenericUtils.buildErrorDetail(updateUserResponse, GenericEnum.Success);
+		return updateUserResponse;
+	}
+
 }
+
