@@ -298,6 +298,15 @@ public class EventServiceImpl implements IEventService{
 			event.setVideoSubmissionDate(eventUpdateRequest.getVideoSubmissionDate());
 		}
 		
+		if(eventUpdateRequest.getCategory() != null){
+			Category category = categoryDAO.findByName(eventUpdateRequest.getCategory());
+			if(category == null){
+				GenericUtils.buildErrorDetail(eventUpdateResponse, GenericEnum.INVALID_CATEGORY);
+				return eventUpdateResponse;
+			}
+			event.setCategory(category);
+		}
+		
 		event.setEnableReminder(eventUpdateRequest.isEnableReminder());
 		eventDAO.merge(event);
 		eventUpdateResponse.setEventID(event.getId());

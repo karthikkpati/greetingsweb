@@ -37,6 +37,8 @@ public class EventDAO extends BaseDAO<Event, Long> {
 			eventCriteria.add(Restrictions.eq("eventStatus", eventStatus));
 		}
 
+		eventCriteria.add(Restrictions.ne("eventStatus", EventStatus.Deleted));
+		
 		if (eventId != null) {
 			eventCriteria.add(Restrictions.eq("id", eventId));
 		}

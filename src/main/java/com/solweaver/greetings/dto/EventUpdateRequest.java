@@ -30,6 +30,8 @@ public class EventUpdateRequest extends BaseRequest{
 	private List<String> emailInviteeList;
 	
 	private String receiverEmail;
+	
+	private String category;
 
 	public Long getUserId() {
 		return userId;
@@ -109,6 +111,14 @@ public class EventUpdateRequest extends BaseRequest{
 
 	public void setEventId(Long eventId) {
 		this.eventId = eventId;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 }
