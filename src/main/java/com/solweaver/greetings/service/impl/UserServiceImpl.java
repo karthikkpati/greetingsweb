@@ -226,7 +226,7 @@ public class UserServiceImpl implements IUserService{
 		}
 		
 		userDAO.merge(user);
-		
+		updateUserResponse.setUserDTO(EntityDtoUtils.getUserDTO(user));
 		GenericUtils.buildErrorDetail(updateUserResponse, GenericEnum.Success);
 		return updateUserResponse;
 	}
