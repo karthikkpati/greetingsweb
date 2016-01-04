@@ -7,8 +7,11 @@ public class ChangePasswordRequest extends BaseRequest{
 
 	private Long userId;
 	
-	@NotNull(message="Password cannot be null")
-	private String password;
+	@NotNull(message="Current Password cannot be null")
+	private String currentPassword;
+	
+	@NotNull(message="New Password cannot be null")
+	private String newPassword;
 	
 	@NotNull(message="Confirm password cannot be null")
 	private String confirmPassword;
@@ -21,12 +24,20 @@ public class ChangePasswordRequest extends BaseRequest{
 		this.userId = userId;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getCurrentPassword() {
+		return currentPassword;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setCurrentPassword(String currentPassword) {
+		this.currentPassword = currentPassword;
+	}
+
+	public String getNewPassword() {
+		return newPassword;
+	}
+
+	public void setNewPassword(String newPassword) {
+		this.newPassword = newPassword;
 	}
 
 	public String getConfirmPassword() {

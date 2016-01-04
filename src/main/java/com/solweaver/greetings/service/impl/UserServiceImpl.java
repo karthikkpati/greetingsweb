@@ -245,12 +245,17 @@ public class UserServiceImpl implements IUserService{
 			return changePasswordResponse;
 		}
 		
-		if(!changePasswordRequest.getPassword().equals(changePasswordRequest.getConfirmPassword())){
+		if(!changePasswordRequest.getCurrentPassword().equals(user.getPassword())){
+			GenericUtils.buildErrorDetail(changePasswordResponse, GenericEnum.INVALID_CURRENT_PASSWORD);
+			return changePasswordResponse;
+		}
+		
+		if(!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmPassword())){
 			GenericUtils.buildErrorDetail(changePasswordResponse, GenericEnum.CONFIRM_PASSWORD);
 			return changePasswordResponse;
 		}
 		
-		user.setPassword(changePasswordRequest.getPassword());
+		user.setPassword(changePasswordRequest.getNewPassword());
 		
 		userDAO.merge(user);
 		GenericUtils.buildErrorDetail(changePasswordResponse, GenericEnum.Success);
