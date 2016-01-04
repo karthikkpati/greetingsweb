@@ -1,6 +1,8 @@
 package com.solweaver.greetings.service;
 
 import com.solweaver.greetings.dto.BaseResponse;
+import com.solweaver.greetings.dto.ChangePasswordRequest;
+import com.solweaver.greetings.dto.ChangePasswordResponse;
 import com.solweaver.greetings.dto.LoginRequest;
 import com.solweaver.greetings.dto.LoginResponse;
 import com.solweaver.greetings.dto.LogoutRequest;
@@ -21,5 +23,8 @@ public interface IUserService {
 	public BaseResponse logout(LogoutRequest loginRequest);
 	
 	public UpdateUserResponse updateUser(UpdateUserRequest userUpdateRequest);
+
+	public ChangePasswordResponse changePassword(
+			ChangePasswordRequest changePasswordRequest);
 	
 }

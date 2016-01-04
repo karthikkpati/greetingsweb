@@ -180,15 +180,15 @@ public class NotificationServiceImpl implements INotificationService{
 								description = "Greeting Ready";
 							}else if(userEvent.getInviteStatus().equals(InviteStatus.Uploaded)){
 								description = "Video Uploaded";
+							}else if(userEvent.getInviteStatus().equals(InviteStatus.Pending)){
+								description = "You are invited to the event. Please click Accept to accept the invitation or Reject to decline the invitation";
 							}else{
 								description = "Please upload the Video";
 							}
-							dashboardNotificationDTOList.add(dashboardNotificationDTO);
 						}else if(userEvent.getUserEventType().equals(UserEventType.RECIPIENT) || (event.getRecipientUser() != null && event.getRecipientUser().equals(user))){
 							if(event.getEventStatus().equals(EventStatus.Completed)){
 								description = "You Received a Greeting";
 							}
-							dashboardNotificationDTOList.add(dashboardNotificationDTO);
 						}else if(userEvent.getUserEventType().equals(UserEventType.Inviter) || (event.getCreatedBy() != null && event.getCreatedBy().equals(user))){
 							if(event.getEventStatus().equals(EventStatus.Completed)){
 								description = "Greeting Sent";

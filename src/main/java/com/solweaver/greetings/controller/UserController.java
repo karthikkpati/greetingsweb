@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.solweaver.greetings.dto.BaseResponse;
+import com.solweaver.greetings.dto.ChangePasswordRequest;
+import com.solweaver.greetings.dto.ChangePasswordResponse;
 import com.solweaver.greetings.dto.GenericEnum;
 import com.solweaver.greetings.dto.LoginRequest;
 import com.solweaver.greetings.dto.LoginResponse;
@@ -72,6 +74,11 @@ public class UserController {
 	@RequestMapping(value="/user/update", method=RequestMethod.POST)
 	public @ResponseBody UpdateUserResponse update(@Valid @RequestBody UpdateUserRequest updateUserRequest) throws IOException{
 		return userService.updateUser(updateUserRequest);
+	}
+	
+	@RequestMapping(value="/user/changePassword", method=RequestMethod.POST)
+	public @ResponseBody ChangePasswordResponse update(@Valid @RequestBody ChangePasswordRequest changePasswordRequest) throws IOException{
+		return userService.changePassword(changePasswordRequest);
 	}
 	
 	@RequestMapping(value="/register1", method=RequestMethod.GET)

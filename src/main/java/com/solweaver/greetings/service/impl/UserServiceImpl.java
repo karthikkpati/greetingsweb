@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.solweaver.greetings.dao.LoginActivityDAO;
 import com.solweaver.greetings.dao.UserDAO;
 import com.solweaver.greetings.dto.BaseResponse;
+import com.solweaver.greetings.dto.ChangePasswordRequest;
+import com.solweaver.greetings.dto.ChangePasswordResponse;
 import com.solweaver.greetings.dto.GenericEnum;
 import com.solweaver.greetings.dto.LoginRequest;
 import com.solweaver.greetings.dto.LoginResponse;
@@ -229,6 +231,30 @@ public class UserServiceImpl implements IUserService{
 		updateUserResponse.setUserDTO(EntityDtoUtils.getUserDTO(user));
 		GenericUtils.buildErrorDetail(updateUserResponse, GenericEnum.Success);
 		return updateUserResponse;
+	}
+
+	@Override
+	@Transactional
+	public ChangePasswordResponse changePassword(
+			ChangePasswordRequest changePasswordRequest) {
+		ChangePasswordResponse changePasswordResponse = new ChangePasswordResponse();
+		
+		User user = userDAO.findActiveUserById(changePasswordRequest.getUserId());
+		if(user == null){
+			GenericUtils.buildErrorDetail(changePasswordResponse, GenericEnum.USER_DOESNT_EXIST);
+			return changePasswordResponse;
+		}
+		
+		if(!changePasswordRequest.getPassword().equals(changePasswordRequest.getConfirmPassword())){
+			GenericUtils.buildErrorDetail(changePasswordResponse, GenericEnum.CONFIRM_PASSWORD);
+			return changePasswordResponse;
+		}
+		
+		user.setPassword(changePasswordRequest.getPassword());
+		
+		userDAO.merge(user);
+		GenericUtils.buildErrorDetail(changePasswordResponse, GenericEnum.Success);
+		return changePasswordResponse;
 	}
 
 }
