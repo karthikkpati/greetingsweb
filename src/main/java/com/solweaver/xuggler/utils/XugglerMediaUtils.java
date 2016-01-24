@@ -118,8 +118,10 @@ public class XugglerMediaUtils {
 		
 		
 		IMediaWriter mediaWriter =	ToolFactory.makeWriter(outputFileName, mediaReader);
+		
+		String thumbNailImagePath = outputFolderName + "/thumbNail.jpg";
 
-		IMediaTool imageMediaTool = new StaticImageMediaTool(overlayImagePath, makeVideoRequest.getEmbeddedImageMinWidth(), makeVideoRequest.getEmbeddedImageMaxWidth(),
+		IMediaTool imageMediaTool = new StaticImageMediaTool(overlayImagePath, thumbNailImagePath, makeVideoRequest.getEmbeddedImageMinWidth(), makeVideoRequest.getEmbeddedImageMaxWidth(),
 				makeVideoRequest.getEmbeddedImageMinHeight(), makeVideoRequest.getEmbeddedImageMaxHeight());
 
 		IMediaTool audioVolumeMediaTool = new VolumeAdjustMediaTool(0.1);

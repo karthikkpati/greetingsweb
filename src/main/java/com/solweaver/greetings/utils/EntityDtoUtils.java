@@ -94,7 +94,7 @@ public class EntityDtoUtils {
 		return eventDTOList;
 	}
 	
-	public static EventDTO getEventDTO(Event event, boolean isUserEvent, User user, String videoUrl){
+	public static EventDTO getEventDTO(Event event, boolean isUserEvent, User user, String context){
 		EventDTO eventDTO = null;
 		boolean addEvent = true;
 		if(event.getRecipientUser() != null && event.getRecipientUser().getId().equals(user.getId())){
@@ -143,8 +143,10 @@ public class EntityDtoUtils {
 				eventDTO.setCategoryDTO(categoryDTO);
 			}
 			
-			if(videoUrl != null && event.getEventStatus().equals(EventStatus.Completed)){
-				videoUrl = videoUrl+"?eventId="+event.getId()+"&userId="+user.getId();
+			if(context != null && event.getEventStatus().equals(EventStatus.Completed)){
+				String videoUrl = context+ "/streamMp4Final.mp4" + "?eventId="+event.getId()+"&userId="+user.getId();
+				String thumbNail = context + "/thumbNail.jpeg" + "?eventId="+event.getId()+"&userId="+user.getId()+"&fileName=thumbNail.jpg";
+				eventDTO.setThumbNail(thumbNail);
 				eventDTO.setVideoUrl(videoUrl);
 			}
 			

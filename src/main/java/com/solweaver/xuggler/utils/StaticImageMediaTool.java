@@ -28,13 +28,17 @@ public class StaticImageMediaTool extends MediaToolAdapter{
 	
 	private int embeddedImageMaxHeight;
 	
+	private boolean thumbNailCreated;
+	
+	private String thumNailImageFilePath;
 
-	public StaticImageMediaTool(String overLayImageFile, int embeddedImageMinWidth, int embeddedImageMaxWidth,
+	public StaticImageMediaTool(String overLayImageFile, String thumbNailImageFilePath, int embeddedImageMinWidth, int embeddedImageMaxWidth,
 			int embeddedImageMinHeight, int embeddedImageMaxHeight) {
 
 		try {
 
 			overlay = ImageIO.read(new File(overLayImageFile));
+			this.thumNailImageFilePath = thumbNailImageFilePath;
 			this.embeddedImageMinWidth = embeddedImageMinWidth;
 			this.embeddedImageMinHeight = embeddedImageMinHeight;
 			this.embeddedImageMaxHeight = embeddedImageMaxHeight;
@@ -58,11 +62,22 @@ public class StaticImageMediaTool extends MediaToolAdapter{
 		
 		BufferedImage outputImage = combineImages(event.getImage());
 		
+		if(!thumbNailCreated){
+			File thumbNailImageFile = new File(thumNailImageFilePath);
+			try {
+				ImageIO.write(outputImage, "jpg", thumbNailImageFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+				throw new RuntimeException("Cannot create thumb nail");
+			}
+		}
+		
 		BgrConverter bgrConverter = new BgrConverter(pic.getPixelType(), pic.getWidth(), pic.getHeight(), outputImage.getWidth(), outputImage.getHeight());
  
 		IVideoPicture out = bgrConverter.toPicture(outputImage, pic.getTimeStamp());
 		
 		IVideoPictureEvent asc = new VideoPictureEvent(event.getSource(), out, event.getStreamIndex());
+		
 		super.onVideoPicture(asc);
 		out.delete();
 
@@ -71,7 +86,6 @@ public class StaticImageMediaTool extends MediaToolAdapter{
 		//super.onVideoPicture(event);
 
 	}
-
 	
 	private BufferedImage combineImages(BufferedImage inputImage){
 	
@@ -98,6 +112,4 @@ public class StaticImageMediaTool extends MediaToolAdapter{
 		g.drawString("Happy BDay Solweaver ", 550, 250);
 		return combined;
 	}
-
-
 }
