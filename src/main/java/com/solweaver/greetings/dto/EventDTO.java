@@ -57,6 +57,8 @@ public class EventDTO {
 	
 	private String videoUrl;
 	
+	private String thumbNail;
+	
 	public Long getUserId() {
 		return userId;
 	}
@@ -191,6 +193,14 @@ public class EventDTO {
 
 	public void setVideoUrl(String videoUrl) {
 		this.videoUrl = videoUrl;
+	}
+
+	public String getThumbNail() {
+		return thumbNail;
+	}
+
+	public void setThumbNail(String thumbNail) {
+		this.thumbNail = thumbNail;
 	}
 
 }

@@ -32,6 +32,7 @@ import com.solweaver.greetings.model.Theme;
 import com.solweaver.greetings.model.User;
 import com.solweaver.greetings.model.UserEvent;
 import com.solweaver.greetings.model.VideoStatus;
+import com.solweaver.greetings.service.IVelocityService;
 import com.solweaver.greetings.service.IVideoService;
 import com.solweaver.greetings.utils.GenericUtils;
 import com.solweaver.xuggler.utils.XugglerMediaUtils;
@@ -52,6 +53,9 @@ public class VideoServiceImpl implements IVideoService{
 	
 	@Autowired
 	private ThemeDAO themeDAO;
+	
+	@Autowired
+	private IVelocityService velocityService;
 	
 	@Override
 	@Transactional
@@ -110,6 +114,13 @@ public class VideoServiceImpl implements IVideoService{
 		userEvent.setRecordedLink(fileName);
 		userEvent.setMessage(message);
 		userEventDAO.merge(userEvent);
+		
+		try {
+			velocityService.sendEmail(null, "Event_Upload_Invitee", event.getCreatedBy().getEmail());
+		} catch (Exception e) {
+			e.printStackTrace();
+			GenericUtils.buildErrorDetail(videoUploadResponse, GenericEnum.Success, "Unable to send video uploaded email to event creator");
+		}
 		
 		GenericUtils.buildErrorDetail(videoUploadResponse, GenericEnum.Success);
 		return videoUploadResponse;

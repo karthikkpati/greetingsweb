@@ -2,14 +2,14 @@ package com.solweaver.greetings.dto;
 
 public class EventCreationResponse extends BaseResponse{
 
-	private Long eventID;
+	private EventDTO eventDTO;
 
-	public Long getEventID() {
-		return eventID;
+	public EventDTO getEventDTO() {
+		return eventDTO;
 	}
 
-	public void setEventID(Long eventID) {
-		this.eventID = eventID;
+	public void setEventDTO(EventDTO eventDTO) {
+		this.eventDTO = eventDTO;
 	}
 	
 }

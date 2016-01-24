@@ -1,11 +1,13 @@
 package com.solweaver.greetings.controller;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 
+import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -132,6 +134,7 @@ public class VideoController {
 			HttpServletResponse response) throws IOException{
 		InputStream inputStream = file.getInputStream();
 		String fileName = file.getOriginalFilename();
+		
 		return videoService.uploadVideo(videoUploadRequest, inputStream, fileName, message);
 	}
 	
@@ -312,6 +315,38 @@ public class VideoController {
 				outputByte = new byte[4096];
 			}
 			fileIn.close();
+			out.flush();
+			out.close();
+		}
+	}
+	
+	@RequestMapping(value="/thumbNail", method=RequestMethod.GET)
+	public void thumbNail(
+			Model model,
+			@RequestParam("eventId") Long eventId,
+			@RequestParam("userId") Long userId,
+			@RequestParam(value="fileName",required=false) String fileName,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws IOException{
+		
+		UserEvent userEvent = eventService.getUserEvent(userId, eventId);
+		if(userEvent == null){
+			throw new RuntimeException();
+		}
+
+		String outputFolderName = EVENTS_FOLDER+eventId+"/output/";
+		File outputFolder = new File(outputFolderName);
+		if(outputFolder.isDirectory()){
+			if(fileName == null || fileName.isEmpty()){
+				fileName = userEvent.getRecordedLink();
+			}
+			File outputFile = new File(outputFolderName+fileName);
+			response.setContentType("image/jpeg");
+
+			FileInputStream fileIn = new FileInputStream(outputFile);
+			ServletOutputStream out = response.getOutputStream();
+			BufferedImage bi = ImageIO.read(fileIn);
+			ImageIO.write(bi, "jpg", out);
 			out.flush();
 			out.close();
 		}

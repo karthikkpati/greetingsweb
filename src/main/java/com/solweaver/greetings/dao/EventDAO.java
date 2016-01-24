@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.lang.time.DateUtils;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -61,6 +62,8 @@ public class EventDAO extends BaseDAO<Event, Long> {
 		if (isUserEvent) {
 			eventCriteria.setFetchMode("userEventList", FetchMode.JOIN);
 		}
+		
+		eventCriteria.addOrder(Order.desc("eventDate"));
 
 		eventList = eventCriteria.list();
 

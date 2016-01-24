@@ -128,14 +128,14 @@ public class EventServiceImpl implements IEventService{
 			event.setUserEventList(emailInviteeUserEventList);
 		}
 		eventDAO.makePersistent(event);
-		eventCreationResponse.setEventID(event.getId());
+		eventCreationResponse.setEventDTO(EntityDtoUtils.getEventDTO(event, false, user));
 		GenericUtils.buildErrorDetail(eventCreationResponse, GenericEnum.Success);
 		return eventCreationResponse;
 	}
 
 	@Override
 	@Transactional
-	public GetEventResponse getEvents(GetEventRequest getEventRequest, String mp4FinalUrl) {
+	public GetEventResponse getEvents(GetEventRequest getEventRequest, String contextPath) {
 		GetEventResponse getEventResponse = new GetEventResponse();
 		User user = userDAO.findById(getEventRequest.getUserId(), false);
 		if(user == null || !user.getUserStatus().equals(UserStatus.Active)){
@@ -178,7 +178,7 @@ public class EventServiceImpl implements IEventService{
 				
 		List<Event> eventList = eventDAO.findEventsByUserId(user.getId(), getEventRequest.getEventId(), getEventRequest.isGetUserDetails(), eventStatus, inviteeStatus, userEventType);
 		
-		List<EventDTO> eventDTOList = EntityDtoUtils.getEventDTOList(eventList, getEventRequest.isGetUserDetails(), user, mp4FinalUrl);
+		List<EventDTO> eventDTOList = EntityDtoUtils.getEventDTOList(eventList, getEventRequest.isGetUserDetails(), user, contextPath);
 		
 		getEventResponse.setEventDTOList(eventDTOList);
 		GenericUtils.buildErrorDetail(getEventResponse, GenericEnum.Success);
