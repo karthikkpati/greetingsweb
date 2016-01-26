@@ -128,7 +128,7 @@ public class EventServiceImpl implements IEventService{
 			event.setUserEventList(emailInviteeUserEventList);
 		}
 		eventDAO.makePersistent(event);
-		eventCreationResponse.setEventDTO(EntityDtoUtils.getEventDTO(event, false, user));
+		eventCreationResponse.setEventDTO(EntityDtoUtils.getEventDTO(event, true, user));
 		GenericUtils.buildErrorDetail(eventCreationResponse, GenericEnum.Success);
 		return eventCreationResponse;
 	}
