@@ -46,7 +46,7 @@ public class ConvertVideo extends MediaToolAdapter implements Runnable {
 	 } else if (streamCoder.getCodecType() == ICodec.Type.CODEC_TYPE_VIDEO) {
 	 streamCoder.setWidth(VIDEO_WIDTH);
 	 streamCoder.setHeight(VIDEO_HEIGHT);
-	 writer.addVideoStream(streamIndex, streamIndex, VIDEO_WIDTH, VIDEO_HEIGHT);
+	 writer.addVideoStream(streamIndex, streamIndex, ICodec.ID.CODEC_ID_H264, VIDEO_WIDTH, VIDEO_HEIGHT);
 	 }
 	 super.onAddStream(event);
 	 }
