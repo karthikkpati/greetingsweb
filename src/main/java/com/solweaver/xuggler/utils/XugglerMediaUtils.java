@@ -187,7 +187,7 @@ public class XugglerMediaUtils {
 	   IMediaWriter writer = ToolFactory.makeWriter(destinationUrl);
 	   concatenator.addListener(writer);
 	   System.out.println("Rational value is "+writer.getDefaultTimebase());
-	   writer.addVideoStream(videoStreamIndex, videoStreamId, ICodec.ID.CODEC_ID_H264,  width,height);
+	   writer.addVideoStream(videoStreamIndex, videoStreamId, ICodec.ID.CODEC_ID_MPEG4,  width,height);
 	   writer.addAudioStream(audioStreamIndex, audioStreamId, channelCount, sampleRate);
 
 	   for(int i=0; i<sourceUrls.length ; i++){
@@ -256,7 +256,7 @@ public class XugglerMediaUtils {
 		   mediaConcatenator.addListener(writer);
 	   }
 	   System.out.println("Rational value is "+writer.getDefaultTimebase());
-	   writer.addVideoStream(videoStreamIndex, videoStreamId, ICodec.ID.CODEC_ID_H264, width,height);
+	   writer.addVideoStream(videoStreamIndex, videoStreamId, ICodec.ID.CODEC_ID_MPEG4, width,height);
 	   writer.addAudioStream(audioStreamIndex, audioStreamId, channelCount, sampleRate);
 
 	   for(int i=0; i<videoDTOList.length ; i++){
